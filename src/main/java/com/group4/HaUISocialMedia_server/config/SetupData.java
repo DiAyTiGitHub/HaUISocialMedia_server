@@ -6,6 +6,7 @@ import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,14 +26,17 @@ public class SetupData implements ApplicationRunner {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private void initializeBaseUser() {
         //initialize user admin
         User admin = userRepository.findByUsername("admin");
         if (admin == null) {
             admin = new User();
-            admin.setRole(Role.ADMIN);
+            admin.setRole(Role.ADMIN.name());
             admin.setUsername("admin");
-            admin.setPassword("admin");
+            admin.setPassword(passwordEncoder.encode("admin"));
 
             userRepository.save(admin);
         }

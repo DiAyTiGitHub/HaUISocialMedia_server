@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +32,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private ClassroomRepository classroomRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public String login(LoginDto loginDto) {
@@ -55,16 +59,23 @@ public class AuthServiceImpl implements AuthService {
         User newUser = new User();
 
         newUser.setUsername(dto.getUsername());
-        newUser.setPassword(dto.getPassword());
+        newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        Classroom studentClass = classroomRepository.findById(dto.getClassroomDto().getId()).orElse(null);
-        if (studentClass != null) newUser.setClassroom(studentClass);
+        if (dto.getClassroomDto() != null) {
+            Classroom studentClass = classroomRepository.findById(dto.getClassroomDto().getId()).orElse(null);
+            if (studentClass != null) newUser.setClassroom(studentClass);
+        }
+        if (dto.getCode() != null) {
+            newUser.setCode(dto.getCode());
+        }
+        if (dto.getFirstName() != null) {
+            newUser.setFirstName(dto.getFirstName());
+        }
+        if (dto.getLastName() != null) {
+            newUser.setLastName(dto.getLastName());
+        }
 
-        newUser.setCode(dto.getCode());
-        newUser.setFirstName(dto.getFirstName());
-        newUser.setLastName(dto.getLastName());
-
-        newUser.setRole(Role.USER);
+        newUser.setRole(Role.USER.name());
 
         User savedUser = userRepository.save(newUser);
         return new UserDto(savedUser);

@@ -1,11 +1,13 @@
 package com.group4.HaUISocialMedia_server.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 @Setter
@@ -52,7 +54,7 @@ public class User implements Serializable {
 //    )
 //    private Set<Role> roles;
 
-    private Role role;
+    private String role;
 
 
     @ManyToOne

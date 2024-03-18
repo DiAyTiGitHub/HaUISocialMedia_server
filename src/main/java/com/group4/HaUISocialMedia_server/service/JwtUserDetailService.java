@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.service;
 
+import com.group4.HaUISocialMedia_server.entity.Role;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class JwtUserDetailService implements UserDetailsService {
 //                .collect(Collectors.toSet());
 
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+        authorities.add(new SimpleGrantedAuthority(Role.valueOf(user.getRole()).name()));
 
         return new org.springframework.security.core.userdetails.User(
                 usernameOrEmail,
