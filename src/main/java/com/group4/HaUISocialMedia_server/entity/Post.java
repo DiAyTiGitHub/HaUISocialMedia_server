@@ -28,6 +28,7 @@ public class Post implements Serializable {
 
     private Date createDate;
 
+    @Column(columnDefinition = "longtext")
     private String content;
 
     @ManyToOne
@@ -39,4 +40,7 @@ public class Post implements Serializable {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Set<Like> likes;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
+    private Set<Comment> comments;
 }

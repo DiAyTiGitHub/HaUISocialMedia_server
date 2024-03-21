@@ -9,7 +9,10 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -26,5 +29,20 @@ public class Comment implements Serializable {
     @Column(columnDefinition = "longtext")
     private String content;
 
+    private Date createDate;
 
+    @ManyToOne
+    @JoinColumn(name = "ownerId")
+    private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "postId")
+    private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "repliedCommentId")
+    private Comment repliedComment;
+
+    @OneToMany(mappedBy = "repliedComment")
+    private Set<Comment> subComments;
 }
