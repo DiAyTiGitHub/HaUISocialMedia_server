@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Setter
@@ -41,6 +42,7 @@ public class User implements Serializable {
 
     private boolean gender;
 
+    @Column(columnDefinition = "longtext")
     private String address;
 
     private Date birthDate;
@@ -60,4 +62,7 @@ public class User implements Serializable {
     @ManyToOne
     @JoinColumn(name = "classId")
     private Classroom classroom;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<Message> messages;
 }
