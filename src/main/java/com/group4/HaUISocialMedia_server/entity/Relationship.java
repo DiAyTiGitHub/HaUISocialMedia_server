@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
 import java.util.UUID;
@@ -13,29 +15,32 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tb_friend")
-public class Friend {
+@Table(name = "tbl_relationship")
+public class Relationship {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "VARCHAR(36)")
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
+
     @Column
     private Date lastModifyDate;
+
     @Column
-    private boolean state;
-
-
-    @OneToOne
-    @JoinColumn(name = "roomid")
-    private Room rooms;
+    private boolean state; // 0 - is not friend yet, 1 - is friend
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "requestSenderId")
-    private User userRequestSender;
+    private User requestSender;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "receiverId")
-    private User userReciever;
+    private User receiver;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "roomId")
+    private Room room;
 
 }
