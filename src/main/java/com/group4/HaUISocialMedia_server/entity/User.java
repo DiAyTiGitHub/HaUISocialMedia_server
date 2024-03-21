@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -65,4 +66,16 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Message> messages;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<UserRoom> userRoom;
+
+    @OneToMany(mappedBy = "userRequestSender")
+    @JsonIgnore
+    private Set<Friend> userRequest;
+
+    @OneToMany(mappedBy = "userReciever")
+    @JsonIgnore
+    private Set<Friend> userReciever;
 }

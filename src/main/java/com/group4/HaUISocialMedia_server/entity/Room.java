@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,4 +46,11 @@ public class Room {
 
 //    @OneToOne(mappedBy = "room")
 //    private Friend relationship;
+
+    @OneToMany(mappedBy = "rooms")
+    @JsonIgnore
+    private Set<UserRoom> userRoom;
+
+    @OneToOne(mappedBy = "rooms")
+    private Friend friend;
 }
