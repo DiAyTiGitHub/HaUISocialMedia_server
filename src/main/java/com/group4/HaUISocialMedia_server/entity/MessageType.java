@@ -10,36 +10,27 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
-import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_message")
-public class Message {
+@Table(name = "tbl_message_type")
+public class MessageType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "VARCHAR(36)")
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
-    @Column(columnDefinition = "longtext")
-    private String content;
+    private String code;
 
-    @Column
-    private Date sendDate;
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    private String description;
 
-    @ManyToOne
-    @JoinColumn(name="room_id")
-    private Room room;
-
-    @ManyToOne
-    @JoinColumn(name = "message_type_id")
-    private MessageType messageType;
+    @OneToMany(mappedBy = "messageType")
+    private Set<Message> messages;
 }

@@ -1,13 +1,19 @@
 package com.group4.HaUISocialMedia_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Setter
@@ -19,6 +25,8 @@ import java.util.UUID;
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "VARCHAR(36)")
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
     @Column
@@ -41,23 +49,50 @@ public class User implements Serializable {
 
     private boolean gender;
 
+    @Column(columnDefinition = "longtext")
     private String address;
 
     private Date birthDate;
 
     private String phoneNumber;
 
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private String role;
+
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    private Classroom classroom;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<UserCourse> userCourses;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<Message> messages;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<UserRoom> userRooms;
+
+    @OneToMany(mappedBy = "requestSender")
+    @JsonIgnore
+    private Set<Relationship> requestSenders;
+
+    @OneToMany(mappedBy = "receiver")
+    @JsonIgnore
+    private Set<Relationship> receivers;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Notification> notifications;
+
+    @OneToMany(mappedBy = "userLike")
+    private Set<Like> likes;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Comment> comments;
+
+    //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "users_roles",
 //            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 //            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
 //    )
 //    private Set<Role> roles;
-
-    private String role;
-
-
-    @ManyToOne
-    @JoinColumn(name = "classId")
-    private Classroom classroom;
 }

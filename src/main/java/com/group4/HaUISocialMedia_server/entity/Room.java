@@ -1,7 +1,6 @@
 package com.group4.HaUISocialMedia_server.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.group4.HaUISocialMedia_server.dto.ClassroomDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.security.interfaces.RSAKey;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -23,34 +22,42 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_class")
-public class Classroom implements Serializable {
+@Table(name = "tbl_room")
+public class Room implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "VARCHAR(36)")
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column
     private String code;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "longtext")
     private String name;
 
+    @Column(columnDefinition = "longtext")
     private String description;
 
-    @OneToMany(mappedBy = "classroom")
-    @JsonIgnore
-    private Set<User> students;
+    @Column
+    private Date createDate;
+    @Column
 
-    public Classroom(ClassroomDto entity) {
-        this.id = entity.getId();
-        this.code = entity.getCode();
-        this.name = entity.getName();
-        this.description = entity.getDescription();
-    }
+    private String avatar;
 
-    public void addStudent(User user){
-        students.add(user);
-    }
+    @Column
+    private String color;
+
+    @ManyToOne
+    @JoinColumn(name = "room_type_id")
+    private RoomType roomType;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    private Set<Message> messages;
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private Set<UserRoom> userRooms;
+
+    @OneToOne(mappedBy = "room")
+    private Relationship relationship;
 }

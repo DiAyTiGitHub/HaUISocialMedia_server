@@ -5,20 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_message")
-public class Message {
+@Table(name = "tbl_comment")
+public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "VARCHAR(36)")
@@ -28,18 +29,20 @@ public class Message {
     @Column(columnDefinition = "longtext")
     private String content;
 
-    @Column
-    private Date sendDate;
+    private Date createDate;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name = "ownerId")
+    private User owner;
 
     @ManyToOne
-    @JoinColumn(name="room_id")
-    private Room room;
+    @JoinColumn(name = "postId")
+    private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "message_type_id")
-    private MessageType messageType;
+    @JoinColumn(name = "repliedCommentId")
+    private Comment repliedComment;
+
+    @OneToMany(mappedBy = "repliedComment")
+    private Set<Comment> subComments;
 }
