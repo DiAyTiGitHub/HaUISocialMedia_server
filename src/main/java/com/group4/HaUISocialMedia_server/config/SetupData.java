@@ -55,32 +55,32 @@ public class SetupData implements ApplicationRunner {
     private RoomTypeService roomTypeService;
 
     private void initializeRoomType() {
-//        RoomType privates = roomTypeService.getRoomTypeEntityByName("private");
-//        if (privates == null) {
-//            RoomTypeDto dto = new RoomTypeDto();
-//            dto.setCode("001");
-//            dto.setName("private");
-//            dto.setDescription("private room is for 2 people chatting");
-//            roomTypeService.createRoomType(dto);
-//        }
-//
-//        RoomType pub = roomTypeService.getRoomTypeEntityByName("public");
-//        if (pub == null) {
-//            RoomTypeDto dto = new RoomTypeDto();
-//            dto.setCode("002");
-//            dto.setName("public");
-//            dto.setDescription("public room is for multiple people chatting");
-//            roomTypeService.createRoomType(dto);
-//        }
-//
-//        RoomType group = roomTypeService.getRoomTypeEntityByName("group");
-//        if (group == null) {
-//            RoomTypeDto dto = new RoomTypeDto();
-//            dto.setCode("003");
-//            dto.setName("group");
-//            dto.setDescription("is private room chat for at least 3 people");
-//            roomTypeService.createRoomType(dto);
-//        }
+        RoomType privates = roomTypeService.getRoomTypeEntityByName("private");
+        if (privates == null) {
+            RoomTypeDto dto = new RoomTypeDto();
+            dto.setCode("001");
+            dto.setName("private");
+            dto.setDescription("private room is for 2 people chatting");
+            roomTypeService.createRoomType(dto);
+        }
+
+        RoomType pub = roomTypeService.getRoomTypeEntityByName("public");
+        if (pub == null) {
+            RoomTypeDto dto = new RoomTypeDto();
+            dto.setCode("002");
+            dto.setName("public");
+            dto.setDescription("public room is for multiple people chatting");
+            roomTypeService.createRoomType(dto);
+        }
+
+        RoomType group = roomTypeService.getRoomTypeEntityByName("group");
+        if (group == null) {
+            RoomTypeDto dto = new RoomTypeDto();
+            dto.setCode("003");
+            dto.setName("group");
+            dto.setDescription("is private room chat for at least 3 people");
+            roomTypeService.createRoomType(dto);
+        }
     }
 
     @Autowired
