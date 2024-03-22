@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.UUID;
 
-public enum Role{
+public enum Role implements Serializable{
     ADMIN,
     USER
 }

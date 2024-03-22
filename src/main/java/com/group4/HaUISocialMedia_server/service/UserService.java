@@ -1,6 +1,7 @@
 package com.group4.HaUISocialMedia_server.service;
 
 import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.entity.User;
 
 import java.util.Set;
 import java.util.UUID;
@@ -15,4 +16,8 @@ public interface UserService {
     public void deleteById(UUID id);
 
     public UserDto updateUser(UserDto dto);
+
+    public User getCurrentLoginUserEntity();
+
+    public User getUserEntityById(UUID userId);
 }

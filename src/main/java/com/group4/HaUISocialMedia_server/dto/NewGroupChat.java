@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchObject {
-    private int pageSize;
-    private int pageIndex;
-    private String keyword;
+public class NewGroupChat {
+    private String name;
+    private UUID joinUserIds[];
+
 }

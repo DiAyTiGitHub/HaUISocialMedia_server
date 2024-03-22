@@ -8,6 +8,8 @@ import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -69,5 +71,21 @@ public class UserServiceImpl implements UserService {
 
         return new UserDto(response);
 
+    }
+
+    @Override
+    public User getCurrentLoginUserEntity() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String currentUserName = auth.getName();
+        if (currentUserName == null) return null;
+        User currentUser = userRepository.findByUsername(currentUserName);
+
+        return currentUser;
+    }
+
+    @Override
+    public User getUserEntityById(UUID userId) {
+        return userRepository.findById(userId).orElse(null);
     }
 }
