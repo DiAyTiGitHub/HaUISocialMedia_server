@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.service;
 
 import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
+import com.group4.HaUISocialMedia_server.dto.UserDto;
 
 import java.util.Set;
 import java.util.UUID;
@@ -14,4 +15,6 @@ public interface RelationshipService {
     public Set<RelationshipDto> getPendingFriendRequests(SearchObject searchObject);
 
     public Set<RelationshipDto> getSentAddFriendRequests(SearchObject searchObject);
+
+    public Set<UserDto> getCurrentFriends(SearchObject searchObject);
 }

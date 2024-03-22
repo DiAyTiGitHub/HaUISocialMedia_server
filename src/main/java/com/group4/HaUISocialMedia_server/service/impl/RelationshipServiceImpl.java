@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
+import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.service.RelationshipService;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,11 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Override
     public Set<RelationshipDto> getSentAddFriendRequests(SearchObject searchObject) {
+        return null;
+    }
+
+    @Override
+    public Set<UserDto> getCurrentFriends(SearchObject searchObject) {
         return null;
     }
 }
