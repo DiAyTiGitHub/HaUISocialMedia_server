@@ -66,15 +66,6 @@ public class ClassRoomServiceImpl implements ClassroomService {
     }
 
     @Override
-    public Boolean addStudent(UUID id_class, UUID id_student) {
-        Classroom classroom = classroomRepository.findById(id_class).orElseThrow();
-        User student = userRepository.findById(id_student).orElseThrow();
-        if (classroom == null || student == null) return false;
-        classroom.addStudent(student);
-        return true;
-    }
-
-    @Override
     public Set<ClassroomDto> pagingClassroom(SearchObject searchObject) {
         return null;
     }

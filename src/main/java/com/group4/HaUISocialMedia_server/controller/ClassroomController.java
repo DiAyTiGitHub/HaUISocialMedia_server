@@ -55,10 +55,4 @@ public class ClassroomController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-    @GetMapping("/addStudent/{id_cl}/{id_st}")
-    public ResponseEntity<Boolean> addStudent(@PathVariable("id_cl") UUID id_cl, @PathVariable("id_st")UUID id_st){
-       if(classroomService.addStudent(id_cl, id_st))
-           return  new ResponseEntity<>(true, HttpStatus.OK);
-       return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-    }
 }
