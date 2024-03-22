@@ -43,10 +43,9 @@ public class ClassroomController {
 
     @PutMapping("/update")
     public ResponseEntity<ClassroomDto> update(@RequestBody ClassroomDto classroomDto){
-        Optional<Classroom> x = classroomRepository.findById(classroomDto.getId());
-        ClassroomDto classroomDto1 = new ClassroomDto(x.map(o -> o).orElseThrow());
-        if(classroomDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(classroomDto1, HttpStatus.OK);
+        ClassroomDto responseDto = classroomService.update(classroomDto);
+        if(responseDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

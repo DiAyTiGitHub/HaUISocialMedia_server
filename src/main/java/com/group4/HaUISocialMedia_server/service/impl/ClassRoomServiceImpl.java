@@ -1,6 +1,7 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.ClassroomDto;
+import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.Classroom;
 import com.group4.HaUISocialMedia_server.entity.User;
@@ -33,12 +34,30 @@ public class ClassRoomServiceImpl implements ClassroomService {
 
     @Override
     public ClassroomDto save(ClassroomDto classroomDto) {
-        return new ClassroomDto(classroomRepository.save(new Classroom(classroomDto)));
+        Classroom entity = new Classroom();
+
+        entity.setCode(classroomDto.getCode());
+        entity.setName(classroomDto.getName());
+        entity.setDescription(classroomDto.getDescription());
+
+        Classroom responseEnntity = classroomRepository.save(entity);
+
+        if (responseEnntity == null) return null;
+        return new ClassroomDto(responseEnntity);
     }
 
     @Override
     public ClassroomDto update(ClassroomDto classroomDto) {
-        return new ClassroomDto(classroomRepository.saveAndFlush(new Classroom(classroomDto)));
+        Classroom entity = classroomRepository.findById(classroomDto.getId()).orElse(null);
+        if (entity == null) return null;
+
+        entity.setCode(classroomDto.getCode());
+        entity.setName(classroomDto.getName());
+        entity.setDescription(classroomDto.getDescription());
+
+        Classroom responseEnntity = classroomRepository.save(entity);
+        if (responseEnntity == null) return null;
+        return new ClassroomDto(responseEnntity);
     }
 
     @Override
@@ -50,8 +69,13 @@ public class ClassRoomServiceImpl implements ClassroomService {
     public Boolean addStudent(UUID id_class, UUID id_student) {
         Classroom classroom = classroomRepository.findById(id_class).orElseThrow();
         User student = userRepository.findById(id_student).orElseThrow();
-        if(classroom == null || student == null) return false;
+        if (classroom == null || student == null) return false;
         classroom.addStudent(student);
         return true;
+    }
+
+    @Override
+    public Set<ClassroomDto> pagingClassroom(SearchObject searchObject) {
+        return null;
     }
 }

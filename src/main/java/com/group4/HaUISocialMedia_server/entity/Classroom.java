@@ -43,13 +43,6 @@ public class Classroom implements Serializable {
     @JsonIgnore
     private Set<User> students;
 
-    public Classroom(ClassroomDto entity) {
-        this.id = entity.getId();
-        this.code = entity.getCode();
-        this.name = entity.getName();
-        this.description = entity.getDescription();
-    }
-
     public void addStudent(User user){
         students.add(user);
     }

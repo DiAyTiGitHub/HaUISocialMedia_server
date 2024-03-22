@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.service;
 
 
 import com.group4.HaUISocialMedia_server.dto.ClassroomDto;
+import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.entity.User;
 
 import java.util.Set;
@@ -18,5 +19,7 @@ public interface ClassroomService {
     public void deleteById(UUID id);
 
     public Boolean addStudent(UUID id_class, UUID id_student);
+
+    public Set<ClassroomDto> pagingClassroom(SearchObject searchObject);
 
 }

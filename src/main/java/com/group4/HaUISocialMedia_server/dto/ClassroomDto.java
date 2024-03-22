@@ -25,4 +25,5 @@ public class ClassroomDto {
         this.name = entity.getName();
         this.description = entity.getDescription();
     }
+
 }
