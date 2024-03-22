@@ -1,12 +1,7 @@
-package com.group4.HaUISocialMedia_server.controller;
+package com.group4.HaUISocialMedia_server.rest;
 
-import com.group4.HaUISocialMedia_server.dto.MessageDto;
 import com.group4.HaUISocialMedia_server.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 
 @Controller

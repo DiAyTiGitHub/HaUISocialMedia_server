@@ -18,8 +18,7 @@ public interface ClassroomService {
 
     public void deleteById(UUID id);
 
-    public Boolean addStudent(UUID id_class, UUID id_student);
-
     public Set<ClassroomDto> pagingClassroom(SearchObject searchObject);
 
+    public ClassroomDto getById(UUID id);
 }

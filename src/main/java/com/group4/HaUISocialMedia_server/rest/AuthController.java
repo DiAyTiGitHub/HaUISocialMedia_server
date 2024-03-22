@@ -1,4 +1,4 @@
-package com.group4.HaUISocialMedia_server.controller;
+package com.group4.HaUISocialMedia_server.rest;
 
 import com.group4.HaUISocialMedia_server.dto.JwtAuthResponse;
 import com.group4.HaUISocialMedia_server.dto.LoginDto;

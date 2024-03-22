@@ -1,8 +1,7 @@
-package com.group4.HaUISocialMedia_server.controller;
+package com.group4.HaUISocialMedia_server.rest;
 
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.service.UserService;
-import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,22 +26,29 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserDto> getById(@PathVariable("id")UUID id){
-        if(userService.getById(id) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserDto> getById(@PathVariable("id") UUID id) {
+        if (userService.getById(id) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);
     }
 
     @GetMapping("/username/{name}")
-    public ResponseEntity<UserDto> getByName(@PathVariable("name")String name){
-        if(userService.getByUserName(name) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserDto> getByName(@PathVariable("name") String name) {
+        if (userService.getByUserName(name) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userService.getByUserName(name), HttpStatus.OK);
     }
 
     @GetMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
+    public ResponseEntity<Boolean> deleteById(@PathVariable("id") UUID id) {
         UserDto userDto = userService.getById(id);
-        if(userDto == null) return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        if (userDto == null) return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         userService.deleteById(id);
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDto> updateUserProfile(@RequestBody UserDto dto) {
+        UserDto responseDto = userService.updateUser(dto);
+        if (responseDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

@@ -1,8 +1,6 @@
-package com.group4.HaUISocialMedia_server.controller;
+package com.group4.HaUISocialMedia_server.rest;
 
 import com.group4.HaUISocialMedia_server.dto.ClassroomDto;
-import com.group4.HaUISocialMedia_server.entity.Classroom;
-import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.service.ClassroomService;
 import lombok.AllArgsConstructor;
@@ -11,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,9 +19,6 @@ public class ClassroomController {
 
     @Autowired
     private ClassroomService classroomService;
-
-    @Autowired
-    private ClassroomRepository classroomRepository;
 
 
     @GetMapping("/all")
@@ -50,15 +44,10 @@ public class ClassroomController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
-        if(classroomRepository.findById(id) == null) return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        ClassroomDto classroomDto = classroomService.getById(id);
+        if(classroomDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         classroomService.deleteById(id);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-    @GetMapping("/addStudent/{id_cl}/{id_st}")
-    public ResponseEntity<Boolean> addStudent(@PathVariable("id_cl") UUID id_cl, @PathVariable("id_st")UUID id_st){
-       if(classroomService.addStudent(id_cl, id_st))
-           return  new ResponseEntity<>(true, HttpStatus.OK);
-       return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-    }
 }

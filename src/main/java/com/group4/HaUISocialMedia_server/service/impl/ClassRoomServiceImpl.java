@@ -8,6 +8,7 @@ import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.ClassroomService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,6 @@ public class ClassRoomServiceImpl implements ClassroomService {
     @Autowired
     private ClassroomRepository classroomRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
 
     @Override
     public Set<ClassroomDto> getAllClassroom() {
@@ -33,6 +31,7 @@ public class ClassRoomServiceImpl implements ClassroomService {
     }
 
     @Override
+    @Transactional
     public ClassroomDto save(ClassroomDto classroomDto) {
         Classroom entity = new Classroom();
 
@@ -41,41 +40,41 @@ public class ClassRoomServiceImpl implements ClassroomService {
         entity.setDescription(classroomDto.getDescription());
 
         Classroom responseEnntity = classroomRepository.save(entity);
-
-        if (responseEnntity == null) return null;
         return new ClassroomDto(responseEnntity);
     }
 
     @Override
+    @Transactional
     public ClassroomDto update(ClassroomDto classroomDto) {
         Classroom entity = classroomRepository.findById(classroomDto.getId()).orElse(null);
         if (entity == null) return null;
-
         entity.setCode(classroomDto.getCode());
         entity.setName(classroomDto.getName());
         entity.setDescription(classroomDto.getDescription());
 
         Classroom responseEnntity = classroomRepository.save(entity);
-        if (responseEnntity == null) return null;
         return new ClassroomDto(responseEnntity);
     }
 
     @Override
+    @Transactional
     public void deleteById(UUID id) {
+        Classroom classroom = classroomRepository.findById(id).orElse(null);
+        if(classroom == null)
+            return;
         classroomRepository.deleteById(id);
-    }
-
-    @Override
-    public Boolean addStudent(UUID id_class, UUID id_student) {
-        Classroom classroom = classroomRepository.findById(id_class).orElseThrow();
-        User student = userRepository.findById(id_student).orElseThrow();
-        if (classroom == null || student == null) return false;
-        classroom.addStudent(student);
-        return true;
     }
 
     @Override
     public Set<ClassroomDto> pagingClassroom(SearchObject searchObject) {
         return null;
+    }
+
+    @Override
+    public ClassroomDto getById(UUID id) {
+        Classroom classroom = classroomRepository.findById(id).orElse(null);
+        if(classroom == null)
+            return null;
+        return new ClassroomDto(classroom);
     }
 }

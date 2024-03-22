@@ -42,8 +42,4 @@ public class Classroom implements Serializable {
     @OneToMany(mappedBy = "classroom")
     @JsonIgnore
     private Set<User> students;
-
-    public void addStudent(User user){
-        students.add(user);
-    }
 }

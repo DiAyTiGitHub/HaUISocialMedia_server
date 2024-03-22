@@ -13,4 +13,6 @@ public interface UserService {
     public UserDto getByUserName(String name);
 
     public void deleteById(UUID id);
+
+    public UserDto updateUser(UserDto dto);
 }
