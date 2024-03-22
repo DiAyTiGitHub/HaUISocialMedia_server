@@ -32,7 +32,7 @@ public class RelationshipDto {
         if (entity.getReceiver() != null)
             this.receiver = new UserDto(entity.getReceiver());
         this.lastModifyDate = entity.getLastModifyDate();
-//        this.state = entity.getState();
+        this.state = entity.isState();
         if (entity.getRoom() != null)
             this.room = new RoomDto(entity.getRoom());
     }
