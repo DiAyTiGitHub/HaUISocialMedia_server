@@ -1,5 +1,7 @@
 package com.group4.HaUISocialMedia_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.group4.HaUISocialMedia_server.dto.ClassroomDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +32,18 @@ public class Classroom implements Serializable {
 
     private String description;
 
-    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "classroom")
+    @JsonIgnore
     private Set<User> students;
+
+    public Classroom(ClassroomDto entity) {
+        this.id = entity.getId();
+        this.code = entity.getCode();
+        this.name = entity.getName();
+        this.description = entity.getDescription();
+    }
+
+    public void addStudent(User user){
+        students.add(user);
+    }
 }

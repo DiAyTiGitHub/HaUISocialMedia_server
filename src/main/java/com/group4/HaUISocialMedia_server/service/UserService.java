@@ -9,4 +9,8 @@ public interface UserService {
     public Set<UserDto> getAllUsers();
 
     public UserDto getById(UUID userId);
+
+    public UserDto getByUserName(String name);
+
+    public void deleteById(UUID id);
 }
