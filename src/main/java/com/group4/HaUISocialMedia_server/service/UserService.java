@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.service;
 
+import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 
 import java.util.Set;
@@ -15,4 +16,8 @@ public interface UserService {
     public void deleteById(UUID id);
 
     public UserDto updateUser(UserDto dto);
+
+    public Set<UserDto> searchByUsername(SearchObject searchObject);
+
+    public Set<UserDto> pagingUser(SearchObject searchObject);
 }

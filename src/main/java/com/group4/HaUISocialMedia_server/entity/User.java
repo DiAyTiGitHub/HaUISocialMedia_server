@@ -60,6 +60,7 @@ public class User implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "class_id")
+    @JsonIgnore
     private Classroom classroom;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

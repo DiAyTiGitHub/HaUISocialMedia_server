@@ -12,4 +12,5 @@ import lombok.Setter;
 public class SearchObject {
     private int pageSize;
     private int pageIndex;
+    private String keyWord;
 }

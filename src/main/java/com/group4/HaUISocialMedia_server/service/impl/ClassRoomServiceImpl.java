@@ -10,6 +10,8 @@ import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.ClassroomService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -67,7 +69,13 @@ public class ClassRoomServiceImpl implements ClassroomService {
 
     @Override
     public Set<ClassroomDto> pagingClassroom(SearchObject searchObject) {
-        return null;
+        Set<ClassroomDto> li = new HashSet<>();
+        //Page là một đối tượng của interface Page trong Spring Data JPA dùng để thể hiện kết quả trả về theo phân trang
+        //PageRequest: Là đối tượng của interface PageRequest, nó cung cấp thông tin phân trang khi truy vấn dữ liệu.
+        Page<Classroom> ds = classroomRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+       // List<Classroom> ds = classroomRepository.findAnyClassroom(searchObject.getPageSize(), searchObject.getPageIndex());
+        ds.stream().map(ClassroomDto::new).forEach(li::add);
+        return li;
     }
 
     @Override
@@ -77,4 +85,6 @@ public class ClassRoomServiceImpl implements ClassroomService {
             return null;
         return new ClassroomDto(classroom);
     }
+
+
 }
