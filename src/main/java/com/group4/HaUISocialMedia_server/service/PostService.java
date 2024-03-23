@@ -10,6 +10,8 @@ import java.util.UUID;
 public interface PostService {
     public Set<PostDto> getNewsFeed(SearchObject searchObject);
 
+    public PostDto getById(UUID postId);
+
     public PostDto createPost(PostDto dto);
 
     public PostDto updatePost(PostDto dto);

@@ -86,6 +86,26 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Set<PostDto> getPostsOfUser(UUID userId, SearchObject searchObject) {
-        return null;
+        User currentUser = userService.getCurrentLoginUserEntity();
+
+        if (currentUser == null || searchObject == null) return null;
+
+        Post entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
+        Date mileStoneDate = new Date();
+        if (entity != null) mileStoneDate = entity.getCreateDate();
+
+        Set<UUID> userIds = new HashSet<>();
+        userIds.add(userId);
+
+        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(0, 5));
+
+        return new HashSet<>(newsFeed);
+    }
+
+    @Override
+    public PostDto getById(UUID postId) {
+        Post entity = postRepository.findById(postId).orElse(null);
+        if (entity == null) return null;
+        return new PostDto(entity);
     }
 }
