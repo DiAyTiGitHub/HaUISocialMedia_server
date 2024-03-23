@@ -19,4 +19,6 @@ public interface PostService {
     public void deletePost(UUID postId);
 
     public Set<PostDto> getPostsOfUser(UUID userId, SearchObject searchObject);
+
+    public boolean hasAuthorityToChange(UUID postId);
 }

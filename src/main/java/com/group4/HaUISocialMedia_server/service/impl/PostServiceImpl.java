@@ -13,6 +13,7 @@ import com.group4.HaUISocialMedia_server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -53,6 +54,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public boolean hasAuthorityToChange(UUID postId) {
+        Post entity = postRepository.findById(postId).orElse(null);
+        if(entity == null) return false;
+
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (entity.getOwner().getId() != currentUser.getId()) return false;
+
+        return true;
+    }
+
+    @Override
     public PostDto createPost(PostDto dto) {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null || dto == null) return null;
@@ -72,6 +84,8 @@ public class PostServiceImpl implements PostService {
         if (dto == null) return null;
 
         Post entity = postRepository.findById(dto.getId()).orElse(null);
+        if (entity == null) return null;
+
         entity.setContent(dto.getContent());
 
         Post savedEntity = postRepository.save(entity);
@@ -80,8 +94,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void deletePost(UUID postId) {
+        Post entity = postRepository.findById(postId).orElse(null);
+        if (entity == null) return;
 
+        postRepository.delete(entity);
     }
 
     @Override

@@ -50,8 +50,18 @@ public class PostController {
 
     @PutMapping
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto dto) {
+        if (!postService.hasAuthorityToChange(dto.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+
         PostDto res = postService.updatePost(dto);
+
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<PostDto>(res, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{postId}")
+    public void deletePost(@PathVariable UUID postId) {
+        if (!postService.hasAuthorityToChange(postId)) return;
+
+        postService.deletePost(postId);
     }
 }

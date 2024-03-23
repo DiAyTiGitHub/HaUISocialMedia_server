@@ -38,11 +38,11 @@ public class PostDto {
                 this.likes.add(new LikeDto(likeEntity));
             }
         }
-        if (entity.getComments() != null && entity.getComments().size() > 0) {
-            this.comments = new HashSet<>();
-            for (Comment commentEntity : entity.getComments()) {
-                this.comments.add(new CommentDto(commentEntity));
-            }
-        }
+//        if (entity.getComments() != null && entity.getComments().size() > 0) {
+//            this.comments = new HashSet<>();
+//            for (Comment commentEntity : entity.getComments()) {
+//                this.comments.add(new CommentDto(commentEntity));
+//            }
+//        }
     }
 }

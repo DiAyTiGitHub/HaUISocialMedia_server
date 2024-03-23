@@ -23,6 +23,7 @@ public class CommentDto {
     private Date createDate;
     private UserDto commenter;
     private CommentDto repliedComment;
+    private int numsOfSubComments;
 
     public CommentDto(Comment entity) {
         this.id = entity.getId();
@@ -34,5 +35,6 @@ public class CommentDto {
         if (entity.getRepliedComment() != null) {
             this.repliedComment = new CommentDto(entity.getRepliedComment());
         }
+        this.numsOfSubComments = entity.getSubComments().size();
     }
 }
