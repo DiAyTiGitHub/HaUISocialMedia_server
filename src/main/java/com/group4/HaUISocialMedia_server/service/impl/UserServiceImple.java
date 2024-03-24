@@ -6,6 +6,7 @@ import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,11 +45,13 @@ public class UserServiceImple implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteById(UUID id) {
         userRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(UserDto dto) {
         User entity = userRepository.findById(dto.getId()).orElse(null);
         if(entity == null)

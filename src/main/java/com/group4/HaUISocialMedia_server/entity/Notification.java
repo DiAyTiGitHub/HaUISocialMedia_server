@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,9 +32,11 @@ public class Notification implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "notificationTypeId")
+    @JsonIgnore
     private NotificationType notificationType;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "ownerId")
     private User owner;
 }
