@@ -23,7 +23,7 @@ public class CourseController {
     public ResponseEntity<Set<CourseDto>> getAllCourses(){
         Set<CourseDto> se = courseService.findAll();
         if(se == null)
-            return new ResponseEntity<>(se, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(se, HttpStatus.OK);
     }
 
@@ -32,7 +32,7 @@ public class CourseController {
     public ResponseEntity<CourseDto> addCourse(@RequestBody CourseDto courseDto){
         CourseDto courseDto1 = courseService.save(courseDto);
         if(courseDto1 == null)
-            return new ResponseEntity<>(courseDto1, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(courseDto1, HttpStatus.OK);
     }
 
@@ -58,7 +58,7 @@ public class CourseController {
     public ResponseEntity<Set<CourseDto>> getAnyCourse(@RequestBody SearchObject searchObject){
         Set<CourseDto> se = courseService.pagingCourses(searchObject);
         if(se == null)
-            return new ResponseEntity<>(se, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(se, HttpStatus.OK);
     }
 }
