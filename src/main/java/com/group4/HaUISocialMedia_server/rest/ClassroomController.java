@@ -4,6 +4,7 @@ import com.group4.HaUISocialMedia_server.dto.ClassroomDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.service.ClassroomService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class ClassroomController {
     }
 
     @PostMapping("/save")
+    @Transactional
     public ResponseEntity<ClassroomDto> save(@RequestBody ClassroomDto classroomDto){
         ClassroomDto classroomDto1 = classroomService.save(classroomDto);
         if(classroomDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -36,6 +38,7 @@ public class ClassroomController {
     }
 
     @PutMapping("/update")
+    @Transactional
     public ResponseEntity<ClassroomDto> update(@RequestBody ClassroomDto classroomDto){
         ClassroomDto responseDto = classroomService.update(classroomDto);
         if(responseDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -50,6 +53,7 @@ public class ClassroomController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @Transactional
     public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
         ClassroomDto classroomDto = classroomService.getById(id);
         if(classroomDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);

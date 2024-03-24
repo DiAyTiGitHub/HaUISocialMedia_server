@@ -14,6 +14,6 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     public User findByUsername(String username);
 
-    @Query(value = "SELECT * FROM tbl_user u WHERE u.username LIKE %?1% LIMIT ?2 OFFSET ?3", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_user u WHERE u.last_name LIKE %?1% OR u.first_name LIKE %?1% OR u.username LIKE %?1% LIMIT ?2 OFFSET ?3", nativeQuery = true)
     List<User> getByUserName(String keyword, int limit, int offset);
 }

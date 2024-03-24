@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class NotificationType implements Serializable {
 
     private String description;
 
-    @OneToMany(mappedBy = "notificationType", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "notificationType")
+    @JsonIgnore
     private Set<Notification> notifications;
 }

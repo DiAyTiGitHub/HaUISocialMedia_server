@@ -36,6 +36,11 @@ public class UserDto {
         this.lastName = entity.getLastName();
         this.username = entity.getUsername();
         this.role = entity.getRole();
+        this.email =entity.getEmail();
+        this.phoneNumber = entity.getPhoneNumber();
+        this.address = entity.getAddress();
+        this.birthDate = entity.getBirthDate();
+
         if (entity.getClassroom() != null)
             this.classroomDto = new ClassroomDto(entity.getClassroom());
     }
