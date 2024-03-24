@@ -32,7 +32,7 @@ public class PostDto {
         if (entity.getOwner() != null) {
             this.creator = new UserDto(entity.getOwner());
         }
-        if (entity.getLikes() != null && entity.getLikes().size() > 0) {
+        if (entity.getLikes() != null && !entity.getLikes().isEmpty()) {
             this.likes = new HashSet<>();
             for (Like likeEntity : entity.getLikes()) {
                 this.likes.add(new LikeDto(likeEntity));
