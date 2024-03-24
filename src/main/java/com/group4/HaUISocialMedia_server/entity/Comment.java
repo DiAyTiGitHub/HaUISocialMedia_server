@@ -43,6 +43,6 @@ public class Comment implements Serializable {
     @JoinColumn(name = "repliedCommentId")
     private Comment repliedComment;
 
-    @OneToMany(mappedBy = "repliedComment")
+    @OneToMany(mappedBy = "repliedComment", fetch = FetchType.EAGER)
     private Set<Comment> subComments;
 }
