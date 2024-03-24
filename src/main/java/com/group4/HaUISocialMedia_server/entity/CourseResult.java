@@ -35,4 +35,6 @@ public class CourseResult implements Serializable {
 
     @OneToMany(mappedBy = "courseResult", fetch = FetchType.EAGER)
     private Set<UserCourse> userCourses;
+
+
 }

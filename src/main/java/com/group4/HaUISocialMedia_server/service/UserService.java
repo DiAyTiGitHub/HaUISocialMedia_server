@@ -21,6 +21,7 @@ public interface UserService {
     public Set<UserDto> searchByUsername(SearchObject searchObject);
 
     public Set<UserDto> pagingUser(SearchObject searchObject);
+
     public User getCurrentLoginUserEntity();
 
     public User getUserEntityById(UUID userId);
