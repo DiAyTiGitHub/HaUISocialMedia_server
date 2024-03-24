@@ -17,13 +17,16 @@ public class LikeDto {
     private UUID id;
     private Date createDate;
     private UserDto userLike;
+    private PostDto likedPost;
 
     public LikeDto(Like entity) {
         this.id = entity.getId();
         this.createDate = entity.getCreateDate();
         if (entity.getUserLike() != null) {
             this.userLike = new UserDto(entity.getUserLike());
-            
+        }
+        if (entity.getPost() != null) {
+            this.likedPost = new PostDto(entity.getPost());
         }
     }
 }
