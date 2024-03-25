@@ -25,9 +25,9 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<Set<UserDto>> getAll() {
-        Set<UserDto> rooms = userService.getAllUsers();
-        if (rooms == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(rooms, HttpStatus.OK);
+        Set<UserDto> students = userService.getAllUsers();
+        if (students == null) return new ResponseEntity<>(students, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")

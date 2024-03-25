@@ -1,12 +1,16 @@
 package com.group4.HaUISocialMedia_server.dto;
 
-import com.group4.HaUISocialMedia_server.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.group4.HaUISocialMedia_server.entity.*;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Setter
@@ -28,6 +32,14 @@ public class UserDto {
     private String role;
     private String phoneNumber;
     private ClassroomDto classroomDto;
+//    private Set<UserCourse> userCourses;
+//    private Set<Message> messages;
+//    private Set<UserRoom> userRooms;
+//    private Set<Relationship> requestSenders;
+//    private Set<Relationship> receivers;
+//    private Set<Notification> notifications;
+//    private Set<Like> likes;
+//    private Set<Comment> comments;
 
     public UserDto(User entity) {
         this.id = entity.getId();

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,12 +23,13 @@ public class NotificationTypeDto {
     private String code;
     private String name;
     private String description;
-    private Set<NotificationDto> notifications;
+    private Set<NotificationDto> notificationsDto;
 
     public NotificationTypeDto(NotificationType notificationType){
         this.id = notificationType.getId();
         this.code = notificationType.getCode();
         this.name = notificationType.getName();
         this.description = notificationType.getDescription();
+
     }
 }

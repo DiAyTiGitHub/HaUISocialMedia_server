@@ -23,7 +23,6 @@ public class LikeDto {
         this.createDate = entity.getCreateDate();
         if (entity.getUserLike() != null) {
             this.userLike = new UserDto(entity.getUserLike());
-            
         }
     }
 }

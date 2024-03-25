@@ -33,7 +33,7 @@ public class CourseDto {
         this.description = course.getDescription();
         if(course.getUserCourses() != null && !course.getUserCourses().isEmpty()){
             this.userCourses = new HashSet<>();
-            //course.getUserCourses().stream().map(Cou)
+            course.getUserCourses().stream().map(UserCourseDto::new).forEach(this.userCourses::add);
         }
     }
 }
