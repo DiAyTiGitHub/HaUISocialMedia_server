@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // enable client register at url: "http://localhost:8000/ws"
+        // enable client register at url: "http://localhost:8080/ws"
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 
