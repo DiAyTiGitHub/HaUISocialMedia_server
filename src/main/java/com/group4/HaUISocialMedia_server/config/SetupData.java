@@ -1,14 +1,13 @@
 package com.group4.HaUISocialMedia_server.config;
 
 import com.group4.HaUISocialMedia_server.dto.MessageTypeDto;
+import com.group4.HaUISocialMedia_server.dto.NotificationTypeDto;
 import com.group4.HaUISocialMedia_server.dto.RoomTypeDto;
-import com.group4.HaUISocialMedia_server.entity.MessageType;
-import com.group4.HaUISocialMedia_server.entity.Role;
-import com.group4.HaUISocialMedia_server.entity.RoomType;
-import com.group4.HaUISocialMedia_server.entity.User;
+import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.MessageTypeService;
+import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
 import com.group4.HaUISocialMedia_server.service.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -30,6 +29,7 @@ public class SetupData implements ApplicationRunner {
         initializeBaseUser();
         initializeRoomType();
         initializeMessageType();
+        initializeNotificationType();
     }
 
     @Autowired
@@ -83,6 +83,8 @@ public class SetupData implements ApplicationRunner {
         }
     }
 
+
+
     @Autowired
     private MessageTypeService messageTypeService;
 
@@ -124,7 +126,55 @@ public class SetupData implements ApplicationRunner {
         }
     }
 
+    @Autowired
+    private NotificationTypeService notificationTypeService;
 
+    private void initializeNotificationType() {
+        NotificationType tym1 = notificationTypeService.getNotificationTypeEntityByName("Liked");
+        if (tym1 == null) {
+            NotificationTypeDto tym = new NotificationTypeDto();
+            tym.setCode("001");
+            tym.setName("Liked");
+            tym.setDescription("a person liked your post");
+            notificationTypeService.save(tym);
+        }
+
+        NotificationType accept1 = notificationTypeService.getNotificationTypeEntityByName("Accepted");
+        if (accept1 == null) {
+            NotificationTypeDto accept = new NotificationTypeDto();
+            accept.setCode("002");
+            accept.setName("Accepted");
+            accept.setDescription("a person accepted your request friend");
+            notificationTypeService.save(accept);
+        }
+
+        NotificationType request1 = notificationTypeService.getNotificationTypeEntityByName("Requested");
+        if (request1 == null) {
+            NotificationTypeDto request = new NotificationTypeDto();
+            request.setCode("003");
+            request.setName("Requested");
+            request.setDescription("a person requested add friend with you");
+            notificationTypeService.save(request);
+        }
+
+        NotificationType repliedComment1 = notificationTypeService.getNotificationTypeEntityByName("repliedComment");
+        if (repliedComment1 == null) {
+            NotificationTypeDto repliedComment = new NotificationTypeDto();
+            repliedComment.setCode("005");
+            repliedComment.setName("repliedComment");
+            repliedComment.setDescription("a person replied Comment your commnet");
+            notificationTypeService.save(repliedComment);
+        }
+
+        NotificationType comment1 = notificationTypeService.getNotificationTypeEntityByName("comment");
+        if (comment1 == null) {
+            NotificationTypeDto comment =new NotificationTypeDto();
+            comment.setCode("004");
+            comment.setName("comment");
+            comment.setDescription("a person commented your post");
+            notificationTypeService.save(comment);
+        }
+    }
 
 
 }

@@ -85,4 +85,14 @@ public class NotificationTypeServiceImpl implements NotificationTypeService {
         li.stream().map(NotificationTypeDto::new).forEach(se::add);
         return se;
     }
+
+    @Override
+    public NotificationTypeDto getNotificationTypeDtoEntityByName(String name) {
+        return new NotificationTypeDto(notificationTypeRepository.findByName(name));
+    }
+
+    @Override
+    public NotificationType getNotificationTypeEntityByName(String name) {
+        return notificationTypeRepository.findByName(name);
+    }
 }

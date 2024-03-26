@@ -19,36 +19,48 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping("/children/{commentId}")
-    public ResponseEntity<Set<CommentDto>> getSubComments(@PathVariable UUID commentId) {
+    public ResponseEntity<Set<CommentDto>> getSubComments(@PathVariable("commentId") UUID commentId) {
         Set<CommentDto> res = commentService.getSubCommentOfComment(commentId);
         if (res == null) return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/forPost/{postId}")
-    public ResponseEntity<Set<CommentDto>> getParentCommentOfPost(@PathVariable UUID postId) {
+    public ResponseEntity<Set<CommentDto>> getParentCommentOfPost(@PathVariable("postId") UUID postId) {
         Set<CommentDto> res = commentService.getParentCommentsOfPost(postId);
         if (res == null) return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/{commentId}")
-    public ResponseEntity<CommentDto> getById(@RequestBody CommentDto dto) {
-        return null;
+    @GetMapping("/getById/{commentId}")
+    public ResponseEntity<CommentDto> getById(@PathVariable("commentId") UUID id) {
+        CommentDto commentDto = commentService.getById(id);
+        if(commentDto == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(commentDto, HttpStatus.OK);
     }
 
     @PostMapping()
     public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto dto) {
-        return null;
+        CommentDto commentDto = commentService.createComment(dto);
+        if(commentDto == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(commentDto, HttpStatus.OK);
     }
 
     @PutMapping()
     public ResponseEntity<CommentDto> updateComment(@RequestBody CommentDto dto) {
-        return null;
-    }
 
-    @DeleteMapping("/{commentId}")
-    public void deleteComment(@PathVariable UUID commentId) {
+        CommentDto commentDto = commentService.updateComment(dto);
+        if(commentDto == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(commentDto, HttpStatus.OK);    }
 
+    @DeleteMapping("/deleteById/{commentId}")
+    public ResponseEntity<CommentDto> deleteComment(@PathVariable("commentId") UUID commentId) {
+        CommentDto commentDto = commentService.deleteComment(commentId);
+        if(commentDto == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(commentDto, HttpStatus.OK);
     }
 }
