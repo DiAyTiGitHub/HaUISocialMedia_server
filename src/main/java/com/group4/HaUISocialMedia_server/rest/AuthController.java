@@ -30,7 +30,7 @@ public class AuthController {
 
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setAccessToken(token);
-        jwtAuthResponse.setLoggedinUser(new UserDto(userService.getCurrentLoginUserEntity()));
+        jwtAuthResponse.setLoggedInUser(new UserDto(userService.getCurrentLoginUserEntity()));
 
         return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
     }
