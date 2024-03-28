@@ -2,7 +2,6 @@ package com.group4.HaUISocialMedia_server.rest;
 
 import com.group4.HaUISocialMedia_server.dto.ClassroomDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
-import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.service.ClassroomService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -16,6 +15,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/classroom")
 public class ClassroomController {
 

@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/post")
 public class PostController {
     @Autowired

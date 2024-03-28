@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/notification_type")
 public class NotificationTypeController {
 

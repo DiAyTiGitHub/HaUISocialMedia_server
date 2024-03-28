@@ -30,8 +30,8 @@ public class LikeServiceImpl implements LikeService {
     @Transactional
     public LikeDto likeAPost(UUID postId) {
 
-       User user =  userService.getCurrentLoginUserEntity();
-       Post post = postRepository.getById(postId);
+        User user = userService.getCurrentLoginUserEntity();
+        Post post = postRepository.getById(postId);
         Like like = new Like();
         like.setCreateDate(new Date());
         like.setUserLike(user);

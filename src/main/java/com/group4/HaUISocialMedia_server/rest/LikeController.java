@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/like")
 public class LikeController {
     @Autowired

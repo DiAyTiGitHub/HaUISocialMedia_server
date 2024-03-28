@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/relationship")
 public class RelationshipController {
     @Autowired
