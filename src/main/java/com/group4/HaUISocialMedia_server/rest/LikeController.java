@@ -15,27 +15,28 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/comment")
+@CrossOrigin
+@RequestMapping("/api/like")
 public class LikeController {
     @Autowired
     private LikeService likeService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<LikeDto> likeAPost(@PathVariable UUID postId) {
+    public ResponseEntity<LikeDto> likeAPost(@PathVariable("postId") UUID postId) {
         LikeDto res = likeService.likeAPost(postId);
         if (res == null) return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Set<LikeDto>> getListLikesOfPost(@PathVariable UUID postId) {
+    public ResponseEntity<Set<LikeDto>> getListLikesOfPost(@PathVariable("postId") UUID postId) {
         Set<LikeDto> res = likeService.getListLikesOfPost(postId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @DeleteMapping("/{postId}")
-    public void dislikeAPost(@PathVariable UUID postId) {
+    public void dislikeAPost(@PathVariable("postId") UUID postId) {
         likeService.dislikeAPost(postId);
     }
 

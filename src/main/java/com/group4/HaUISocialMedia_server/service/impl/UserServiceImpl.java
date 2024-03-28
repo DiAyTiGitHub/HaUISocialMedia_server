@@ -26,10 +26,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<UserDto> getAllUsers() {
-        Set<UserDto> li = new HashSet<>();
+        Set<UserDto> res = new HashSet<>();
         List<User> ds = userRepository.findAll();
-        ds.stream().map(UserDto::new).forEach(li::add);
-        return li;
+        ds.stream().map(UserDto::new).forEach(res::add);
+        return res;
     }
 
     @Override

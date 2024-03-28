@@ -39,7 +39,7 @@ public class Classroom implements Serializable {
 
     private String description;
 
-    @OneToMany(mappedBy = "classroom")
+    @OneToMany(mappedBy = "classroom", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<User> students;
 }

@@ -18,6 +18,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired
@@ -25,44 +26,44 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<Set<UserDto>> getAll() {
-        Set<UserDto> rooms = userService.getAllUsers();
-        if (rooms == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(rooms, HttpStatus.OK);
+        Set<UserDto> students = userService.getAllUsers();
+        if (students == null) return new ResponseEntity<>(students, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<UserDto> getById(@PathVariable("id")UUID id){
-        if(userService.getById(id) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserDto> getById(@PathVariable("id") UUID id) {
+        if (userService.getById(id) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);
     }
 
     @GetMapping("/username/{name}")
-    public ResponseEntity<UserDto> getByName(@PathVariable("name")String name){
-        if(userService.getByUserName(name) == null) new ResponseEntity<>(null, HttpStatus.NOT_FOUND );
+    public ResponseEntity<UserDto> getByName(@PathVariable("name") String name) {
+        if (userService.getByUserName(name) == null) new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(userService.getByUserName(name), HttpStatus.OK);
     }
 
     @GetMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
+    public ResponseEntity<Boolean> deleteById(@PathVariable("id") UUID id) {
         UserDto userDto = userService.getById(id);
-        if(userDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        if (userDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         userService.deleteById(id);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
         UserDto userDto1 = userService.getById(userDto.getId());
-        if(userDto1 == null)
+        if (userDto1 == null)
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         userService.updateUser(userDto);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Set<UserDto>> getByUsername(@RequestBody SearchObject searchObject){
+    public ResponseEntity<Set<UserDto>> getByUsername(@RequestBody SearchObject searchObject) {
         Set<UserDto> li = userService.searchByUsername(searchObject);
-        if(li == null) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
+        if (li == null) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 }

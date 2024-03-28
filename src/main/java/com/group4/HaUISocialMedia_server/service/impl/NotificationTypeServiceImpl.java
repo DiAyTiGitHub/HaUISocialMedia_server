@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.NotificationDto;
 import com.group4.HaUISocialMedia_server.dto.NotificationTypeDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.entity.NotificationType;
@@ -15,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationTypeServiceImpl implements NotificationTypeService {
@@ -26,7 +28,11 @@ public class NotificationTypeServiceImpl implements NotificationTypeService {
     public Set<NotificationTypeDto> findAll() {
         Set<NotificationTypeDto> se = new HashSet<>();
         List<NotificationType> li = notificationTypeRepository.findAll();
-        li.stream().map(NotificationTypeDto::new).forEach(se::add);
+        li.stream().map(x -> {
+            NotificationTypeDto notificationTypeDto = new NotificationTypeDto(x);
+            notificationTypeDto.setNotificationsDto(x.getNotifications().stream().map(NotificationDto::new).collect(Collectors.toSet()));
+            return notificationTypeDto;
+        }).forEach(se::add);
         return se;
     }
 
@@ -41,6 +47,8 @@ public class NotificationTypeServiceImpl implements NotificationTypeService {
         notificationType.setName(notificationTypeDto.getName());
         notificationType.setDescription(notificationTypeDto.getDescription());
 
+        //if(notificationTypeDto.getNotificationsDto() != null)
+        //notificationType.setNotifications();
         return new NotificationTypeDto(notificationTypeRepository.save(notificationType));
     }
 
@@ -54,6 +62,8 @@ public class NotificationTypeServiceImpl implements NotificationTypeService {
         notificationType.setCode(notificationTypeDto.getCode());
         notificationType.setName(notificationTypeDto.getName());
         notificationType.setDescription(notificationTypeDto.getDescription());
+//              if(notificationTypeDto.getNotificationsDto() != null)
+//        notificationType.setNotifications(notificationTypeDto.getNotificationsDto().stream().map(NotificationDto::new));
         return new NotificationTypeDto(notificationTypeRepository.saveAndFlush(notificationType));
     }
 
@@ -74,5 +84,15 @@ public class NotificationTypeServiceImpl implements NotificationTypeService {
         Page<NotificationType> li = notificationTypeRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
         li.stream().map(NotificationTypeDto::new).forEach(se::add);
         return se;
+    }
+
+    @Override
+    public NotificationTypeDto getNotificationTypeDtoEntityByName(String name) {
+        return new NotificationTypeDto(notificationTypeRepository.findByName(name));
+    }
+
+    @Override
+    public NotificationType getNotificationTypeEntityByName(String name) {
+        return notificationTypeRepository.findByName(name);
     }
 }

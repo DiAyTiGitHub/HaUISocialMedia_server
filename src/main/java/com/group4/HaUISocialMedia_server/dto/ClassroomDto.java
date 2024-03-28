@@ -1,7 +1,7 @@
 package com.group4.HaUISocialMedia_server.dto;
 
 import com.group4.HaUISocialMedia_server.entity.Classroom;
-import jakarta.persistence.Column;
+import com.group4.HaUISocialMedia_server.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,10 +27,6 @@ public class ClassroomDto {
         this.code = entity.getCode();
         this.name = entity.getName();
         this.description = entity.getDescription();
-        if(entity.getStudents() != null && !entity.getStudents().isEmpty()){
-            this.students = new HashSet<>();
-            entity.getStudents().stream().map(UserDto::new).forEach(this.students::add);
-        }
     }
 
 }

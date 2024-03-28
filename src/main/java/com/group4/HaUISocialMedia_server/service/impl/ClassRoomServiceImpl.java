@@ -26,10 +26,16 @@ public class ClassRoomServiceImpl implements ClassroomService {
 
     @Override
     public Set<ClassroomDto> getAllClassroom() {
+        Set<ClassroomDto> res = new HashSet<>();
         List<Classroom> ds = classroomRepository.findAll();
-        return ds.stream()
-                .map(ClassroomDto::new)
-                .collect(Collectors.toSet());
+        ds.stream()
+                .map(y -> {
+                    ClassroomDto z = new ClassroomDto(y);
+                    z.setStudents(y.getStudents().stream().map(UserDto::new).collect(Collectors.toSet()));
+                    return z;
+                })
+                .forEach(res::add);
+        return res;
     }
 
     @Override
@@ -83,7 +89,17 @@ public class ClassRoomServiceImpl implements ClassroomService {
         Classroom classroom = classroomRepository.findById(id).orElse(null);
         if(classroom == null)
             return null;
-        return new ClassroomDto(classroom);
+        ClassroomDto res = new ClassroomDto(classroom);
+
+        Set<UserDto> students = new HashSet<>();
+        if(classroom.getStudents() != null && !classroom.getStudents().isEmpty()){
+            for( User user: classroom.getStudents()){
+                students.add(new UserDto());
+            }
+        }
+        res.setStudents(students);
+
+        return res;
     }
 
 

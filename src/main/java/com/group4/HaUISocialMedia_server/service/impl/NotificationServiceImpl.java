@@ -9,6 +9,7 @@ import com.group4.HaUISocialMedia_server.repository.NotificationTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.NotificationService;
 import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
+import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,12 +31,16 @@ public class NotificationServiceImpl implements NotificationService {
     private UserRepository userRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
     @Override
     public Set<NotificationDto> getAllNotifications() {
+        User user = userService.getCurrentLoginUserEntity();
         Set<NotificationDto> res = new HashSet<>();
-        List<Notification> li = notificationRepository.findAll();
+        List<Notification> li = notificationRepository.findAllByUser(user.getId());
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
     }

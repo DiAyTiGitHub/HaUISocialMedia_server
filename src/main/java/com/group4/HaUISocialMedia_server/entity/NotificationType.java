@@ -31,7 +31,7 @@ public class NotificationType implements Serializable {
 
     private String description;
 
-    @OneToMany(mappedBy = "notificationType")
+    @OneToMany(mappedBy = "notificationType", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Notification> notifications;
 }

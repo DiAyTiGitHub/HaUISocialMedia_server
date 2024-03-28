@@ -4,19 +4,23 @@ import com.group4.HaUISocialMedia_server.dto.JwtAuthResponse;
 import com.group4.HaUISocialMedia_server.dto.LoginDto;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.service.AuthService;
+import com.group4.HaUISocialMedia_server.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/auth")
 public class AuthController {
+    @Autowired
     private AuthService authService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<JwtAuthResponse> authenticate(@RequestBody LoginDto loginDto) {
@@ -24,6 +28,7 @@ public class AuthController {
 
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setAccessToken(token);
+        jwtAuthResponse.setLoggedInUser(new UserDto(userService.getCurrentLoginUserEntity()));
 
         return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
     }
