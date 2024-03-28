@@ -18,6 +18,7 @@ public class RoomTypeController {
     private RoomTypeService roomTypeService;
 
     @GetMapping("/{roomTypeId}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<RoomTypeDto> getRoomTypeById(@PathVariable UUID roomTypeId) {
         RoomTypeDto res = roomTypeService.getRoomTypeById(roomTypeId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -25,6 +26,7 @@ public class RoomTypeController {
     }
 
     @GetMapping("/all")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<RoomTypeDto>> getAllRoomType() {
         Set<RoomTypeDto> res = roomTypeService.getAllRoomTypes();
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -32,6 +34,7 @@ public class RoomTypeController {
     }
 
     @PostMapping
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<RoomTypeDto> createRoomType(@RequestBody RoomTypeDto dto) {
         RoomTypeDto res = roomTypeService.createRoomType(dto);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -39,6 +42,7 @@ public class RoomTypeController {
     }
 
     @PutMapping
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<RoomTypeDto> updateRoomType(@RequestBody RoomTypeDto dto) {
         RoomTypeDto res = roomTypeService.updateRoomType(dto);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -46,6 +50,7 @@ public class RoomTypeController {
     }
 
     @DeleteMapping("/{roomTypeId}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public void deleteRoomType(@PathVariable UUID roomTypeId){
         roomTypeService.deleteRoomType(roomTypeId);
     }

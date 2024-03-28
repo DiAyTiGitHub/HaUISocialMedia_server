@@ -23,6 +23,7 @@ public class RelationshipController {
     private RelationshipService relationshipService;
 
     @PostMapping("/friendRequest/{receiverId}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<RelationshipDto> sendAddFriendRequest(@PathVariable UUID receiverId) {
         RelationshipDto se = relationshipService.sendAddFriendRequest(receiverId);
         if (se == null)
@@ -30,6 +31,7 @@ public class RelationshipController {
         return new ResponseEntity<>(se, HttpStatus.OK);
     }
     @PostMapping("/acceptRequest/{relationshipId}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<RelationshipDto> acceptFriendRequest(@PathVariable UUID relationshipId) {
         RelationshipDto se = relationshipService.acceptFriendRequest(relationshipId);
         if (se == null)
@@ -37,6 +39,7 @@ public class RelationshipController {
         return new ResponseEntity<>(se, HttpStatus.OK);
     }
     @GetMapping("/friendRequest/pending")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<RelationshipDto>> getPendingFriendRequests(@RequestBody SearchObject searchObject) {
         Set<RelationshipDto> se = relationshipService.getPendingFriendRequests(searchObject);
         if (se == null)
@@ -45,6 +48,7 @@ public class RelationshipController {
     }
 
     @GetMapping("/friendRequest/sent")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<RelationshipDto>> getSentAddFriendRequests(@RequestBody SearchObject searchObject) {
         Set<RelationshipDto> res = relationshipService.getSentAddFriendRequests(searchObject);
         if (res == null)
@@ -53,6 +57,7 @@ public class RelationshipController {
     }
 
     @GetMapping("/currentFriends")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<UserDto>> getCurrentFriends(@RequestBody SearchObject searchObject) {
         Set<UserDto> res = relationshipService.getCurrentFriends(searchObject);
         if (res == null)

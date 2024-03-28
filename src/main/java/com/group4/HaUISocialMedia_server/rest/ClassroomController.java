@@ -23,6 +23,7 @@ public class ClassroomController {
     private ClassroomService classroomService;
 
     @GetMapping("/all")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<ClassroomDto>> getAllClassroom(){
         Set<ClassroomDto> li = classroomService.getAllClassroom();
         if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
@@ -31,6 +32,7 @@ public class ClassroomController {
 
     @PostMapping("/save")
     @Transactional
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<ClassroomDto> save(@RequestBody ClassroomDto classroomDto){
         ClassroomDto classroomDto1 = classroomService.save(classroomDto);
         if(classroomDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -39,6 +41,7 @@ public class ClassroomController {
 
     @PutMapping("/update")
     @Transactional
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<ClassroomDto> update(@RequestBody ClassroomDto classroomDto){
         ClassroomDto responseDto = classroomService.update(classroomDto);
         if(responseDto == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -46,6 +49,7 @@ public class ClassroomController {
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<ClassroomDto> getById(@PathVariable("id") UUID id){
         ClassroomDto classroomDto1 = classroomService.getById(id);
         if(classroomDto1 == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -54,6 +58,7 @@ public class ClassroomController {
 
     @DeleteMapping("/delete/{id}")
     @Transactional
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
         ClassroomDto classroomDto = classroomService.getById(id);
         if(classroomDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -62,6 +67,7 @@ public class ClassroomController {
     }
 
     @GetMapping("/paging")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<ClassroomDto>> findAnyClass(@RequestBody SearchObject searchObject){
         Set<ClassroomDto> li = classroomService.pagingClassroom(searchObject);
         if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);

@@ -8,13 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Controller
+@CrossOrigin
 public class MessengerModuleController {
     @Autowired
     private MessageService messageService;
 
     @MessageMapping("/privateMessage")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<MessageDto> spreadMessageToRoomId(@Payload MessageDto message) {
         MessageDto res = messageService.sendMessage(message);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

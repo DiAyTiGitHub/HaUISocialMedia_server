@@ -23,6 +23,7 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/authenticate")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<JwtAuthResponse> authenticate(@RequestBody LoginDto loginDto) {
         String token = authService.login(loginDto);
 
@@ -34,6 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<UserDto> register(@RequestBody UserDto dto) {
         UserDto newUser = authService.register((dto));
         if (newUser == null) return new ResponseEntity<>(null, HttpStatus.CONFLICT);

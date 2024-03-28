@@ -20,6 +20,7 @@ public class CourseResultController {
     private CourseResultService courseResultService;
 
     @GetMapping("/paging")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<CourseResultDto>> findAllCourseResult(@RequestBody SearchObject searchObject){
         Set<CourseResultDto> li = courseResultService.pagingCourseResult(searchObject);
         if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
@@ -27,6 +28,7 @@ public class CourseResultController {
     }
 
     @PostMapping("/addone")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CourseResultDto> addOne(@RequestBody CourseResultDto courseResultDto){
         CourseResultDto courseResultDto1 = courseResultService.addOne(courseResultDto);
         if(courseResultDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -34,6 +36,7 @@ public class CourseResultController {
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CourseResultDto> getById(@PathVariable("id") UUID id){
         CourseResultDto courseResultDto = courseResultService.findById(id);
         if(courseResultDto == null) return  new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -41,6 +44,7 @@ public class CourseResultController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id") UUID id){
         CourseResultDto courseResultDto = courseResultService.findById(id);
         if(courseResultDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -48,6 +52,7 @@ public class CourseResultController {
     }
 
     @PutMapping("/update")
+    @CrossOrigin(origins = "http://localhost:5173")
     public  ResponseEntity<CourseResultDto> update(@RequestBody CourseResultDto courseResultDto){
         CourseResultDto courseResultDto1 = courseResultService.update(courseResultDto);
         if(courseResultDto1 == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -55,6 +60,7 @@ public class CourseResultController {
     }
 
     @GetMapping("/all")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<CourseResultDto>> getAllCourseResult(){
         Set<CourseResultDto> li = courseResultService.getAllCourseResult();
         if(li.isEmpty()) return  new ResponseEntity<>(li, HttpStatus.NOT_FOUND);

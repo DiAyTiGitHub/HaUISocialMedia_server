@@ -14,12 +14,14 @@ public class AdminDashboardController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<String> helloAdmin(){
         return ResponseEntity.ok("Hello Admin");
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/user")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<String> helloUser(){
         return ResponseEntity.ok("Hello User");
     }

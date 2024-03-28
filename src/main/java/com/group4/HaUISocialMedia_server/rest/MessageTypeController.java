@@ -18,6 +18,7 @@ public class MessageTypeController {
     private MessageTypeService messageTypeService;
 
     @GetMapping("/{messageTypeId}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<MessageTypeDto> getMessageTypeById(@PathVariable UUID messageTypeId) {
         MessageTypeDto res = messageTypeService.getMessageTypeById(messageTypeId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -25,6 +26,7 @@ public class MessageTypeController {
     }
 
     @GetMapping("/all")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<MessageTypeDto>> getAllMessageType() {
         Set<MessageTypeDto> res = messageTypeService.getAllMessageTypes();
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -32,6 +34,7 @@ public class MessageTypeController {
     }
 
     @PostMapping
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<MessageTypeDto> createMessageType(@RequestBody MessageTypeDto dto) {
         MessageTypeDto res = messageTypeService.createMessageType(dto);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -39,6 +42,7 @@ public class MessageTypeController {
     }
 
     @PutMapping
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<MessageTypeDto> updateMessageType(@RequestBody MessageTypeDto dto) {
         MessageTypeDto res = messageTypeService.updateMessageType(dto);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -46,6 +50,7 @@ public class MessageTypeController {
     }
 
     @DeleteMapping("/{messageTypeId}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public void deleteMessageType(@PathVariable UUID messageTypeId) {
         messageTypeService.deleteMessageType(messageTypeId);
     }

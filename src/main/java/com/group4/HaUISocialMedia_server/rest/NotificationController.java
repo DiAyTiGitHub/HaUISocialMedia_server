@@ -21,6 +21,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping("/all")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<NotificationDto>> getAll(){
         Set<NotificationDto> res = notificationService.getAllNotifications();
         if(res == null)
@@ -29,6 +30,7 @@ public class NotificationController {
     }
 
     @PostMapping("/save")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<NotificationDto> save(@RequestBody NotificationDto notificationDto){
         NotificationDto notificationDto1 = notificationService.save(notificationDto);
         if(notificationDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -36,6 +38,7 @@ public class NotificationController {
     }
 
     @PutMapping("/update")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<NotificationDto> upate(@RequestBody NotificationDto notificationDto){
         NotificationDto notificationDto1 = notificationService.update(notificationDto);
         if(notificationDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -43,6 +46,7 @@ public class NotificationController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
         if(notificationService.deleteById(id))
             return new ResponseEntity<>(true, HttpStatus.OK);
@@ -50,6 +54,7 @@ public class NotificationController {
     }
 
     @GetMapping("/paging")
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<NotificationDto>> pagingNotification(@RequestBody SearchObject searchObject){
         Set<NotificationDto> res = notificationService.getAnyNotification(searchObject);
         if(res == null)
