@@ -112,7 +112,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 10));
+        List<Relationship> response = relationshipRepository.findAllSentFriendRequestRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 10));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
             res.add(new RelationshipDto(relationship));
