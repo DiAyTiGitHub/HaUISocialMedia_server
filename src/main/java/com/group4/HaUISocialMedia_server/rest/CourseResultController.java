@@ -22,7 +22,7 @@ public class CourseResultController {
     @GetMapping("/paging")
     public ResponseEntity<Set<CourseResultDto>> findAllCourseResult(@RequestBody SearchObject searchObject){
         Set<CourseResultDto> li = courseResultService.pagingCourseResult(searchObject);
-        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
+        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
@@ -36,28 +36,28 @@ public class CourseResultController {
     @GetMapping("/{id}")
     public ResponseEntity<CourseResultDto> getById(@PathVariable("id") UUID id){
         CourseResultDto courseResultDto = courseResultService.findById(id);
-        if(courseResultDto == null) return  new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        if(courseResultDto == null) return  new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(courseResultDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id") UUID id){
         CourseResultDto courseResultDto = courseResultService.findById(id);
-        if(courseResultDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        if(courseResultDto == null) return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PutMapping("/update")
     public  ResponseEntity<CourseResultDto> update(@RequestBody CourseResultDto courseResultDto){
         CourseResultDto courseResultDto1 = courseResultService.update(courseResultDto);
-        if(courseResultDto1 == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        if(courseResultDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(courseResultDto1, HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<Set<CourseResultDto>> getAllCourseResult(){
         Set<CourseResultDto> li = courseResultService.getAllCourseResult();
-        if(li.isEmpty()) return  new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
+        if(li.isEmpty()) return  new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
