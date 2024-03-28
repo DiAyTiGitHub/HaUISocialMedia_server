@@ -4,10 +4,7 @@ import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.*;
-import com.group4.HaUISocialMedia_server.repository.RelationshipRepository;
-import com.group4.HaUISocialMedia_server.repository.RoomRepository;
-import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
-import com.group4.HaUISocialMedia_server.repository.UserRoomRepository;
+import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.RelationshipService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +29,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Autowired
     private UserRoomRepository userRoomRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public RelationshipDto sendAddFriendRequest(UUID receiverId) {
@@ -91,8 +91,6 @@ public class RelationshipServiceImpl implements RelationshipService {
         userRoomRepository.save(userRoom2);
 
         return new RelationshipDto(savedRelationship);
-
-
     }
 
     @Override
@@ -111,11 +109,30 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Override
     public Set<RelationshipDto> getSentAddFriendRequests(SearchObject searchObject) {
-        return null;
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        List<Relationship> response = relationshipRepository.findAllSentFriendRequestRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 10));
+        Set<RelationshipDto> res = new HashSet<>();
+        for (Relationship relationship : response) {
+            res.add(new RelationshipDto(relationship));
+        }
+
+        return res;
     }
 
     @Override
     public Set<UserDto> getCurrentFriends(SearchObject searchObject) {
-        return null;
+
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 10));
+        Set<UserDto> res = new HashSet<>();
+        for (User user : response) {
+            res.add(new UserDto(user));
+        }
+
+        return res;
     }
 }

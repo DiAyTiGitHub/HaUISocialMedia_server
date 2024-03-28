@@ -52,7 +52,7 @@ public class RelationshipController {
     public ResponseEntity<Set<RelationshipDto>> getSentAddFriendRequests(@RequestBody SearchObject searchObject) {
         Set<RelationshipDto> res = relationshipService.getSentAddFriendRequests(searchObject);
         if (res == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
