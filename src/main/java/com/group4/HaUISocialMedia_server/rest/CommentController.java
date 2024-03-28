@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/comment")
 public class CommentController {
     @Autowired
