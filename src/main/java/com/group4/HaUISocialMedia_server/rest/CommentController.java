@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/comment")
 public class CommentController {
     @Autowired

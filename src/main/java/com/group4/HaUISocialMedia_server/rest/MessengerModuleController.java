@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Controller
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 public class MessengerModuleController {
     @Autowired
     private MessageService messageService;

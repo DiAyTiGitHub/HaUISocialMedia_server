@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/notification_type")
 public class NotificationTypeController {
 
