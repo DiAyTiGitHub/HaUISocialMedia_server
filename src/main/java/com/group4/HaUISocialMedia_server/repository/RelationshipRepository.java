@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RelationshipRepository extends JpaRepository<Relationship, UUID> {
-    @Query( "select r from Relationship r where (r.requestSender.id = :currentUserId or r.receiver.id = :currentUserId) and r.state = true")
+    @Query( "select r from Relationship r where (r.requestSender.id = :currentUserId or r.receiver.id = :currentUserId) and r.state = true order by r.lastModifyDate desc")
     List<Relationship> findAllAcceptedRelationship(@Param("currentUserId") UUID currentUserId);
 
-    @Query( "select r from Relationship r where (r.receiver.id = :currentUserId) and r.state = false")
+    @Query( "select r from Relationship r where (r.receiver.id = :currentUserId) and r.state = false order by r.lastModifyDate desc")
     List<Relationship> findAllPendingRelationship(@Param("currentUserId") UUID currentUserId, Pageable pageable);
 
-    @Query( "select r from Relationship r where (r.requestSender.id = :currentUserId) and r.state = false")
+    @Query( "select r from Relationship r where (r.requestSender.id = :currentUserId) and r.state = false order by r.lastModifyDate desc")
     List<Relationship> findAllSentFriendRequestRelationship(@Param("currentUserId") UUID currentUserId, Pageable pageable);
 }

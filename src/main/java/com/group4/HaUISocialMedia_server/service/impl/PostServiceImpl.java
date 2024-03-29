@@ -1,18 +1,20 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.NotificationDto;
 import com.group4.HaUISocialMedia_server.dto.PostDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
+import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.entity.Notification;
 import com.group4.HaUISocialMedia_server.entity.Post;
 import com.group4.HaUISocialMedia_server.entity.Relationship;
 import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.repository.PostRepository;
-import com.group4.HaUISocialMedia_server.repository.RelationshipRepository;
-import com.group4.HaUISocialMedia_server.repository.UserRepository;
+import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.PostService;
 import com.group4.HaUISocialMedia_server.service.RelationshipService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,15 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private RelationshipService relationshipService;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationTypeRepository notificationTypeRepository;
 
     @Override
     public Set<PostDto> getNewsFeed(SearchObject searchObject) {
@@ -81,7 +92,25 @@ public class PostServiceImpl implements PostService {
         Post savedEntity = postRepository.save(entity);
 
         //alert all friends that this user has created new post
+        SearchObject so = new SearchObject();
+        so.setPageIndex(1);
+        so.setPageSize(5000);
+        Set<UserDto> listFriends = relationshipService.getCurrentFriends(so);
+        for (UserDto friend : listFriends) {
+            Notification noti = new Notification();
+            noti.setActor(currentUser);
+            noti.setCreateDate(new Date());
+            noti.setContent(currentUser.getUsername() + " đã tạo một bài viết mới: " + savedEntity.getContent());
+            noti.setOwner(userService.getUserEntityById(friend.getId()));
+            noti.setNotificationType(notificationTypeRepository.findByName("Post"));
 
+            //postId now is referenceId in notification
+            noti.setReferenceId(savedEntity.getId());
+            Notification savedNoti = notificationRepository.save(noti);
+
+            //send this noti via socket
+            simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
+        }
 
         return new PostDto(savedEntity);
     }
