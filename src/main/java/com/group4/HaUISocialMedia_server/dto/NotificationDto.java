@@ -22,6 +22,7 @@ public class NotificationDto {
     private String content;
     private NotificationTypeDto notificationType;
     private UserDto owner;
+    private UUID referenceId;
 
     public NotificationDto(Notification notification){
         this.id = notification.getId();
@@ -31,5 +32,6 @@ public class NotificationDto {
         this.notificationType = new NotificationTypeDto(notification.getNotificationType());
             if(notification.getOwner() != null)
         this.owner = new UserDto(notification.getOwner());
+        this.referenceId = notification.getReferenceId();
     }
 }

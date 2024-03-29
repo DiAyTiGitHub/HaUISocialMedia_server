@@ -30,6 +30,5 @@ public class NotificationTypeDto {
         this.code = notificationType.getCode();
         this.name = notificationType.getName();
         this.description = notificationType.getDescription();
-
     }
 }

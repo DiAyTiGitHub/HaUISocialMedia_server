@@ -1,12 +1,14 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.LikeDto;
-import com.group4.HaUISocialMedia_server.entity.Like;
-import com.group4.HaUISocialMedia_server.entity.Post;
-import com.group4.HaUISocialMedia_server.entity.User;
+import com.group4.HaUISocialMedia_server.dto.NotificationDto;
+import com.group4.HaUISocialMedia_server.dto.NotificationTypeDto;
+import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.LikeRepository;
 import com.group4.HaUISocialMedia_server.repository.PostRepository;
 import com.group4.HaUISocialMedia_server.service.LikeService;
+import com.group4.HaUISocialMedia_server.service.NotificationService;
+import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,12 @@ public class LikeServiceImpl implements LikeService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private NotificationTypeService notificationTypeService;
+
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     @Transactional
     public LikeDto likeAPost(UUID postId) {
@@ -36,6 +44,19 @@ public class LikeServiceImpl implements LikeService {
         like.setCreateDate(new Date());
         like.setUserLike(user);
         like.setPost(post);
+
+        //Get the recipient
+        User receiverUser = post.getOwner();
+        NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
+
+        Notification notification = new Notification();
+        notification.setCreateDate(new Date());
+        notification.setContent(user.getUsername() + " đã thích một bài đăng của bạn");
+        notification.setReferenceId(postId);
+        notification.setOwner(receiverUser);
+        notification.setNotificationType(notificationType);
+
+        notificationService.save(new NotificationDto(notification));
 
         return new LikeDto(likeRepository.save(like));
     }

@@ -130,49 +130,49 @@ public class SetupData implements ApplicationRunner {
     private NotificationTypeService notificationTypeService;
 
     private void initializeNotificationType() {
-        NotificationType tym1 = notificationTypeService.getNotificationTypeEntityByName("Liked");
-        if (tym1 == null) {
-            NotificationTypeDto tym = new NotificationTypeDto();
-            tym.setCode("001");
-            tym.setName("Liked");
-            tym.setDescription("a person liked your post");
-            notificationTypeService.save(tym);
+//        NotificationType tym1 = notificationTypeService.getNotificationTypeEntityByName("Liked");
+//        if (tym1 == null) {
+//            NotificationTypeDto tym = new NotificationTypeDto();
+//            tym.setCode("001");
+//            tym.setName("Liked");
+//            tym.setDescription("a person liked your post");
+//            notificationTypeService.save(tym);
+//        }
+//
+//        NotificationType accept1 = notificationTypeService.getNotificationTypeEntityByName("Accepted");
+//        if (accept1 == null) {
+//            NotificationTypeDto accept = new NotificationTypeDto();
+//            accept.setCode("002");
+//            accept.setName("Accepted");
+//            accept.setDescription("a person accepted your request friend");
+//            notificationTypeService.save(accept);
+//        }
+//
+//        NotificationType request1 = notificationTypeService.getNotificationTypeEntityByName("Requested");
+//        if (request1 == null) {
+//            NotificationTypeDto request = new NotificationTypeDto();
+//            request.setCode("003");
+//            request.setName("Requested");
+//            request.setDescription("a person requested add friend with you");
+//            notificationTypeService.save(request);
+//        }
+
+        NotificationType post = notificationTypeService.getNotificationTypeEntityByName("Post");
+        if (post == null) {
+            NotificationTypeDto postDto = new NotificationTypeDto();
+            postDto.setCode("001");
+            postDto.setName("Post");
+            postDto.setDescription("Tym, Comment, Reply Comment");
+            notificationTypeService.save(postDto);
         }
 
-        NotificationType accept1 = notificationTypeService.getNotificationTypeEntityByName("Accepted");
-        if (accept1 == null) {
-            NotificationTypeDto accept = new NotificationTypeDto();
-            accept.setCode("002");
-            accept.setName("Accepted");
-            accept.setDescription("a person accepted your request friend");
-            notificationTypeService.save(accept);
-        }
-
-        NotificationType request1 = notificationTypeService.getNotificationTypeEntityByName("Requested");
-        if (request1 == null) {
-            NotificationTypeDto request = new NotificationTypeDto();
-            request.setCode("003");
-            request.setName("Requested");
-            request.setDescription("a person requested add friend with you");
-            notificationTypeService.save(request);
-        }
-
-        NotificationType repliedComment1 = notificationTypeService.getNotificationTypeEntityByName("repliedComment");
-        if (repliedComment1 == null) {
-            NotificationTypeDto repliedComment = new NotificationTypeDto();
-            repliedComment.setCode("005");
-            repliedComment.setName("repliedComment");
-            repliedComment.setDescription("a person replied Comment your commnet");
-            notificationTypeService.save(repliedComment);
-        }
-
-        NotificationType comment1 = notificationTypeService.getNotificationTypeEntityByName("comment");
-        if (comment1 == null) {
-            NotificationTypeDto comment =new NotificationTypeDto();
-            comment.setCode("004");
-            comment.setName("comment");
-            comment.setDescription("a person commented your post");
-            notificationTypeService.save(comment);
+        NotificationType friend = notificationTypeService.getNotificationTypeEntityByName("Friend");
+        if (friend == null) {
+            NotificationTypeDto friendDto =new NotificationTypeDto();
+            friendDto.setCode("002");
+            friendDto.setName("Friend");
+            friendDto.setDescription("add friend, accept friend");
+            notificationTypeService.save(friendDto);
         }
     }
 

@@ -39,4 +39,7 @@ public class Notification implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "ownerId")
     private User owner;
+
+
+    private UUID referenceId;
 }

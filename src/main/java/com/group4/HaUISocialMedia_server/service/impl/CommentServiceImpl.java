@@ -1,22 +1,20 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.CommentDto;
-import com.group4.HaUISocialMedia_server.entity.Comment;
-import com.group4.HaUISocialMedia_server.entity.Post;
-import com.group4.HaUISocialMedia_server.entity.User;
+import com.group4.HaUISocialMedia_server.dto.NotificationDto;
+import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.CommentRepository;
 import com.group4.HaUISocialMedia_server.repository.PostRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.CommentService;
+import com.group4.HaUISocialMedia_server.service.NotificationService;
+import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -31,6 +29,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private NotificationTypeService notificationTypeService;
 
     @Override
     public Set<CommentDto> getParentCommentsOfPost(UUID postId) {
@@ -66,12 +70,13 @@ public class CommentServiceImpl implements CommentService {
             return null;
         Comment comment = new Comment();
         comment.setContent(dto.getContent());
-        comment.setCreateDate(dto.getCreateDate());
+        comment.setCreateDate(new Date());
 
-        User user = userRepository.findById(dto.getCommenter().getId()).orElse(null);
-        if(user == null){
-            return null;
-        }
+        // User user = userRepository.findById(dto.getCommenter().getId()).orElse(null);
+        User user = userService.getCurrentLoginUserEntity();
+//        if(user == null){
+//            return null;
+//        }
         comment.setOwner(user);
 
 
@@ -80,10 +85,38 @@ public class CommentServiceImpl implements CommentService {
             return null;
         comment.setPost(post);
 
-        Comment commentParent = commentRepository.findById(dto.getRepliedComment().getId()).orElse(null);
-        if(commentParent != null)
-        comment.setRepliedComment(commentParent);
+        if(dto.getRepliedComment() != null){
+            Comment commentParent = commentRepository.findById(dto.getRepliedComment().getId()).orElse(null);
+            if(commentParent != null){
+                comment.setRepliedComment(commentParent);
+                //create notification
+                User receiverUser = commentParent.getOwner();
+                NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
+
+                Notification notification = new Notification();
+                notification.setCreateDate(new Date());
+                notification.setContent(user.getUsername() + " đã trả lời bình luận của bạn trong một bài viết");
+                notification.setReferenceId(post.getId());
+                notification.setOwner(receiverUser);
+                notification.setNotificationType(notificationType);
+
+                notificationService.save(new NotificationDto(notification));
+            }
+        }
         Comment comment1 = commentRepository.save(comment);
+
+        //create notification
+        User receiverUser = post.getOwner();
+        NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
+
+        Notification notification = new Notification();
+        notification.setCreateDate(new Date());
+        notification.setContent(user.getUsername() + " đã bình luận một bài đăng của bạn");
+        notification.setReferenceId(post.getId());
+        notification.setOwner(receiverUser);
+        notification.setNotificationType(notificationType);
+
+        notificationService.save(new NotificationDto(notification));
         return new CommentDto(comment1);
     }
 
@@ -95,7 +128,7 @@ public class CommentServiceImpl implements CommentService {
         if(comment == null)
             return null;
         comment.setContent(dto.getContent());
-        comment.setCreateDate(dto.getCreateDate());
+        comment.setCreateDate(new Date());
 
 //        User user = userRepository.findById(dto.getId()).orElse(null);
 //        if(user != null)
