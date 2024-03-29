@@ -16,4 +16,7 @@ public interface RelationshipRepository extends JpaRepository<Relationship, UUID
 
     @Query( "select r from Relationship r where (r.receiver.id = :currentUserId) and r.state = false")
     List<Relationship> findAllPendingRelationship(@Param("currentUserId") UUID currentUserId, Pageable pageable);
+
+    @Query( "select r from Relationship r where (r.requestSender.id = :currentUserId) and r.state = false")
+    List<Relationship> findAllSentFriendRequestRelationship(@Param("currentUserId") UUID currentUserId, Pageable pageable);
 }
