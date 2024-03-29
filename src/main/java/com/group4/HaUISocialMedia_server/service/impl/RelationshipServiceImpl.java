@@ -143,7 +143,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 10));
+        List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 12));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
             res.add(new RelationshipDto(relationship));
@@ -157,7 +157,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<Relationship> response = relationshipRepository.findAllSentFriendRequestRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 10));
+        List<Relationship> response = relationshipRepository.findAllSentFriendRequestRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 12));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
             res.add(new RelationshipDto(relationship));
@@ -172,10 +172,39 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 10));
+        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 12));
         Set<UserDto> res = new HashSet<>();
         for (User user : response) {
-            res.add(new UserDto(user));
+            if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
+                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
+            } else
+                res.add(new UserDto(user));
+        }
+
+        return res;
+    }
+
+    private boolean containsKeyword(String keyword, User user) {
+        if (user.getAddress().contains(keyword)) return true;
+        if (user.getUsername().contains(keyword)) return true;
+        if (user.getEmail().contains(keyword)) return true;
+        if (user.getFirstName().contains(keyword)) return true;
+        if (user.getLastName().contains(keyword)) return true;
+        return false;
+    }
+
+    @Override
+    public Set<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject) {
+        User currentUser = userService.getUserEntityById(userId);
+        if (currentUser == null) return null;
+
+        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 12));
+        Set<UserDto> res = new HashSet<>();
+        for (User user : response) {
+            if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
+                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
+            } else
+                res.add(new UserDto(user));
         }
 
         return res;

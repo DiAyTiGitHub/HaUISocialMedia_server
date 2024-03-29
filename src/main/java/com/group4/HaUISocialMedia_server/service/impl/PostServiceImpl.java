@@ -9,6 +9,7 @@ import com.group4.HaUISocialMedia_server.repository.PostRepository;
 import com.group4.HaUISocialMedia_server.repository.RelationshipRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.PostService;
+import com.group4.HaUISocialMedia_server.service.RelationshipService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RelationshipService relationshipService;
 
     @Override
     public Set<PostDto> getNewsFeed(SearchObject searchObject) {
@@ -56,7 +60,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public boolean hasAuthorityToChange(UUID postId) {
         Post entity = postRepository.findById(postId).orElse(null);
-        if(entity == null) return false;
+        if (entity == null) return false;
 
         User currentUser = userService.getCurrentLoginUserEntity();
         if (entity.getOwner().getId() != currentUser.getId()) return false;
@@ -75,6 +79,9 @@ public class PostServiceImpl implements PostService {
         entity.setOwner(currentUser);
 
         Post savedEntity = postRepository.save(entity);
+
+        //alert all friends that this user has created new post
+
 
         return new PostDto(savedEntity);
     }

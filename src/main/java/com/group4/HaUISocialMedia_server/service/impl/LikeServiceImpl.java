@@ -5,12 +5,14 @@ import com.group4.HaUISocialMedia_server.dto.NotificationDto;
 import com.group4.HaUISocialMedia_server.dto.NotificationTypeDto;
 import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.LikeRepository;
+import com.group4.HaUISocialMedia_server.repository.NotificationRepository;
 import com.group4.HaUISocialMedia_server.repository.PostRepository;
 import com.group4.HaUISocialMedia_server.service.LikeService;
 import com.group4.HaUISocialMedia_server.service.NotificationService;
 import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,7 @@ public class LikeServiceImpl implements LikeService {
     private NotificationTypeService notificationTypeService;
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -51,20 +53,38 @@ public class LikeServiceImpl implements LikeService {
         like.setPost(post);
 
         //Get the recipient notification
+        //first check whether that notification for this post is existed or not
         User receiverUser = post.getOwner();
-        NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
+        Notification oldNotification = notificationRepository.getOldLikeNotification(receiverUser.getId(), postId);
+        if (oldNotification == null) {
+            //handle if this is the first person liking this post
+            NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
 
-        Notification notification = new Notification();
-        notification.setCreateDate(new Date());
-        notification.setContent(user.getUsername() + " đã thích một bài viết của bạn");
-        notification.setActor(user);
-        notification.setReferenceId(postId);
-        notification.setOwner(receiverUser);
-        notification.setNotificationType(notificationType);
+            Notification notification = new Notification();
+            notification.setCreateDate(new Date());
+            notification.setContent(user.getUsername() + " đã thích bài viết của bạn");
+            notification.setActor(user);
+            notification.setReferenceId(postId);
+            notification.setOwner(receiverUser);
+            notification.setNotificationType(notificationType);
 
-        NotificationDto noti = notificationService.save(new NotificationDto(notification));
-        //send this noti via socket (do later)
-        simpMessagingTemplate.convertAndSendToUser(user.getId().toString(), "/notification", noti);
+            Notification savedNotiEntity = notificationRepository.save(notification);
+            NotificationDto noti = new NotificationDto(savedNotiEntity);
+            //send this noti via socket
+            simpMessagingTemplate.convertAndSendToUser(receiverUser.getId().toString(), "/notification", noti);
+        } else {
+            //handle case notification announcing this post has been liked by other users before
+            oldNotification.setActor(user);
+            int numsOfOldLikes = getListLikesOfPost(postId).size();
+            oldNotification.setContent(user.getUsername() + " va " + numsOfOldLikes + " nguoi khac da thich bai viet cua ban");
+            oldNotification.setCreateDate(new Date());
+
+            Notification savedNotiEntity = notificationRepository.save(oldNotification);
+            NotificationDto noti = new NotificationDto(savedNotiEntity);
+            //send this noti via socket
+            simpMessagingTemplate.convertAndSendToUser(receiverUser.getId().toString(), "/notification", noti);
+        }
+
 
         return new LikeDto(likeRepository.save(like));
     }
@@ -79,8 +99,31 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional
-    public void dislikeAPost(UUID postId) {
+    public boolean dislikeAPost(UUID postId) {
         User user = userService.getCurrentLoginUserEntity();
+        Post post = postRepository.findById(postId).orElse(null);
+        if (post == null)
+            return false;
+
         likeRepository.deleteByIdPost(postId, user.getId());
+
+        Notification oldNotification = notificationRepository.getOldLikeNotification(post.getOwner().getId(), postId);
+
+        //handling for notification
+        int numsOfOldLikes = getListLikesOfPost(postId).size();
+        if (numsOfOldLikes == 1) {
+            // only one person likes this post, this person dislikes the post, then the notification for this post of owner will be deleted
+            notificationRepository.delete(oldNotification);
+        } else {
+            // update content of old notification, just -1 numsOfLikes for the post
+            oldNotification.setCreateDate(new Date());
+            List<Like> likesOfPost = likeRepository.findByPost(postId);
+            // but we have to find who is the latest user like the post for updating the noti content
+            oldNotification.setContent(likesOfPost.get(0).getUserLike() + " va " + (likesOfPost.size() - 1) + " nguoi khac da thich bai viet cua ban");
+            oldNotification.setActor(likesOfPost.get(0).getUserLike());
+
+            notificationRepository.save(oldNotification);
+        }
+        return true;
     }
 }

@@ -39,8 +39,10 @@ public class LikeController {
 
     @DeleteMapping("/{postId}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public void dislikeAPost(@PathVariable("postId") UUID postId) {
-        likeService.dislikeAPost(postId);
+    public ResponseEntity<Boolean> dislikeAPost(@PathVariable("postId") UUID postId) {
+        boolean res = likeService.dislikeAPost(postId);
+        if (res == false) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 }
