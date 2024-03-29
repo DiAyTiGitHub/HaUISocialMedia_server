@@ -1,17 +1,12 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
-import com.group4.HaUISocialMedia_server.dto.NotificationDto;
-import com.group4.HaUISocialMedia_server.dto.PostDto;
-import com.group4.HaUISocialMedia_server.dto.SearchObject;
-import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.dto.*;
 import com.group4.HaUISocialMedia_server.entity.Notification;
 import com.group4.HaUISocialMedia_server.entity.Post;
 import com.group4.HaUISocialMedia_server.entity.Relationship;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.*;
-import com.group4.HaUISocialMedia_server.service.PostService;
-import com.group4.HaUISocialMedia_server.service.RelationshipService;
-import com.group4.HaUISocialMedia_server.service.UserService;
+import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -46,6 +41,12 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private CommentService commentService;
+
     @Override
     public Set<PostDto> getNewsFeed(SearchObject searchObject) {
         User currentUser = userService.getCurrentLoginUserEntity();
@@ -65,7 +66,13 @@ public class PostServiceImpl implements PostService {
 
         List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(0, 5));
 
-        return new HashSet<>(newsFeed);
+        Set<PostDto> res = new HashSet<>(newsFeed);
+        for (PostDto postDto : res) {
+            postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
+            postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+        }
+
+        return res;
     }
 
     @Override
@@ -112,8 +119,10 @@ public class PostServiceImpl implements PostService {
             simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
         }
 
-        return new PostDto(savedEntity);
+        PostDto responseDto = new PostDto(savedEntity);
+        return responseDto;
     }
+
 
     @Override
     public PostDto updatePost(PostDto dto) {
@@ -126,16 +135,22 @@ public class PostServiceImpl implements PostService {
 
         Post savedEntity = postRepository.save(entity);
 
-        return new PostDto(savedEntity);
+        PostDto responseDto = new PostDto(savedEntity);
+        responseDto.setLikes(likeService.getListLikesOfPost(responseDto.getId()));
+        responseDto.setComments(commentService.getParentCommentsOfPost(responseDto.getId()));
+        return responseDto;
     }
 
     @Override
     @Transactional
-    public void deletePost(UUID postId) {
+    public boolean deletePost(UUID postId) {
         Post entity = postRepository.findById(postId).orElse(null);
-        if (entity == null) return;
+        if (entity == null) return false;
 
         postRepository.delete(entity);
+
+
+        return true;
     }
 
     @Override
@@ -153,13 +168,23 @@ public class PostServiceImpl implements PostService {
 
         List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(0, 5));
 
-        return new HashSet<>(newsFeed);
+        Set<PostDto> res = new HashSet<>(newsFeed);
+        for (PostDto postDto : res) {
+            postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
+            postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+        }
+
+        return res;
     }
 
     @Override
     public PostDto getById(UUID postId) {
         Post entity = postRepository.findById(postId).orElse(null);
         if (entity == null) return null;
-        return new PostDto(entity);
+
+        PostDto responseDto = new PostDto(entity);
+        responseDto.setLikes(likeService.getListLikesOfPost(responseDto.getId()));
+        responseDto.setComments(commentService.getParentCommentsOfPost(responseDto.getId()));
+        return responseDto;
     }
 }

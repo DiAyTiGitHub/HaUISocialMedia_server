@@ -16,7 +16,7 @@ public interface PostService {
 
     public PostDto updatePost(PostDto dto);
 
-    public void deletePost(UUID postId);
+    public boolean deletePost(UUID postId);
 
     public Set<PostDto> getPostsOfUser(UUID userId, SearchObject searchObject);
 
