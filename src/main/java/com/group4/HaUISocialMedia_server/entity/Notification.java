@@ -40,6 +40,10 @@ public class Notification implements Serializable {
     @JoinColumn(name = "ownerId")
     private User owner;
 
+    @ManyToOne
+    @JoinColumn(name="actorId")
+    private User actor;
+
 
     private UUID referenceId;
 }

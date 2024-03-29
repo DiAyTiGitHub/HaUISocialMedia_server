@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,16 +23,20 @@ public class NotificationDto {
     private String content;
     private NotificationTypeDto notificationType;
     private UserDto owner;
+    private UserDto actor;
     private UUID referenceId;
 
-    public NotificationDto(Notification notification){
+    public NotificationDto(Notification notification) {
         this.id = notification.getId();
         this.createDate = notification.getCreateDate();
         this.content = notification.getContent();
-            if(notification.getNotificationType() != null)
-        this.notificationType = new NotificationTypeDto(notification.getNotificationType());
-            if(notification.getOwner() != null)
-        this.owner = new UserDto(notification.getOwner());
+        if (notification.getNotificationType() != null)
+            this.notificationType = new NotificationTypeDto(notification.getNotificationType());
+        if (notification.getOwner() != null)
+            this.owner = new UserDto(notification.getOwner());
         this.referenceId = notification.getReferenceId();
+
+        if (notification.getActor() != null)
+            this.actor = new UserDto(notification.getActor());
     }
 }

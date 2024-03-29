@@ -1,14 +1,18 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.NotificationDto;
 import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.*;
+import com.group4.HaUISocialMedia_server.service.NotificationService;
+import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
 import com.group4.HaUISocialMedia_server.service.RelationshipService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,6 +37,15 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationTypeService notificationTypeService;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @Override
     public RelationshipDto sendAddFriendRequest(UUID receiverId) {
         Relationship entity = new Relationship();
@@ -49,6 +62,22 @@ public class RelationshipServiceImpl implements RelationshipService {
         entity.setLastModifyDate(new Date());
 
         Relationship savedEntity = relationshipRepository.save(entity);
+
+        NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Friend");
+
+        Notification notification = new Notification();
+        notification.setCreateDate(new Date());
+        notification.setContent(requestSender.getUsername() + " đã gửi lời mời kết bạn");
+        notification.setReferenceId(requestSender.getId());
+        notification.setOwner(receiver);
+        notification.setActor(requestSender);
+        notification.setNotificationType(notificationType);
+
+        Notification savedNoti = notificationRepository.save(notification);
+        NotificationDto willSendNoti = new NotificationDto(savedNoti);
+
+        //send this noti via socket (do later)
+        simpMessagingTemplate.convertAndSendToUser(receiver.getId().toString(), "/notification", willSendNoti);
 
         return new RelationshipDto(savedEntity);
     }
@@ -89,6 +118,22 @@ public class RelationshipServiceImpl implements RelationshipService {
         userRoom2.setRole("user");
 
         userRoomRepository.save(userRoom2);
+
+        NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Friend");
+
+        Notification notification = new Notification();
+        notification.setCreateDate(new Date());
+        notification.setActor(receiver);
+        notification.setContent(receiver.getUsername() + " đã chấp nhận lời mời kết bạn");
+        notification.setReferenceId(receiver.getId());
+        notification.setOwner(requestSender);
+        notification.setNotificationType(notificationType);
+
+        Notification savedNoti = notificationRepository.save(notification);
+        NotificationDto willSendNoti = new NotificationDto(savedNoti);
+
+        //send this noti via socket (do later)
+        simpMessagingTemplate.convertAndSendToUser(requestSender.getId().toString(), "/notification", willSendNoti);
 
         return new RelationshipDto(savedRelationship);
     }

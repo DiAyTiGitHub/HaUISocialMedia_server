@@ -1,6 +1,7 @@
 package com.group4.HaUISocialMedia_server.repository;
 
 import com.group4.HaUISocialMedia_server.entity.Notification;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,5 +14,8 @@ import java.util.UUID;
 public interface NotificationRepository extends JpaRepository<Notification, UUID> {
 
     @Query("SELECT n FROM Notification n where n.owner.id =:idOwner")
-    public List<Notification> findAllByUser(@Param("idOwner")UUID id);
+    public List<Notification> findAllByUser(@Param("idOwner") UUID id);
+
+    @Query("SELECT n FROM Notification n where n.owner.id =:idOwner")
+    public List<Notification> pagingNotificationByUserId(@Param("idOwner") UUID id, Pageable pageable);
 }

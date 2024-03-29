@@ -18,4 +18,6 @@ public interface NotificationService {
     public Boolean deleteById(UUID id);
 
     public Set<NotificationDto> getAnyNotification(SearchObject searchObject);
+
+    public Set<NotificationDto> pagingNotification(SearchObject searchObject);
 }

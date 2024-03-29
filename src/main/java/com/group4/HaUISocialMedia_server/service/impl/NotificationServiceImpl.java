@@ -48,13 +48,16 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public NotificationDto save(NotificationDto notificationDto) {
-        if(notificationDto == null)
+        if (notificationDto == null)
             return null;
         Notification notification = new Notification();
-        if(notificationDto.getNotificationType() != null)
+        if (notificationDto.getNotificationType() != null)
             notification.setNotificationType(notificationTypeRepository.findById(notificationDto.getNotificationType().getId()).orElse(null));
-        if(notificationDto.getOwner() != null)
+        if (notificationDto.getOwner() != null)
             notification.setOwner(userRepository.findById(notificationDto.getOwner().getId()).orElse(null));
+        if (notificationDto.getActor() != null)
+            notification.setActor(userRepository.findById(notificationDto.getActor().getId()).orElse(null));
+
         notification.setContent(notificationDto.getContent());
         notification.setCreateDate(notificationDto.getCreateDate());
         return new NotificationDto(notificationRepository.save(notification));
@@ -64,13 +67,13 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public NotificationDto update(NotificationDto notificationDto) {
         Notification notification = notificationRepository.findById(notificationDto.getId()).orElse(null);
-        if(notification == null)
+        if (notification == null)
             return null;
         notification.setContent(notificationDto.getContent());
         notification.setCreateDate(notificationDto.getCreateDate());
-        if(notificationDto.getNotificationType() != null)
+        if (notificationDto.getNotificationType() != null)
             notification.setNotificationType(notificationTypeRepository.findById(notificationDto.getNotificationType().getId()).orElse(null));
-        if(notificationDto.getOwner() != null)
+        if (notificationDto.getOwner() != null)
             notification.setOwner(userRepository.findById(notificationDto.getOwner().getId()).orElse(null));
         return new NotificationDto(notificationRepository.saveAndFlush(notification));
     }
@@ -79,7 +82,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public Boolean deleteById(UUID id) {
         Notification notification = notificationRepository.findById(id).orElse(null);
-        if(notification == null)
+        if (notification == null)
             return false;
         notificationRepository.delete(notification);
         return true;
@@ -89,6 +92,16 @@ public class NotificationServiceImpl implements NotificationService {
     public Set<NotificationDto> getAnyNotification(SearchObject searchObject) {
         Set<NotificationDto> res = new HashSet<>();
         Page<Notification> li = notificationRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        li.stream().map(NotificationDto::new).forEach(res::add);
+        return res;
+    }
+
+    @Override
+    public Set<NotificationDto> pagingNotification(SearchObject searchObject) {
+        User currentUser = userService.getCurrentLoginUserEntity();
+
+        Set<NotificationDto> res = new HashSet<>();
+        List<Notification> li = notificationRepository.pagingNotificationByUserId(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 12));
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
     }

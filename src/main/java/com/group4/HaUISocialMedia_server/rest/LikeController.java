@@ -25,7 +25,7 @@ public class LikeController {
     @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<LikeDto> likeAPost(@PathVariable("postId") UUID postId) {
         LikeDto res = likeService.likeAPost(postId);
-        if (res == null) return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

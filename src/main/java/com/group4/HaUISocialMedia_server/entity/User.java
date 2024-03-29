@@ -90,6 +90,9 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "owner")
     private Set<Comment> comments;
 
+    @OneToMany(mappedBy = "actor")
+    private Set<Notification> createdNotifications;
+
     //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "users_roles",
 //            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

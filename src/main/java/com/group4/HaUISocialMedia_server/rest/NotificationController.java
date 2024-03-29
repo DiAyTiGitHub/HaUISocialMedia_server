@@ -56,9 +56,11 @@ public class NotificationController {
     @GetMapping("/paging")
     @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<NotificationDto>> pagingNotification(@RequestBody SearchObject searchObject){
-        Set<NotificationDto> res = notificationService.getAnyNotification(searchObject);
+//        Set<NotificationDto> res = notificationService.getAnyNotification(searchObject);
+
+        Set<NotificationDto> res = notificationService.pagingNotification(searchObject);
         if(res == null)
-            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }
