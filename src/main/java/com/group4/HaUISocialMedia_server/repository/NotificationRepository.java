@@ -1,8 +1,10 @@
 package com.group4.HaUISocialMedia_server.repository;
 
 import com.group4.HaUISocialMedia_server.entity.Notification;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +23,10 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
 
     @Query("select n from Notification n where n.owner.id = :currentUserId and n.notificationType.name like 'Post' and n.referenceId = :postId")
     public Notification getOldLikeNotification(@Param("currentUserId") UUID currentUserId, @Param("postId") UUID postId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Notification n WHERE n.referenceId =:idPost")
+    public void deleteNotificationByIdPost(@Param("idPost") UUID idPost);
+
 }

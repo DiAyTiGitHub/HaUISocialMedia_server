@@ -20,4 +20,6 @@ public interface NotificationService {
     public Set<NotificationDto> getAnyNotification(SearchObject searchObject);
 
     public Set<NotificationDto> pagingNotification(SearchObject searchObject);
+
+    public void deleteNotificationByIdPost(UUID idPost);
 }

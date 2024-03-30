@@ -11,4 +11,6 @@ public interface LikeService {
     public Set<LikeDto> getListLikesOfPost(UUID postId);
 
     public boolean dislikeAPost(UUID postId);
+
+    public void deleteByAllByPost(UUID id);
 }

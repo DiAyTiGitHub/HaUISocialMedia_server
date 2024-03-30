@@ -146,10 +146,12 @@ public class PostServiceImpl implements PostService {
     public boolean deletePost(UUID postId) {
         Post entity = postRepository.findById(postId).orElse(null);
         if (entity == null) return false;
-
         postRepository.delete(entity);
 
-
+        //Delete all comment, like by id
+        commentService.deleteAllByIdPost(postId);
+        likeService.deleteByAllByPost(postId);
+        notificationRepository.deleteNotificationByIdPost(postId);
         return true;
     }
 

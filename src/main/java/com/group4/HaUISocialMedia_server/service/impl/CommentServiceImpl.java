@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         if(post == null)
             return null;
         Set<CommentDto> res = new HashSet<>();
-        List<Comment> li = commentRepository.findAllByPost(post);
+        List<Comment> li = commentRepository.findAllByPost(postId);
         li.stream().map(CommentDto::new).forEach(res::add);
         return res;
     }
@@ -153,6 +153,7 @@ public class CommentServiceImpl implements CommentService {
         //Use to delete children of comment
         commentRepository.deleteAllByRepliedComment(comment.getId());
         commentRepository.delete(comment);
+
         return new CommentDto(comment);
     }
 
@@ -164,5 +165,10 @@ public class CommentServiceImpl implements CommentService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser.getId() != entity.getOwner().getId()) return false;
         return true;
+    }
+
+    @Override
+    public void deleteAllByIdPost(UUID idPost) {
+        commentRepository.getReferenceById(idPost);
     }
 }

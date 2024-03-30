@@ -66,12 +66,12 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Boolean> deletePost(@PathVariable UUID postId) {
+    public ResponseEntity<Boolean> deletePost(@PathVariable("postId") UUID postId) {
         if (!postService.hasAuthorityToChange(postId)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         boolean res = postService.deletePost(postId);
 
-        if (res == false) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        if (!res) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<Boolean>(res, HttpStatus.OK);
     }
 }

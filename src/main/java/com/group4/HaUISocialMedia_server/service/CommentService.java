@@ -19,4 +19,6 @@ public interface CommentService {
     public CommentDto deleteComment(UUID commentId);
 
     public boolean hasAuthorityToChange(UUID commentId);
+
+    public void deleteAllByIdPost(UUID idPost);
 }

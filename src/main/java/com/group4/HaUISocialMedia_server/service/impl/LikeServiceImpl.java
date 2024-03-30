@@ -126,4 +126,9 @@ public class LikeServiceImpl implements LikeService {
         }
         return true;
     }
+
+    @Override
+    public void deleteByAllByPost(UUID id) {
+        likeRepository.deleteByPost(id);
+    }
 }

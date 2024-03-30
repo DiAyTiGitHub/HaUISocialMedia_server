@@ -17,12 +17,17 @@ import java.util.UUID;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
-   // @Query("SELECT p FROM Comment p where p.post =:id")
-    public List<Comment> findAllByPost(Post post);
+    @Query("SELECT p FROM Comment p where p.post.id =:postId order by p.createDate desc")
+    public List<Comment> findAllByPost(@Param("postId") UUID postId);
 //    public Set<Comment> findAllByPost( @Param("id")UUID id);
 
     @Modifying
     @Query("DELETE From Comment c where c.repliedComment.id =:commentParent")
     public void deleteAllByRepliedComment(@Param("commentParent")UUID commentParent);
+
+    @Modifying
+    @Query("DELETE From Comment c where c.post.id =:idPost")
+    public void deleteAllByIdPost(@Param("idPost")UUID idPost);
+
 
 }

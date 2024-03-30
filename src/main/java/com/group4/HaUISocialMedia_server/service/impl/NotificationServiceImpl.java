@@ -105,4 +105,9 @@ public class NotificationServiceImpl implements NotificationService {
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
     }
+
+    @Override
+    public void deleteNotificationByIdPost(UUID idPost) {
+        notificationRepository.deleteNotificationByIdPost(idPost);
+    }
 }
