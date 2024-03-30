@@ -20,40 +20,40 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/all")
-    @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Set<NotificationDto>> getAll(){
-        Set<NotificationDto> res = notificationService.getAllNotifications();
-        if(res == null)
-            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
+//    @GetMapping("/all")
+//    @CrossOrigin(origins = "http://localhost:5173")
+//    public ResponseEntity<Set<NotificationDto>> getAll(){
+//        Set<NotificationDto> res = notificationService.getAllNotifications();
+//        if(res == null)
+//            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+//    }
+//
+//    @PostMapping("/save")
+//    @CrossOrigin(origins = "http://localhost:5173")
+//    public ResponseEntity<NotificationDto> save(@RequestBody NotificationDto notificationDto){
+//        NotificationDto notificationDto1 = notificationService.save(notificationDto);
+//        if(notificationDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        return new ResponseEntity<>(notificationDto1, HttpStatus.OK);
+//    }
+//
+//    @PutMapping("/update")
+//    @CrossOrigin(origins = "http://localhost:5173")
+//    public ResponseEntity<NotificationDto> upate(@RequestBody NotificationDto notificationDto){
+//        NotificationDto notificationDto1 = notificationService.update(notificationDto);
+//        if(notificationDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        return new ResponseEntity<>(notificationDto1, HttpStatus.OK);
+//    }
+//
+//    @DeleteMapping("/delete/{id}")
+//    @CrossOrigin(origins = "http://localhost:5173")
+//    public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
+//        if(notificationService.deleteById(id))
+//            return new ResponseEntity<>(true, HttpStatus.OK);
+//        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+//    }
 
-    @PostMapping("/save")
-    @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<NotificationDto> save(@RequestBody NotificationDto notificationDto){
-        NotificationDto notificationDto1 = notificationService.save(notificationDto);
-        if(notificationDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(notificationDto1, HttpStatus.OK);
-    }
-
-    @PutMapping("/update")
-    @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<NotificationDto> upate(@RequestBody NotificationDto notificationDto){
-        NotificationDto notificationDto1 = notificationService.update(notificationDto);
-        if(notificationDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(notificationDto1, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
-        if(notificationService.deleteById(id))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping("/paging")
+    @PostMapping("/paging")
     @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<NotificationDto>> pagingNotification(@RequestBody SearchObject searchObject){
 //        Set<NotificationDto> res = notificationService.getAnyNotification(searchObject);
