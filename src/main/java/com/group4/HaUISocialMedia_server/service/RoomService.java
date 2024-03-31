@@ -15,19 +15,11 @@ public interface RoomService {
 
     public RoomDto updateRoom(RoomDto dto);
 
-    public void deleteRoom(UUID roomId);
-
-    public Set<MessageDto> pagingLatestMessage(UUID earliestMessageId);
+    public boolean deleteRoom(UUID roomId);
 
     public RoomDto getRoomById(UUID roomId);
 
-    public Room createRoomEntity(RoomDto dto);
-
-    public RoomDto handleAddJoinedUserIntoRoomDTO(Room room);
-
     public List<RoomDto> searchRoom(SearchObject seachObject);
-
-    public String uploadRoomAvatar(MultipartFile fileUpload, UUID roomId);
 
     public RoomDto createGroupChat(NewGroupChat newGroupChat);
 
@@ -40,4 +32,11 @@ public interface RoomService {
     public Set<UserDto> getListFriendNotInRoom(UUID roomId);
 
     public RoomDto addMultipleUsersIntoGroupChat(UUID[] userIds, UUID roomId);
+
+    public Set<RoomDto> getAllJoinedRooms();
+
+    public Set<RoomDto> getAllGroupRooms();
+
+    public Set<RoomDto> getAllPrivateRooms();
+
 }

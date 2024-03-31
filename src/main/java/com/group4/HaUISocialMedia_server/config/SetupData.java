@@ -124,6 +124,15 @@ public class SetupData implements ApplicationRunner {
             dto.setDescription("is a notification");
             messageTypeService.createMessageType(dto);
         }
+
+        MessageType recall = messageTypeService.getMessageTypeEntityByName("recall");
+        if (notification == null) {
+            MessageTypeDto dto = new MessageTypeDto();
+            dto.setCode("006");
+            dto.setName("recall");
+            dto.setDescription("a message which is recalled by creator");
+            messageTypeService.createMessageType(dto);
+        }
     }
 
     @Autowired

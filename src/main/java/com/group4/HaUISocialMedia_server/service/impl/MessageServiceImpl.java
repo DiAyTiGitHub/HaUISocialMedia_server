@@ -1,6 +1,9 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.MessageDto;
+import com.group4.HaUISocialMedia_server.dto.NotificationDto;
+import com.group4.HaUISocialMedia_server.dto.SearchObject;
+import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.MessageRepository;
 import com.group4.HaUISocialMedia_server.repository.RoomRepository;
@@ -32,8 +35,14 @@ public class MessageServiceImpl implements MessageService {
     private RoomService roomService;
 
     @Override
-    public List<MessageDto> findTop10PreviousByMileStone(MessageDto mileStone) {
-        List<MessageDto> data = messageRepository.findTop10ByRoomAndSendDateBeforeOrderBySendDateDesc(mileStone.getRoom().getId(), mileStone.getSendDate(), PageRequest.of(0, 10));
+    public List<MessageDto> findTop20PreviousByMileStone(SearchObject searchObject) {
+        if (searchObject == null) return null;
+        if (searchObject.getMileStoneId() == null) return null;
+
+        Message mileStone = messageRepository.findById(searchObject.getMileStoneId()).orElse(null);
+        if (mileStone == null) return null;
+
+        List<MessageDto> data = messageRepository.findTop10ByRoomAndSendDateBeforeOrderBySendDateDesc(mileStone.getRoom().getId(), mileStone.getSendDate(), PageRequest.of(0, 20));
         List<MessageDto> res = new ArrayList<>();
         for (int i = data.size() - 1; i >= 0; i--) {
             res.add(data.get(i));
@@ -72,11 +81,52 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageDto sendMessage(MessageDto messageDTO) {
-        if (!isInRoomChat(messageDTO)) return null;
+    public MessageDto sendMessage(MessageDto dto) {
+        if (!isInRoomChat(dto)) return null;
 
-//        simpMessagingTemplate.convertAndSendToUser(user.getId().toString(), "/privateMessage", resDto);
+        //create new message entity first
+        Message entity = new Message();
+        entity.setContent(dto.getContent());
 
-        return null;
+        MessageType messageType = messageTypeService.getMessageTypeEntityByName("chat");
+        entity.setMessageType(messageType);
+
+        Room room = roomRepository.findById(dto.getRoom().getId()).orElse(null);
+        if (room == null) return null;
+        entity.setRoom(room);
+
+        User currentUser = userService.getUserEntityById(dto.getUser().getId());
+        if (currentUser == null) return null;
+        entity.setUser(currentUser);
+
+        entity.setSendDate(new Date());
+
+        Message savedMessage = messageRepository.save(entity);
+        if (savedMessage == null) return null;
+
+        Set<UserDto> userInRooms = roomService.getAllJoinedUsersByRoomId(savedMessage.getRoom().getId());
+
+        //send message for all users
+        MessageDto messageDto = new MessageDto(savedMessage);
+        for (UserDto userDto : userInRooms) {
+            simpMessagingTemplate.convertAndSendToUser(userDto.getId().toString(), "/privateMessage", messageDto);
+        }
+
+        //send notification for all users that they've received new message in messenger module
+        NotificationDto notification = new NotificationDto();
+        notification.setActor(new UserDto(currentUser));
+        notification.setCreateDate(new Date());
+
+        for (UserDto userDto : userInRooms) {
+
+            notification.setContent(currentUser.getUsername() + " đã gửi một tin nhắn");
+
+            if (userInRooms.size() == 2) notification.setContent(notification.getContent() + " cho bạn");
+            else notification.setContent(notification.getContent() + " đến cuộc hội thoại nhóm");
+
+            simpMessagingTemplate.convertAndSendToUser(userDto.getId().toString(), "/notification", notification);
+        }
+
+        return messageDto;
     }
 }

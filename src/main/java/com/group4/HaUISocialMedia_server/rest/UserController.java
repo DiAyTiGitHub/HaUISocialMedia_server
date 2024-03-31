@@ -72,4 +72,13 @@ public class UserController {
         if (li == null) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
+
+    @GetMapping("/pagingNewUser")
+    @CrossOrigin(origins = "http://localhost:5173")
+    public ResponseEntity<Set<UserDto>> getCurrentFriends(@RequestBody SearchObject searchObject) {
+        Set<UserDto> res = userService.pagingNewUser(searchObject);
+        if (res == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }
