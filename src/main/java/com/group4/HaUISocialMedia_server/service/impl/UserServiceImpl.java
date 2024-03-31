@@ -22,6 +22,9 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private RelationshipServiceImpl relationshipService;
+
+    @Autowired
     private ClassroomRepository classroomRepository;
 
     @Override
@@ -104,4 +107,23 @@ public class UserServiceImpl implements UserService {
     public User getUserEntityById(UUID userId) {
         return userRepository.findById(userId).orElse(null);
     }
+
+    @Override
+    public Set<UserDto> pagingNewUser(SearchObject searchObject) {
+        User currentUser = getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Set<UserDto> res = new HashSet<>();
+        for (User user : response) {
+            if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
+                if (relationshipService.containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
+            } else
+                res.add(new UserDto(user));
+        }
+
+        return res;
+    }
+
+
 }
