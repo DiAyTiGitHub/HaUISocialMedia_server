@@ -8,7 +8,6 @@ import com.group4.HaUISocialMedia_server.repository.NotificationRepository;
 import com.group4.HaUISocialMedia_server.repository.NotificationTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.NotificationService;
-import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

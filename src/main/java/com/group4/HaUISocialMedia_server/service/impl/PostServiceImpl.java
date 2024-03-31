@@ -53,18 +53,22 @@ public class PostServiceImpl implements PostService {
 
         if (currentUser == null || searchObject == null) return null;
 
-        Post entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
+        Post entity = null;
+        if (searchObject.getMileStoneId() != null)
+            entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
+
         Date mileStoneDate = new Date();
         if (entity != null) mileStoneDate = entity.getCreateDate();
 
         Set<UUID> userIds = new HashSet<>();
+        userIds.add(currentUser.getId());
         List<Relationship> acceptedRelationships = relationshipRepository.findAllAcceptedRelationship(currentUser.getId());
         for (Relationship relationship : acceptedRelationships) {
             userIds.add(relationship.getReceiver().getId());
             userIds.add(relationship.getRequestSender().getId());
         }
 
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(0, 5));
+        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), searchObject.getPageIndex() - 1);
 
         Set<PostDto> res = new HashSet<>(newsFeed);
         for (PostDto postDto : res) {
@@ -149,8 +153,8 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(entity);
 
         //Delete all comment, like by id
-        commentService.deleteAllByIdPost(postId);
-        likeService.deleteByAllByPost(postId);
+        //commentService.deleteAllByIdPost(postId);
+        // likeService.deleteByAllByPost(postId);
         notificationRepository.deleteNotificationByIdPost(postId);
         return true;
     }
@@ -168,7 +172,7 @@ public class PostServiceImpl implements PostService {
         Set<UUID> userIds = new HashSet<>();
         userIds.add(userId);
 
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(0, 5));
+        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), searchObject.getPageIndex() - 1);
 
         Set<PostDto> res = new HashSet<>(newsFeed);
         for (PostDto postDto : res) {
