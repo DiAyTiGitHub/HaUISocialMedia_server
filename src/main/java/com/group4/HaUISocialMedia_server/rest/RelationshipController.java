@@ -51,7 +51,7 @@ public class RelationshipController {
 
     @PostMapping("/friendRequest/sent")
     @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Set<RelationshipDto>> postSentAddFriendRequests(@RequestBody SearchObject searchObject) {
+    public ResponseEntity<Set<RelationshipDto>> pagingSentAddFriendRequests(@RequestBody SearchObject searchObject) {
         Set<RelationshipDto> res = relationshipService.getSentAddFriendRequests(searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

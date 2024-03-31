@@ -68,7 +68,7 @@ public class PostServiceImpl implements PostService {
             userIds.add(relationship.getRequestSender().getId());
         }
 
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), searchObject.getPageIndex() - 1);
+        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), (searchObject.getPageIndex() - 1)*searchObject.getPageSize());
 
         Set<PostDto> res = new HashSet<>(newsFeed);
         for (PostDto postDto : res) {
@@ -85,7 +85,7 @@ public class PostServiceImpl implements PostService {
         if (entity == null) return false;
 
         User currentUser = userService.getCurrentLoginUserEntity();
-        if (entity.getOwner().getId() != currentUser.getId()) return false;
+        if (!entity.getOwner().getId().equals(currentUser.getId())) return false;
 
         return true;
     }
