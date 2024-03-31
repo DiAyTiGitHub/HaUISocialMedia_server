@@ -16,6 +16,6 @@ import java.util.UUID;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
-    @Query(value = "select new com.group4.HaUISocialMedia_server.dto.PostDto(p) from Post p where p.owner.id in :userIds and p.createDate < :mileStone order by p.createDate desc ")
-    List<PostDto> findNext5PostFromMileStone(@Param("userIds") List<UUID> userIds, @Param("mileStone") Date mileStone, Pageable pageable);
+    @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) FROM Post p WHERE p.owner.id IN :userIds AND p.createDate < :mileStone ORDER BY p.createDate DESC LIMIT :limit OFFSET :offset")
+    List<PostDto> findNext5PostFromMileStone(@Param("userIds") List<UUID> userIds, @Param("mileStone") Date mileStone, @Param("limit") int limit, @Param("offset") int offset);
 }

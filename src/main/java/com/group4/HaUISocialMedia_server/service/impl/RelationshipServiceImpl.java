@@ -143,7 +143,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 12));
+        List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
             res.add(new RelationshipDto(relationship));
@@ -184,7 +184,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         return res;
     }
 
-    private boolean containsKeyword(String keyword, User user) {
+    public boolean containsKeyword(String keyword, User user) {
         if (user.getAddress().contains(keyword)) return true;
         if (user.getUsername().contains(keyword)) return true;
         if (user.getEmail().contains(keyword)) return true;

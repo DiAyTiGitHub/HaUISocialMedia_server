@@ -21,9 +21,9 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/newsfeed")
+    @PostMapping("/newsfeed")
     @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Set<PostDto>> getNewsFeed(@RequestBody SearchObject searchObject) {
+    public ResponseEntity<Set<PostDto>> pagingNewsFeed(@RequestBody SearchObject searchObject) {
         Set<PostDto> res = postService.getNewsFeed(searchObject);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -46,7 +46,6 @@ public class PostController {
     }
 
     @PostMapping
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto dto) {
         PostDto res = postService.createPost(dto);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

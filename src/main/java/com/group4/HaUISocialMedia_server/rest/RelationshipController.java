@@ -75,4 +75,6 @@ public class RelationshipController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+
 }
