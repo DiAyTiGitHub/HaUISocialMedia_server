@@ -67,7 +67,8 @@ public class RelationshipController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/friends/{userId}")
+
+    @GetMapping("/friends/{userId}")
     public ResponseEntity<Set<UserDto>> pagingFriendsOfUser(@PathVariable UUID userId, @RequestBody SearchObject searchObject) {
         Set<UserDto> res = relationshipService.getFriendsOfUser(userId, searchObject);
         if (res == null)
