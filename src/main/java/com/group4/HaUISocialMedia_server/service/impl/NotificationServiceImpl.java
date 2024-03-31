@@ -101,7 +101,7 @@ public class NotificationServiceImpl implements NotificationService {
         User currentUser = userService.getCurrentLoginUserEntity();
 
         Set<NotificationDto> res = new HashSet<>();
-        List<Notification> li = notificationRepository.pagingNotificationByUserId(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), 12));
+        List<Notification> li = notificationRepository.pagingNotificationByUserId(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
     }
