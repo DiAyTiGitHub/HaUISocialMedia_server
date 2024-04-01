@@ -36,10 +36,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(UUID userId)
-    {
-        Optional<User> user = userRepository.findById(userId);
-        return user.map(UserDto::new).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDto getById(UUID userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) return null;
+        UserDto userDto = new UserDto(user);
+        return userDto;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto updateUser(UserDto dto) {
         User entity = userRepository.findById(dto.getId()).orElse(null);
-        if(entity == null)
+        if (entity == null)
             return null;
         entity.setCode(dto.getCode());
         entity.setFirstName(dto.getFirstName());
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
         entity.setGender(dto.isGender());
         entity.setBirthDate(dto.getBirthDate());
 
-        if(dto.getClassroomDto() != null)
+        if (dto.getClassroomDto() != null)
             entity.setClassroom(classroomRepository.findById(dto.getClassroomDto().getId()).orElse(null));
         userRepository.saveAndFlush(entity);
         return dto;
@@ -113,7 +114,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         Set<UserDto> res = new HashSet<>();
         for (User user : response) {
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
@@ -123,6 +124,14 @@ public class UserServiceImpl implements UserService {
         }
 
         return res;
+    }
+
+    @Override
+    public UserDto getRelationship(UUID userId) {
+        User currentUser = getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+        
+
     }
 
 

@@ -27,4 +27,6 @@ public interface UserService {
     public User getUserEntityById(UUID userId);
 
     public Set<UserDto> pagingNewUser(SearchObject searchObject);
+
+    public UserDto getRelationship(UUID userId) ;
 }

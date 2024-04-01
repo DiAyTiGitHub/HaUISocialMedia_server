@@ -32,6 +32,7 @@ public class UserDto {
     private String role;
     private String phoneNumber;
     private ClassroomDto classroomDto;
+    private RelationshipDto relationshipDto;
 //    private Set<UserCourse> userCourses;
 //    private Set<Message> messages;
 //    private Set<UserRoom> userRooms;
