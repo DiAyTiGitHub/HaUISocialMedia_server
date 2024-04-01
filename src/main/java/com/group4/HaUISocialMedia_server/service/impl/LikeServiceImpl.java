@@ -107,6 +107,8 @@ public class LikeServiceImpl implements LikeService {
         if (post == null)
             return false;
 
+        if(likeRepository.findByUserAndPost(postId, user.getId()) == null)
+            return false;
         likeRepository.deleteByIdPost(postId, user.getId());
 
         Notification oldNotification = notificationRepository.getOldLikeNotification(post.getOwner().getId(), postId);
