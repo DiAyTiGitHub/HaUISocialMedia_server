@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ public class RoomDto {
     private String color;
     private RoomTypeDto roomType;
     private Set<UserDto> participants;
+    private List<MessageDto> messages;
 
     public RoomDto(Room entity) {
         this.id = entity.getId();
