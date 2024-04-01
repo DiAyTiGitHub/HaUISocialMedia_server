@@ -52,6 +52,8 @@ public class LikeServiceImpl implements LikeService {
         like.setUserLike(user);
         like.setPost(post);
 
+        if(likeRepository.findByUserAndPost(postId, user.getId()) != null)
+            return null;
         //Get the recipient notification
         //first check whether that notification for this post is existed or not
         User receiverUser = post.getOwner();
@@ -112,9 +114,11 @@ public class LikeServiceImpl implements LikeService {
         //handling for notification
         int numsOfOldLikes = getListLikesOfPost(postId).size();
         if (numsOfOldLikes == 1) {
+
             // only one person likes this post, this person dislikes the post, then the notification for this post of owner will be deleted
             notificationRepository.delete(oldNotification);
         } else {
+
             // update content of old notification, just -1 numsOfLikes for the post
             oldNotification.setCreateDate(new Date());
             List<Like> likesOfPost = likeRepository.findByPost(postId);
