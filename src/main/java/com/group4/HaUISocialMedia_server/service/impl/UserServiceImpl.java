@@ -128,10 +128,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getRelationship(UUID userId) {
-        User currentUser = getCurrentLoginUserEntity();
-        if (currentUser == null) return null;
+//        User currentUser = getCurrentLoginUserEntity();
+//        if (currentUser == null) return null;
         
-
+        return null;
     }
 
 
