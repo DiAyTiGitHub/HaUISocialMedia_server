@@ -69,9 +69,9 @@ public class PostServiceImpl implements PostService {
             userIds.add(relationship.getRequestSender().getId());
         }
 
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), (searchObject.getPageIndex() - 1)*searchObject.getPageSize());
+        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
-        //Cách 2: Truyền đối tượng
+        //Cách 2: Truyền tham so
         // List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
        //Vì khi đưa List vào Set thì thứ tự sắp xếp từ trước nó đã bị thay đổi ví dụ 9 8 7 6 -> set sẽ thành 9 7 6 8
@@ -181,9 +181,11 @@ public class PostServiceImpl implements PostService {
         userIds.add(userId);
 
         //List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize(), Sort.by("createDate")));
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), (searchObject.getPageIndex() - 1)*searchObject.getPageSize());
+//        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), (searchObject.getPageIndex() - 1)*searchObject.getPageSize());
+        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
-        Set<PostDto> res = new HashSet<>(newsFeed);
+        Set<PostDto> res = new TreeSet<>((post1, post2) -> post2.getCreateDate().compareTo(post1.getCreateDate()));
+        res.addAll(newsFeed);
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
