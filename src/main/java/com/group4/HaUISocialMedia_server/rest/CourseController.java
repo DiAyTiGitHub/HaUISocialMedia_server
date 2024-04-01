@@ -21,7 +21,6 @@ public class CourseController {
     private CourseService courseService;
 
     @GetMapping("/all")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<CourseDto>> getAllCourses(){
         Set<CourseDto> se = courseService.findAll();
         if(se == null)
@@ -31,7 +30,6 @@ public class CourseController {
 
     @PostMapping("/add")
     @Transactional
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CourseDto> addCourse(@RequestBody CourseDto courseDto){
         CourseDto courseDto1 = courseService.save(courseDto);
         if(courseDto1 == null)
@@ -41,7 +39,6 @@ public class CourseController {
 
     @PutMapping("/update")
     @Transactional
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto){
         CourseDto reposeDto = courseService.update(courseDto);
         if(reposeDto == null)
@@ -51,7 +48,6 @@ public class CourseController {
 
     @DeleteMapping("/delete/{id}")
     @Transactional
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
         if(courseService.getById(id) == null)
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -59,9 +55,8 @@ public class CourseController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-    @GetMapping("/paging")
-    @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Set<CourseDto>> getAnyCourse(@RequestBody SearchObject searchObject){
+    @PostMapping("/paging")
+    public ResponseEntity<Set<CourseDto>> pagingCourse(@RequestBody SearchObject searchObject){
         Set<CourseDto> se = courseService.pagingCourses(searchObject);
         if(se == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

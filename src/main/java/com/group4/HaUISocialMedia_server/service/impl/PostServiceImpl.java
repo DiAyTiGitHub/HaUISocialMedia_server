@@ -9,6 +9,7 @@ import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +71,14 @@ public class PostServiceImpl implements PostService {
 
         List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), (searchObject.getPageIndex() - 1)*searchObject.getPageSize());
 
-        Set<PostDto> res = new HashSet<>(newsFeed);
+        //Cách 2: Truyền đối tượng
+        // List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+
+       //Vì khi đưa List vào Set thì thứ tự sắp xếp từ trước nó đã bị thay đổi ví dụ 9 8 7 6 -> set sẽ thành 9 7 6 8
+        //Nên chúng ta cần dùng Lamda collection để có thể sắp xếp nó
+        Set<PostDto> res = new TreeSet<>((post1, post2) -> post2.getCreateDate().compareTo(post1.getCreateDate()));
+        res.addAll(newsFeed);
+
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
@@ -172,7 +180,8 @@ public class PostServiceImpl implements PostService {
         Set<UUID> userIds = new HashSet<>();
         userIds.add(userId);
 
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), searchObject.getPageIndex() - 1);
+        //List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize(), Sort.by("createDate")));
+        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), (searchObject.getPageIndex() - 1)*searchObject.getPageSize());
 
         Set<PostDto> res = new HashSet<>(newsFeed);
         for (PostDto postDto : res) {

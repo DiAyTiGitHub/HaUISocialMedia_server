@@ -6,7 +6,6 @@ import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.Classroom;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
-import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.ClassroomService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
