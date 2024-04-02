@@ -68,7 +68,7 @@ public class UserController {
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
-    @GetMapping("/pagingNewUser")
+    @PostMapping("/pagingNewUser")
     public ResponseEntity<Set<UserDto>> getCurrentFriends(@RequestBody SearchObject searchObject) {
         Set<UserDto> res = userService.pagingNewUser(searchObject);
         if (res == null)
