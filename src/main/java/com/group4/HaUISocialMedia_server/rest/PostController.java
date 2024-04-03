@@ -28,8 +28,8 @@ public class PostController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/newsfeed/{userId}")
-    public ResponseEntity<Set<PostDto>> getPostsOfUser(@PathVariable UUID userId, @RequestBody SearchObject searchObject) {
+    @PostMapping("/newsfeed/{userId}")
+    public ResponseEntity<Set<PostDto>> getPostsOfUser(@PathVariable("userId") UUID userId, @RequestBody SearchObject searchObject) {
         Set<PostDto> res = postService.getPostsOfUser(userId, searchObject);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
