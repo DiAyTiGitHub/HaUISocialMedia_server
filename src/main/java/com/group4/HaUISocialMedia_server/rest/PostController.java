@@ -21,16 +21,14 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/newsfeed")
-    @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Set<PostDto>> getNewsFeed(@RequestBody SearchObject searchObject) {
+    @PostMapping("/newsfeed")
+    public ResponseEntity<Set<PostDto>> pagingNewsFeed(@RequestBody SearchObject searchObject) {
         Set<PostDto> res = postService.getNewsFeed(searchObject);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/newsfeed/{userId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<PostDto>> getPostsOfUser(@PathVariable UUID userId, @RequestBody SearchObject searchObject) {
         Set<PostDto> res = postService.getPostsOfUser(userId, searchObject);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -38,7 +36,6 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<PostDto> getById(@PathVariable UUID postId) {
         PostDto res = postService.getById(postId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -46,7 +43,6 @@ public class PostController {
     }
 
     @PostMapping
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto dto) {
         PostDto res = postService.createPost(dto);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -54,7 +50,6 @@ public class PostController {
     }
 
     @PutMapping
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto dto) {
         if (!postService.hasAuthorityToChange(dto.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 
@@ -65,7 +60,6 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Boolean> deletePost(@PathVariable("postId") UUID postId) {
         if (!postService.hasAuthorityToChange(postId)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 

@@ -20,7 +20,6 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping("/children/{commentId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<CommentDto>> getSubComments(@PathVariable("commentId") UUID commentId) {
         Set<CommentDto> res = commentService.getSubCommentOfComment(commentId);
         if (res == null) return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
@@ -28,7 +27,6 @@ public class CommentController {
     }
 
     @GetMapping("/forPost/{postId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<CommentDto>> getParentCommentOfPost(@PathVariable("postId") UUID postId) {
         Set<CommentDto> res = commentService.getParentCommentsOfPost(postId);
         if (res == null) return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
@@ -36,7 +34,6 @@ public class CommentController {
     }
 
     @GetMapping("/getById/{commentId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CommentDto> getById(@PathVariable("commentId") UUID id) {
         CommentDto commentDto = commentService.getById(id);
         if(commentDto == null)
@@ -45,7 +42,6 @@ public class CommentController {
     }
 
     @PostMapping()
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto dto) {
         CommentDto commentDto = commentService.createComment(dto);
         if(commentDto == null)
@@ -54,7 +50,6 @@ public class CommentController {
     }
 
     @PutMapping()
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CommentDto> updateComment(@RequestBody CommentDto dto) {
 
         CommentDto commentDto = commentService.updateComment(dto);
@@ -63,7 +58,6 @@ public class CommentController {
         return new ResponseEntity<>(commentDto, HttpStatus.OK);    }
 
     @DeleteMapping("/deleteById/{commentId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<CommentDto> deleteComment(@PathVariable("commentId") UUID commentId) {
         CommentDto commentDto = commentService.deleteComment(commentId);
         if(commentDto == null)

@@ -25,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query( "select u from User u where u.role = 'USER' and u.id not in (select r.requestSender.id from Relationship r where r.requestSender.id = :currentUserId and r.state = true ) or u.id not in (select r.receiver.id from Relationship r where r.receiver.id = :currentUserId and r.state = true )")
     List<User> findNewFriend(@Param("currentUserId") UUID currentUserId, Pageable pageable);
+
+
 }

@@ -33,21 +33,18 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<UserDto> getById(@PathVariable("id") UUID id) {
         if (userService.getById(id) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);
     }
 
     @GetMapping("/username/{name}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<UserDto> getByName(@PathVariable("name") String name) {
         if (userService.getByUserName(name) == null) new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(userService.getByUserName(name), HttpStatus.OK);
     }
 
     @GetMapping("/delete/{id}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id") UUID id) {
         UserDto userDto = userService.getById(id);
         if (userDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -56,7 +53,6 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
         UserDto userDto1 = userService.getById(userDto.getId());
         if (userDto1 == null)
@@ -66,19 +62,21 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<UserDto>> getByUsername(@RequestBody SearchObject searchObject) {
         Set<UserDto> li = userService.searchByUsername(searchObject);
         if (li == null) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
-    @GetMapping("/pagingNewUser")
-    @CrossOrigin(origins = "http://localhost:5173")
+    @PostMapping("/pagingNewUser")
     public ResponseEntity<Set<UserDto>> getCurrentFriends(@RequestBody SearchObject searchObject) {
         Set<UserDto> res = userService.pagingNewUser(searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+
+
+
 }

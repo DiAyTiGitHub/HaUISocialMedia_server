@@ -17,7 +17,6 @@ public class MessengerModuleController {
     private MessageService messageService;
 
     @MessageMapping("/privateMessage")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<MessageDto> spreadMessageToRoomId(@Payload MessageDto message) {
         MessageDto res = messageService.sendMessage(message);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

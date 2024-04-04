@@ -22,7 +22,6 @@ public class LikeController {
     private LikeService likeService;
 
     @PostMapping("/{postId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<LikeDto> likeAPost(@PathVariable("postId") UUID postId) {
         LikeDto res = likeService.likeAPost(postId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -30,7 +29,6 @@ public class LikeController {
     }
 
     @GetMapping("/{postId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<LikeDto>> getListLikesOfPost(@PathVariable("postId") UUID postId) {
         Set<LikeDto> res = likeService.getListLikesOfPost(postId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -38,7 +36,6 @@ public class LikeController {
     }
 
     @DeleteMapping("/{postId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Boolean> dislikeAPost(@PathVariable("postId") UUID postId) {
         boolean res = likeService.dislikeAPost(postId);
         if (res == false) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

@@ -1,7 +1,9 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.entity.Relationship;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.*;
 
@@ -114,7 +117,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
         Set<UserDto> res = new HashSet<>();
         for (User user : response) {
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
@@ -126,13 +129,8 @@ public class UserServiceImpl implements UserService {
         return res;
     }
 
-    @Override
-    public UserDto getRelationship(UUID userId) {
-//        User currentUser = getCurrentLoginUserEntity();
-//        if (currentUser == null) return null;
-        
-        return null;
-    }
+
+
 
 
 }

@@ -23,7 +23,6 @@ public class RelationshipController {
     private RelationshipService relationshipService;
 
     @PostMapping("/friendRequest/{receiverId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<RelationshipDto> sendAddFriendRequest(@PathVariable UUID receiverId) {
         RelationshipDto se = relationshipService.sendAddFriendRequest(receiverId);
         if (se == null)
@@ -32,7 +31,6 @@ public class RelationshipController {
     }
 
     @PostMapping("/acceptRequest/{relationshipId}")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<RelationshipDto> acceptFriendRequest(@PathVariable UUID relationshipId) {
         RelationshipDto se = relationshipService.acceptFriendRequest(relationshipId);
         if (se == null)
@@ -41,7 +39,6 @@ public class RelationshipController {
     }
 
     @PostMapping("/friendRequest/pending")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<RelationshipDto>> pagingPendingFriendRequests(@RequestBody SearchObject searchObject) {
         Set<RelationshipDto> se = relationshipService.getPendingFriendRequests(searchObject);
         if (se == null)
@@ -50,8 +47,7 @@ public class RelationshipController {
     }
 
     @PostMapping("/friendRequest/sent")
-    @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Set<RelationshipDto>> postSentAddFriendRequests(@RequestBody SearchObject searchObject) {
+    public ResponseEntity<Set<RelationshipDto>> pagingSentAddFriendRequests(@RequestBody SearchObject searchObject) {
         Set<RelationshipDto> res = relationshipService.getSentAddFriendRequests(searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -59,7 +55,6 @@ public class RelationshipController {
     }
 
     @PostMapping("/currentFriends")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<Set<UserDto>> pagingCurrentFriends(@RequestBody SearchObject searchObject) {
         Set<UserDto> res = relationshipService.getCurrentFriends(searchObject);
         if (res == null)
@@ -67,13 +62,20 @@ public class RelationshipController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+
     @PostMapping("/friends/{userId}")
-    public ResponseEntity<Set<UserDto>> pagingFriendsOfUser(@PathVariable UUID userId, @RequestBody SearchObject searchObject) {
-        Set<UserDto> res = relationshipService.getFriendsOfUser(userId, searchObject);
+    public ResponseEntity<Set<UserDto>> pagingFriendsOfUser(@PathVariable("userId") UUID userId, @RequestBody SearchObject searchObject) {
+            Set<UserDto> res = relationshipService.getFriendsOfUser(userId, searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-
+    @DeleteMapping("/unacceptFriend/{relationshipId}")
+    public ResponseEntity<Boolean> unFriendRequest(@PathVariable("relationshipId") UUID relationshipId) {
+        RelationshipDto res = relationshipService.unFriendRequest(relationshipId);
+        if (res == null)
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    }
 }

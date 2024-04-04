@@ -28,9 +28,6 @@ public class CommentServiceImpl implements CommentService {
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private NotificationService notificationService;
 
     @Autowired

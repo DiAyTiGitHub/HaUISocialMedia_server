@@ -19,4 +19,6 @@ public interface RelationshipService {
     public Set<UserDto> getCurrentFriends(SearchObject searchObject);
 
     public Set<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject);
+
+    public RelationshipDto unFriendRequest(UUID relationshipId);
 }
