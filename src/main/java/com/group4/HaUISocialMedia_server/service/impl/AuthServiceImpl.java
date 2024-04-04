@@ -18,6 +18,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -65,17 +70,46 @@ public class AuthServiceImpl implements AuthService {
             Classroom studentClass = classroomRepository.findById(dto.getClassroomDto().getId()).orElse(null);
             if (studentClass != null) newUser.setClassroom(studentClass);
         }
-        if (dto.getCode() != null) {
+        if (dto.getCode() != null)
             newUser.setCode(dto.getCode());
-        }
-        if (dto.getFirstName() != null) {
-            newUser.setFirstName(dto.getFirstName());
-        }
-        if (dto.getLastName() != null) {
-            newUser.setLastName(dto.getLastName());
-        }
 
+        if (dto.getFirstName() != null)
+            newUser.setFirstName(dto.getFirstName());
+
+        if (dto.getLastName() != null)
+            newUser.setLastName(dto.getLastName());
+
+        newUser.setGender(dto.isGender());
+
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        Date birthDate = null;
+//        try {
+//            birthDate = dateFormat.parse(dto.getBirthDate()));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+//        Date birthDate = null;
+//        try {
+//            birthDate = dateFormat.parse(String.valueOf(dto.getBirthDate()));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        newUser.setBirthDate(dto.getBirthDate());
+//        newUser.setBirthDate(dto.getBirthDate());
+
+        if(dto.getAddress() != null)
+            newUser.setAddress(dto.getAddress());
+
+        if(dto.getPhoneNumber() != null)
+            newUser.setPhoneNumber(dto.getPhoneNumber());
+
+        if(dto.getEmail() != null)
+            newUser.setEmail(dto.getEmail());
         newUser.setRole(Role.USER.name());
+
+        if(dto.getAvatar() != null)
+            newUser.setAvatar(dto.getAvatar());
 
         User savedUser = userRepository.save(newUser);
         return new UserDto(savedUser);
