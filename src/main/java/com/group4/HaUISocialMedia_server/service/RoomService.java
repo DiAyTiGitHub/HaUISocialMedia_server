@@ -25,18 +25,16 @@ public interface RoomService {
 
     public RoomDto unjoinGroupChat(UUID groupChatId);
 
-    public RoomDto addUserIntoGroupChat(UUID userId, UUID roomId);
-
     public boolean isInRoomChat(UUID roomId);
 
     public Set<UserDto> getListFriendNotInRoom(UUID roomId);
 
     public RoomDto addMultipleUsersIntoGroupChat(UUID[] userIds, UUID roomId);
 
-    public Set<RoomDto> getAllJoinedRooms();
+    public List<RoomDto> getAllJoinedRooms();
 
-    public Set<RoomDto> getAllGroupRooms();
+    public List<RoomDto> getAllGroupRooms();
 
-    public Set<RoomDto> getAllPrivateRooms();
+    public List<RoomDto> getAllPrivateRooms();
 
 }

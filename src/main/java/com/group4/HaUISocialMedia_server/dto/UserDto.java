@@ -53,6 +53,8 @@ public class UserDto {
         this.phoneNumber = entity.getPhoneNumber();
         this.address = entity.getAddress();
         this.birthDate = entity.getBirthDate();
+        this.gender = entity.isGender();
+        this.avatar = entity.getAvatar();
 
         if (entity.getClassroom() != null)
             this.classroomDto = new ClassroomDto(entity.getClassroom());

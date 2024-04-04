@@ -76,14 +76,6 @@ public class RoomController {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/group/{userId}/{roomId}")
-    public ResponseEntity<RoomDto> addSingleUserIntoGroupChat(@PathVariable UUID userId, @PathVariable UUID roomId) {
-        RoomDto res = roomService.addUserIntoGroupChat(userId, roomId);
-        if (res != null)
-            return new ResponseEntity<RoomDto>(res, HttpStatus.OK);
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    }
-
     @PostMapping("/group/{roomId}")
     public ResponseEntity<RoomDto> addUsersIntoGroupChat(@PathVariable UUID roomId, @RequestBody UUID[] userIds) {
         RoomDto res = roomService.addMultipleUsersIntoGroupChat(userIds, roomId);
@@ -101,24 +93,24 @@ public class RoomController {
     }
 
     @GetMapping("/joinedRooms")
-    public ResponseEntity<Set<RoomDto>> getAllJoinedRooms() {
-        Set<RoomDto> res = roomService.getAllJoinedRooms();
+    public ResponseEntity<List<RoomDto>> getAllJoinedRooms() {
+        List<RoomDto> res = roomService.getAllJoinedRooms();
         if (res != null)
             return new ResponseEntity<>(res, HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/joinedGroupRooms")
-    public ResponseEntity<Set<RoomDto>> getAllGroupRooms() {
-        Set<RoomDto> res = roomService.getAllGroupRooms();
+    public ResponseEntity<List<RoomDto>> getAllGroupRooms() {
+        List<RoomDto> res = roomService.getAllGroupRooms();
         if (res != null)
             return new ResponseEntity<>(res, HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/joinedPrivateRooms")
-    public ResponseEntity<Set<RoomDto>> getListFriendNotInRoom() {
-        Set<RoomDto> res = roomService.getAllPrivateRooms();
+    public ResponseEntity<List<RoomDto>> getListFriendNotInRoom() {
+        List<RoomDto> res = roomService.getAllPrivateRooms();
         if (res != null)
             return new ResponseEntity<>(res, HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

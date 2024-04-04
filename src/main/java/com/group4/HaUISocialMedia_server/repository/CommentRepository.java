@@ -17,7 +17,7 @@ import java.util.UUID;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
-    @Query("SELECT p FROM Comment p where p.post.id =:postId order by p.createDate desc")
+    @Query("SELECT p FROM Comment p where p.post.id =:postId and p.repliedComment IS null order by p.createDate desc")
     public List<Comment> findAllByPost(@Param("postId") UUID postId);
 //    public Set<Comment> findAllByPost( @Param("id")UUID id);
 
