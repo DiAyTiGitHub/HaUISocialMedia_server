@@ -174,7 +174,10 @@ public class PostServiceImpl implements PostService {
 
         if (currentUser == null || searchObject == null) return null;
 
-        Post entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
+        Post entity = null;
+        if (searchObject.getMileStoneId() != null)
+            entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
+
         Date mileStoneDate = new Date();
         if (entity != null) mileStoneDate = entity.getCreateDate();
 
