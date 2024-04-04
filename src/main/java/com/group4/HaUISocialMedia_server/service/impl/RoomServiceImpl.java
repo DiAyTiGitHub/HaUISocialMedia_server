@@ -55,7 +55,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDto createRoom(RoomDto dto) {
-        if(roomRepository.findById(dto.getId()).orElse(null) != null)
+        if (roomRepository.findById(dto.getId()).orElse(null) != null)
             return null;
 
         Room room = new Room();
@@ -67,7 +67,7 @@ public class RoomServiceImpl implements RoomService {
         room.setColor(dto.getColor());
         RoomType roomType = roomTypeRepository.findByName("public");
         room.setRoomType(roomType);
-       // room.setRelationship(dt);
+        // room.setRelationship(dt);
         //room.setRoomType();
         return new RoomDto(roomRepository.save(room));
     }
@@ -75,7 +75,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDto updateRoom(RoomDto dto) {
         Room room = roomRepository.findById(dto.getId()).orElse(null);
-        if(room == null)
+        if (room == null)
             return null;
 
         room.setName(dto.getName());
@@ -84,10 +84,10 @@ public class RoomServiceImpl implements RoomService {
         room.setCreateDate(new Date());
         room.setDescription(dto.getDescription());
         room.setColor(dto.getColor());
-        if(room.getUserRooms().size() >= 3){
+        if (room.getUserRooms().size() >= 3) {
             RoomType roomType = roomTypeRepository.findByName("group");
             room.setRoomType(roomType);
-        }else{
+        } else {
             RoomType roomType = roomTypeRepository.findByName("private");
             room.setRoomType(roomType);
         }
@@ -96,7 +96,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public boolean deleteRoom(UUID roomId) {
-        if(roomRepository.findById(roomId).orElse(null) == null)
+        if (roomRepository.findById(roomId).orElse(null) == null)
             return false;
         roomRepository.deleteById(roomId);
         return true;
@@ -105,7 +105,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDto getRoomById(UUID roomId) {
         Room room = roomRepository.findById(roomId).orElse(null);
-        if(room == null)
+        if (room == null)
             return null;
         return new RoomDto(room);
     }
@@ -113,7 +113,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomDto> searchRoom(SearchObject seachObject) {
         User user = userService.getCurrentLoginUserEntity();
-        List<UserRoom> userRooms = userRoomRepository.findAllRoomByUser(user.getId(), (Pageable) PageRequest.of(seachObject.getPageIndex(), seachObject.getPageSize()), seachObject.getKeyWord());
+        List<UserRoom> userRooms = userRoomRepository.findAllRoomByUser(user.getId(), seachObject.getKeyWord(), PageRequest.of(seachObject.getPageIndex(), seachObject.getPageSize()));
         List<RoomDto> res = new ArrayList<>();
         userRooms.forEach(x -> res.add(new RoomDto(x.getRoom())));
         return res;

@@ -44,7 +44,11 @@ public class UserCourseServiceImpl implements UserCourseService {
     @Override
     public UserCourseDto createUserCourse(UserCourseDto dto) {
         if (dto == null) return null;
+
         User currentUser = userService.getCurrentLoginUserEntity();
+        if (dto.getUser() != null) {
+            currentUser = userService.getUserEntityById(dto.getUser().getId());
+        }
         if (currentUser == null) return null;
 
         if (dto.getCourse() == null) return null;
