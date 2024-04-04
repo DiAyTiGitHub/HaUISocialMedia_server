@@ -46,6 +46,9 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    @Autowired
+    private MessageRepository messageRepository;
+
     @Override
     public RelationshipDto sendAddFriendRequest(UUID receiverId) {
         Relationship entity = new Relationship();
@@ -63,6 +66,12 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         Relationship savedEntity = relationshipRepository.save(entity);
 
+        //set Relationship
+        UserDto recieverDto = new UserDto(receiver);
+        RelationshipDto relationshipDto = new RelationshipDto(entity);
+        recieverDto.setRelationshipDto(relationshipDto);
+
+        //
         NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Friend");
 
         Notification notification = new Notification();
@@ -78,7 +87,6 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         //send this noti via socket (do later)
         simpMessagingTemplate.convertAndSendToUser(receiver.getId().toString(), "/notification", willSendNoti);
-
         return new RelationshipDto(savedEntity);
     }
 
@@ -134,6 +142,11 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         //send this noti via socket (do later)
         simpMessagingTemplate.convertAndSendToUser(requestSender.getId().toString(), "/notification", willSendNoti);
+
+        //set Relationship
+        UserDto recieverDto = new UserDto(requestSender);
+        RelationshipDto relationshipDto = new RelationshipDto(entity);
+        recieverDto.setRelationshipDto(relationshipDto);
 
         return new RelationshipDto(savedRelationship);
     }
@@ -208,5 +221,31 @@ public class RelationshipServiceImpl implements RelationshipService {
         }
 
         return res;
+    }
+
+    @Override
+    public RelationshipDto unFriendRequest(UUID relationshipId) {
+        Relationship entity = relationshipRepository.findById(relationshipId).orElse(null);
+        if (entity == null) return null;
+        //delete notification
+        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
+        notificationRepository.deleteNotificationAcceptFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
+        //delete message
+        messageRepository.deleteMessageByRoomId(entity.getRoom().getId());
+        //delete room user
+        UserRoom userRoom = new UserRoom();
+        userRoom = userRoomRepository.deleteUserRoomByRoom(entity.getRoom());
+        //set room
+//        Room room = roomRepository.findById(entity.getRoom().getId()).orElse(null);
+//        room.
+        //delete room
+        roomRepository.deleteById(entity.getRoom().getId());
+        Room room = roomRepository.findById(entity.getRoom().getId()).orElse(null);
+        entity.setRoom(room);
+        relationshipRepository.save(entity);
+        //delete relationship
+        relationshipRepository.deleteById(relationshipId);
+        RelationshipDto relationshipDto = new RelationshipDto(entity);
+        return relationshipDto;
     }
 }

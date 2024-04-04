@@ -83,9 +83,6 @@ public class User implements Serializable {
     @JsonIgnore
     private Set<Relationship> receivers;
 
-    @OneToMany(mappedBy = "owner")
-    private Set<Notification> notifications;
-
     @OneToMany(mappedBy = "userLike")
     private Set<Like> likes;
 
@@ -94,6 +91,9 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "actor")
     private Set<Notification> createdNotifications;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<Notification> notifications;
 
     //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "users_roles",

@@ -65,11 +65,17 @@ public class RelationshipController {
 
     @PostMapping("/friends/{userId}")
     public ResponseEntity<Set<UserDto>> pagingFriendsOfUser(@PathVariable("userId") UUID userId, @RequestBody SearchObject searchObject) {
-        Set<UserDto> res = relationshipService.getFriendsOfUser(userId, searchObject);
+            Set<UserDto> res = relationshipService.getFriendsOfUser(userId, searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-
+    @DeleteMapping("/unacceptFriend/{relationshipId}")
+    public ResponseEntity<Boolean> unFriendRequest(@PathVariable("relationshipId") UUID relationshipId) {
+        RelationshipDto res = relationshipService.unFriendRequest(relationshipId);
+        if (res == null)
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+    }
 }
