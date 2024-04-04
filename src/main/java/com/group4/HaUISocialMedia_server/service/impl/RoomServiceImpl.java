@@ -7,12 +7,14 @@ import com.group4.HaUISocialMedia_server.entity.RoomType;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.entity.UserRoom;
 import com.group4.HaUISocialMedia_server.repository.RoomRepository;
+import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRoomRepository;
 import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.security.interfaces.RSAKey;
+import java.awt.print.Pageable;
 import java.util.*;
 
 @Service
@@ -34,6 +36,9 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomTypeService roomTypeService;
 
+    @Autowired
+    private RoomTypeRepository roomTypeRepository;
+
     @Override
     public Set<UserDto> getAllJoinedUsersByRoomId(UUID roomId) {
         if (!isInRoomChat(roomId)) return null;
@@ -50,27 +55,68 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDto createRoom(RoomDto dto) {
-        return null;
+        if(roomRepository.findById(dto.getId()).orElse(null) != null)
+            return null;
+
+        Room room = new Room();
+        room.setName(dto.getName());
+        room.setAvatar(dto.getAvatar());
+        room.setCode(dto.getCode());
+        room.setCreateDate(new Date());
+        room.setDescription(dto.getDescription());
+        room.setColor(dto.getColor());
+        RoomType roomType = roomTypeRepository.findByName("public");
+        room.setRoomType(roomType);
+       // room.setRelationship(dt);
+        //room.setRoomType();
+        return new RoomDto(roomRepository.save(room));
     }
 
     @Override
     public RoomDto updateRoom(RoomDto dto) {
-        return null;
+        Room room = roomRepository.findById(dto.getId()).orElse(null);
+        if(room == null)
+            return null;
+
+        room.setName(dto.getName());
+        room.setAvatar(dto.getAvatar());
+        room.setCode(dto.getCode());
+        room.setCreateDate(new Date());
+        room.setDescription(dto.getDescription());
+        room.setColor(dto.getColor());
+        if(room.getUserRooms().size() >= 3){
+            RoomType roomType = roomTypeRepository.findByName("group");
+            room.setRoomType(roomType);
+        }else{
+            RoomType roomType = roomTypeRepository.findByName("private");
+            room.setRoomType(roomType);
+        }
+        return new RoomDto(roomRepository.saveAndFlush(room));
     }
 
     @Override
     public boolean deleteRoom(UUID roomId) {
-        return false;
+        if(roomRepository.findById(roomId).orElse(null) == null)
+            return false;
+        roomRepository.deleteById(roomId);
+        return true;
     }
 
     @Override
     public RoomDto getRoomById(UUID roomId) {
-        return null;
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if(room == null)
+            return null;
+        return new RoomDto(room);
     }
 
     @Override
     public List<RoomDto> searchRoom(SearchObject seachObject) {
-        return null;
+        User user = userService.getCurrentLoginUserEntity();
+        List<UserRoom> userRooms = userRoomRepository.findAllRoomByUser(user.getId(), (Pageable) PageRequest.of(seachObject.getPageIndex(), seachObject.getPageSize()), seachObject.getKeyWord());
+        List<RoomDto> res = new ArrayList<>();
+        userRooms.forEach(x -> res.add(new RoomDto(x.getRoom())));
+        return res;
     }
 
     @Override
@@ -96,6 +142,7 @@ public class RoomServiceImpl implements RoomService {
         creator.setRoom(roomChat);
         creator.setUser(currentUser);
         creator.setRole("Admin");
+        creator.setJoinDate(new Date());
         UserRoom creatorUserRoom = userRoomRepository.save(creator);
         userRooms.add(creatorUserRoom);
 
@@ -105,6 +152,7 @@ public class RoomServiceImpl implements RoomService {
             ur.setRoom(roomChat);
             ur.setUser(user);
             ur.setRole("Participant");
+            ur.setJoinDate(new Date());
             UserRoom userRoom = userRoomRepository.save(ur);
             userRooms.add(userRoom);
         }
@@ -208,7 +256,7 @@ public class RoomServiceImpl implements RoomService {
         newUserRoom.setNickName(newUser.getUsername());
         newUserRoom.setRoom(addedRoom);
         newUserRoom.setUser(newUser);
-
+        newUserRoom.setJoinDate(new Date());
         UserRoom resEntity = userRoomRepository.save(newUserRoom);
 
         Room updatedRoom = roomRepository.findById(resEntity.getRoom().getId()).orElse(null);
