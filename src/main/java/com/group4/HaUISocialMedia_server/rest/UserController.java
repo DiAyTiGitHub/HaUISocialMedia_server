@@ -54,9 +54,6 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-        UserDto userDto1 = userService.getById(userDto.getId());
-        if (userDto1 == null)
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         userService.updateUser(userDto);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }

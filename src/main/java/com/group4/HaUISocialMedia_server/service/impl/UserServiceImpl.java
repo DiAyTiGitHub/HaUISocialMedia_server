@@ -27,6 +27,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ClassroomRepository classroomRepository;
 
+    @Autowired
+    private UserService userService;
     @Override
     public Set<UserDto> getAllUsers() {
         Set<UserDto> res = new HashSet<>();
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto updateUser(UserDto dto) {
-        User entity = userRepository.findById(dto.getId()).orElse(null);
+        User entity = userService.getCurrentLoginUserEntity();
         if(entity == null)
             return null;
         entity.setCode(dto.getCode());
@@ -67,6 +69,8 @@ public class UserServiceImpl implements UserService {
         entity.setAddress(dto.getAddress());
         entity.setGender(dto.isGender());
         entity.setBirthDate(dto.getBirthDate());
+        entity.setAvatar(dto.getAvatar());
+        entity.setPhoneNumber(dto.getPhoneNumber());
 
         if(dto.getClassroomDto() != null)
             entity.setClassroom(classroomRepository.findById(dto.getClassroomDto().getId()).orElse(null));
