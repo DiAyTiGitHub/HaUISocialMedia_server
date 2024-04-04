@@ -107,6 +107,7 @@ public class PostServiceImpl implements PostService {
         entity.setCreateDate(new Date());
         entity.setContent(dto.getContent());
         entity.setOwner(currentUser);
+        entity.setImage(dto.getImage());
 
         Post savedEntity = postRepository.save(entity);
 

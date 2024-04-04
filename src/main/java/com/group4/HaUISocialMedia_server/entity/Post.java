@@ -31,6 +31,8 @@ public class Post implements Serializable {
     @Column(columnDefinition = "longtext")
     private String content;
 
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "ownerId")
     private User owner;
@@ -43,4 +45,6 @@ public class Post implements Serializable {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
+
+
 }

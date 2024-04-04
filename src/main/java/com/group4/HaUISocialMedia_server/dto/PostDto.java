@@ -22,6 +22,7 @@ public class PostDto {
     private Date createDate;
     private String content;
     private UserDto creator;
+    private String image;
     private Set<LikeDto> likes;
     private Set<CommentDto> comments;
 
@@ -32,7 +33,7 @@ public class PostDto {
         if (entity.getOwner() != null) {
             this.creator = new UserDto(entity.getOwner());
         }
-
+        this.image = entity.getImage();
 //        if (entity.getLikes() != null && !entity.getLikes().isEmpty()) {
 //            this.likes = new HashSet<>();
 //            for (Like likeEntity : entity.getLikes()) {
