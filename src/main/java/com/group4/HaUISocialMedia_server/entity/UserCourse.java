@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -36,4 +37,8 @@ public class UserCourse implements Serializable {
     @ManyToOne
     @JoinColumn(name = "courseResultId")
     private CourseResult courseResult;
+
+    private Date modifyDate;
+
+    private Double score;
 }

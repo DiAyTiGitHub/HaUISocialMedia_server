@@ -1,0 +1,20 @@
+package com.group4.HaUISocialMedia_server.service;
+
+import com.group4.HaUISocialMedia_server.dto.SearchObject;
+import com.group4.HaUISocialMedia_server.dto.UserCourseDto;
+import com.group4.HaUISocialMedia_server.entity.UserCourse;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface UserCourseService {
+    public UserCourseDto getUserCourseById(UUID userCourseId);
+
+    public UserCourseDto createUserCourse(UserCourseDto dto);
+
+    public UserCourseDto updateUserCourse(UserCourseDto dto);
+
+    public boolean deleteUserCourseById(UUID userCourseId);
+
+    public List<UserCourseDto> getUserCourseOfUser(UUID userId);
+}

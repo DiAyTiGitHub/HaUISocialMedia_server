@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -19,18 +20,21 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserCourseDto {
     private UUID id;
-    private UserDto userDto;
-    private CourseDto courseDto;
-    private CourseResultDto courseResultDto;
+    private UserDto user;
+    private CourseDto course;
+    private CourseResultDto courseResult;
+    private Double score;
+    private Date modifyDate;
 
-    public UserCourseDto(UserCourse userCourse){
-        this.id = userCourse.getId();
-        if(userCourse.getUser() != null)
-            this.userDto = new UserDto(userCourse.getUser());
-        if(userCourse.getCourse() != null)
-            this.courseDto = new CourseDto(userCourse.getCourse());
-        if(userCourse.getCourseResult() != null)
-            this.courseResultDto = new CourseResultDto(userCourse.getCourseResult());
-
+    public UserCourseDto(UserCourse entity) {
+        this.id = entity.getId();
+        if (entity.getUser() != null)
+            this.user = new UserDto(entity.getUser());
+        if (entity.getCourseResult() != null)
+            this.courseResult = new CourseResultDto(entity.getCourseResult());
+        if (entity.getCourse() != null)
+            this.course = new CourseDto(entity.getCourse());
+        this.score = entity.getScore();
+        this.modifyDate = entity.getModifyDate();
     }
 }

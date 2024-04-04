@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.service;
 
+
 import com.group4.HaUISocialMedia_server.dto.LikeDto;
 
 import java.util.Set;
@@ -11,6 +12,4 @@ public interface LikeService {
     public Set<LikeDto> getListLikesOfPost(UUID postId);
 
     public boolean dislikeAPost(UUID postId);
-
-    public void deleteByAllByPost(UUID id);
 }

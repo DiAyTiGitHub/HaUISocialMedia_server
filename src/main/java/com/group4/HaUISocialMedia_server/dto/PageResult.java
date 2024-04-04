@@ -5,16 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
+import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchObject {
-    private int pageSize;
-    private int pageIndex;
-    private String keyWord;
-    private UUID mileStoneId;
-    private int type;
+public class PageResult {
+    private Integer totalElements;
+    private List<? extends Object> data;
+    private Integer pageIndex;
+    private Integer pageSize;
+
 }
+
