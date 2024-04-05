@@ -95,6 +95,9 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "owner")
     private Set<Notification> notifications;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private BoardRecord boardRecord;
+
     //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @JoinTable(name = "users_roles",
 //            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

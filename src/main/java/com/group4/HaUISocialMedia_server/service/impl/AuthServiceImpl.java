@@ -98,18 +98,20 @@ public class AuthServiceImpl implements AuthService {
         newUser.setBirthDate(dto.getBirthDate());
 //        newUser.setBirthDate(dto.getBirthDate());
 
-        if(dto.getAddress() != null)
+        if (dto.getAddress() != null)
             newUser.setAddress(dto.getAddress());
 
-        if(dto.getPhoneNumber() != null)
+        if (dto.getPhoneNumber() != null)
             newUser.setPhoneNumber(dto.getPhoneNumber());
 
-        if(dto.getEmail() != null)
+        if (dto.getEmail() != null)
             newUser.setEmail(dto.getEmail());
         newUser.setRole(Role.USER.name());
 
-        if(dto.getAvatar() != null)
+        if (dto.getAvatar() != null)
             newUser.setAvatar(dto.getAvatar());
+
+        newUser.setPhoneNumber(dto.getPhoneNumber());
 
         User savedUser = userRepository.save(newUser);
         return new UserDto(savedUser);

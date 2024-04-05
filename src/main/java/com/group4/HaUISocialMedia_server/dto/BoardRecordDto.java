@@ -1,10 +1,12 @@
 package com.group4.HaUISocialMedia_server.dto;
 
+import com.group4.HaUISocialMedia_server.entity.BoardRecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Setter
@@ -13,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BoardRecordDto {
     private UUID id;
+
     private UserDto user;
 
     private Integer numsOfA;
@@ -28,4 +31,18 @@ public class BoardRecordDto {
     private Integer numsOfDPlus;
 
     private Integer numsOfD;
+
+    private Date lastModifyDate;
+
+    public BoardRecordDto(BoardRecord entity) {
+        this.id = entity.getId();
+        this.numsOfA = entity.getNumsOfA();
+        this.numsOfB = entity.getNumsOfB();
+        this.numsOfBPlus = entity.getNumsOfBPlus();
+        this.numsOfC = entity.getNumsOfC();
+        this.numsOfCPlus = entity.getNumsOfCPlus();
+        this.numsOfD = entity.getNumsOfC();
+        this.numsOfDPlus = entity.getNumsOfCPlus();
+        this.lastModifyDate = entity.getLastModifyDate();
+    }
 }
