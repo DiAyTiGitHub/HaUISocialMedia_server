@@ -104,7 +104,7 @@ public class MessageServiceImpl implements MessageService {
         Message savedMessage = messageRepository.save(entity);
         if (savedMessage == null) return null;
 
-        Set<UserDto> userInRooms = roomService.getAllJoinedUsersByRoomId(savedMessage.getRoom().getId());
+        List<UserDto> userInRooms = roomService.getAllJoinedUsersByRoomId(savedMessage.getRoom().getId());
 
         //send message for all users
         MessageDto messageDto = new MessageDto(savedMessage);

@@ -85,8 +85,8 @@ public class RoomController {
     }
 
     @GetMapping("/group/not-in/{roomId}")
-    public ResponseEntity<Set<UserDto>> getListFriendNotInRoom(@PathVariable UUID roomId) {
-        Set<UserDto> res = roomService.getListFriendNotInRoom(roomId);
+    public ResponseEntity<List<UserDto>> getListFriendNotInRoom(@PathVariable UUID roomId) {
+        List<UserDto> res = roomService.getListFriendNotInRoom(roomId);
         if (res != null)
             return new ResponseEntity<>(res, HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

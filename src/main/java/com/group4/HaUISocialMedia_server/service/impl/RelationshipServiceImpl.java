@@ -180,13 +180,13 @@ public class RelationshipServiceImpl implements RelationshipService {
     }
 
     @Override
-    public Set<UserDto> getCurrentFriends(SearchObject searchObject) {
+    public List<UserDto> getCurrentFriends(SearchObject searchObject) {
 
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
         List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
-        Set<UserDto> res = new HashSet<>();
+        List<UserDto> res = new ArrayList<>();
         for (User user : response) {
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
                 if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
@@ -247,5 +247,32 @@ public class RelationshipServiceImpl implements RelationshipService {
         relationshipRepository.deleteById(relationshipId);
         RelationshipDto relationshipDto = new RelationshipDto(entity);
         return relationshipDto;
+    }
+
+    @Override
+    public List<UserDto> getAllFiends() {
+        User currentUser = userService.getCurrentLoginUserEntity();
+
+        Set<User> friends = new HashSet<User>();
+
+//        for (Relationship relationship : currentUser.getFriendFromRequest()) {
+//            if (relationship.getState()) {
+//                User requestReceiver = relationship.getReceiver();
+//                friends.add(requestReceiver);
+//            }
+//        }
+//        for (Relationship relationship : currentUser.getFriendFromReceive()) {
+//            if (relationship.getState()) {
+//                User requestSender = relationship.getRequestSender();
+//                friends.add(requestSender);
+//            }
+//        }
+
+        List<UserDto> friendList = new ArrayList<>();
+        for (User friend : friends) {
+            friendList.add(new UserDto(friend));
+        }
+
+        return friendList;
     }
 }

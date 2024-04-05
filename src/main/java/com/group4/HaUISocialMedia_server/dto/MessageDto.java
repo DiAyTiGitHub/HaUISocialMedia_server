@@ -33,16 +33,4 @@ public class MessageDto {
             this.messageType = new MessageTypeDto(entity.getMessageType());
     }
 
-    public MessageDto(MessageDto dto) {
-        this.id = dto.getId();
-        this.content = dto.getContent();
-        this.sendDate = dto.getSendDate();
-//        if (dto.getRoom() != null)
-//            this.room = dto.getRoom();
-        if (dto.getUser() != null)
-            this.user = dto.getUser();
-        if (dto.getMessageType() != null)
-            this.messageType = dto.getMessageType();
-    }
-
 }

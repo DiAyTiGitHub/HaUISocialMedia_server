@@ -115,7 +115,7 @@ public class PostServiceImpl implements PostService {
         SearchObject so = new SearchObject();
         so.setPageIndex(1);
         so.setPageSize(5000);
-        Set<UserDto> listFriends = relationshipService.getCurrentFriends(so);
+        List<UserDto> listFriends = relationshipService.getCurrentFriends(so);
         for (UserDto friend : listFriends) {
             Notification noti = new Notification();
             noti.setActor(currentUser);
