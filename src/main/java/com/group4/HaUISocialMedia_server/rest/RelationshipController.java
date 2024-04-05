@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,8 +56,8 @@ public class RelationshipController {
     }
 
     @PostMapping("/currentFriends")
-    public ResponseEntity<Set<UserDto>> pagingCurrentFriends(@RequestBody SearchObject searchObject) {
-        Set<UserDto> res = relationshipService.getCurrentFriends(searchObject);
+    public ResponseEntity<List<UserDto>> pagingCurrentFriends(@RequestBody SearchObject searchObject) {
+        List<UserDto> res = relationshipService.getCurrentFriends(searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);

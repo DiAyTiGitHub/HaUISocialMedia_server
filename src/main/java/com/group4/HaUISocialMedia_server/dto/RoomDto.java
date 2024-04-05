@@ -24,7 +24,7 @@ public class RoomDto {
     private String avatar;
     private String color;
     private RoomTypeDto roomType;
-    private Set<UserDto> participants;
+    private List<UserDto> participants;
     private List<MessageDto> messages;
 
     public RoomDto(Room entity) {

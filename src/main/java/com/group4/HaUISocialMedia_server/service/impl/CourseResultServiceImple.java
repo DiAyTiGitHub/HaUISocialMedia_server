@@ -12,16 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class CourseResultServiceImple implements CourseResultService {
     @Autowired
     private CourseResultRepository courseResultRepository;
+
     @Override
     public Set<CourseResultDto> pagingCourseResult(SearchObject searchObject) {
         Set<CourseResultDto> se = new HashSet<>();
@@ -43,7 +41,7 @@ public class CourseResultServiceImple implements CourseResultService {
     @Override
     public CourseResultDto findById(UUID id) {
         CourseResult courseResult = courseResultRepository.findById(id).orElse(null);
-        if(courseResult == null)
+        if (courseResult == null)
             return null;
         return new CourseResultDto(courseResult);
     }
@@ -51,14 +49,14 @@ public class CourseResultServiceImple implements CourseResultService {
     @Override
     public void deleteById(UUID id) {
         CourseResult courseResult = courseResultRepository.findById(id).orElse(null);
-        if(courseResult == null) return;
+        if (courseResult == null) return;
         courseResultRepository.deleteById(id);
     }
 
     @Override
     public CourseResultDto update(CourseResultDto courseResultDto) {
         CourseResult entity = courseResultRepository.findById(courseResultDto.getId()).orElse(null);
-        if(entity == null) return null;
+        if (entity == null) return null;
         entity.setCode(courseResultDto.getCode());
         entity.setName(courseResultDto.getName());
         entity.setDescription(courseResultDto.getDescription());
@@ -68,10 +66,15 @@ public class CourseResultServiceImple implements CourseResultService {
     }
 
     @Override
-    public Set<CourseResultDto> getAllCourseResult() {
-        List<CourseResult> ds = courseResultRepository.findAll();
-        return ds.stream()
-                .map(CourseResultDto::new)
-                .collect(Collectors.toSet());
+    public List<CourseResultDto> getAllCourseResult() {
+        List<CourseResult> entites = courseResultRepository.findAllResults();
+        if (entites == null) return null;
+
+        List<CourseResultDto> res = new ArrayList<>();
+        for (CourseResult entity : entites) {
+            res.add(new CourseResultDto(entity));
+        }
+
+        return res;
     }
 }

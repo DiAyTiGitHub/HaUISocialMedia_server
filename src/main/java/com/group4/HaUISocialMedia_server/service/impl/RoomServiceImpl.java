@@ -2,16 +2,15 @@ package com.group4.HaUISocialMedia_server.service.impl;
 
 
 import com.group4.HaUISocialMedia_server.dto.*;
-import com.group4.HaUISocialMedia_server.entity.Room;
-import com.group4.HaUISocialMedia_server.entity.RoomType;
-import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.entity.UserRoom;
+import com.group4.HaUISocialMedia_server.entity.*;
+import com.group4.HaUISocialMedia_server.repository.MessageRepository;
 import com.group4.HaUISocialMedia_server.repository.RoomRepository;
 import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRoomRepository;
 import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
@@ -39,13 +38,28 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomTypeRepository roomTypeRepository;
 
+    @Autowired
+    private UserRoomService userRoomService;
+
+    @Autowired
+    private MessageRepository messageRepository;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private RoomService roomService;
+
+    @Autowired
+    private RelationshipService relationshipService;
+
     @Override
-    public Set<UserDto> getAllJoinedUsersByRoomId(UUID roomId) {
+    public List<UserDto> getAllJoinedUsersByRoomId(UUID roomId) {
         if (!isInRoomChat(roomId)) return null;
 
         Room room = roomRepository.findById(roomId).orElse(null);
 
-        Set<UserDto> res = new HashSet<>();
+        List<UserDto> res = new ArrayList<>();
         for (UserRoom ur : room.getUserRooms()) {
             res.add(new UserDto(ur.getUser()));
         }
@@ -55,7 +69,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDto createRoom(RoomDto dto) {
-        if(roomRepository.findById(dto.getId()).orElse(null) != null)
+        if (roomRepository.findById(dto.getId()).orElse(null) != null)
             return null;
 
         Room room = new Room();
@@ -67,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
         room.setColor(dto.getColor());
         RoomType roomType = roomTypeRepository.findByName("public");
         room.setRoomType(roomType);
-       // room.setRelationship(dt);
+        // room.setRelationship(dt);
         //room.setRoomType();
         return new RoomDto(roomRepository.save(room));
     }
@@ -75,7 +89,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDto updateRoom(RoomDto dto) {
         Room room = roomRepository.findById(dto.getId()).orElse(null);
-        if(room == null)
+        if (room == null)
             return null;
 
         room.setName(dto.getName());
@@ -84,10 +98,10 @@ public class RoomServiceImpl implements RoomService {
         room.setCreateDate(new Date());
         room.setDescription(dto.getDescription());
         room.setColor(dto.getColor());
-        if(room.getUserRooms().size() >= 3){
+        if (room.getUserRooms().size() >= 3) {
             RoomType roomType = roomTypeRepository.findByName("group");
             room.setRoomType(roomType);
-        }else{
+        } else {
             RoomType roomType = roomTypeRepository.findByName("private");
             room.setRoomType(roomType);
         }
@@ -96,7 +110,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public boolean deleteRoom(UUID roomId) {
-        if(roomRepository.findById(roomId).orElse(null) == null)
+        if (roomRepository.findById(roomId).orElse(null) == null)
             return false;
         roomRepository.deleteById(roomId);
         return true;
@@ -105,7 +119,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDto getRoomById(UUID roomId) {
         Room room = roomRepository.findById(roomId).orElse(null);
-        if(room == null)
+        if (room == null)
             return null;
         return new RoomDto(room);
     }
@@ -113,7 +127,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomDto> searchRoom(SearchObject seachObject) {
         User user = userService.getCurrentLoginUserEntity();
-        List<UserRoom> userRooms = userRoomRepository.findAllRoomByUser(user.getId(), (Pageable) PageRequest.of(seachObject.getPageIndex(), seachObject.getPageSize()), seachObject.getKeyWord());
+        List<UserRoom> userRooms = userRoomRepository.findAllRoomByUser(user.getId(), seachObject.getKeyWord(), PageRequest.of(seachObject.getPageIndex() - 1, seachObject.getPageSize()));
         List<RoomDto> res = new ArrayList<>();
         userRooms.forEach(x -> res.add(new RoomDto(x.getRoom())));
         return res;
@@ -170,73 +184,77 @@ public class RoomServiceImpl implements RoomService {
         if (response == null)
             return null;
 
-        MessageTypeDto messageTypeDTO = messageTypeService.getMessageTypeByName("join");
-
-        RoomDto responseDto = new RoomDto(response);
-        responseDto.setParticipants(getAllJoinedUsersByRoomId(responseDto.getId()));
-
-        List<MessageDto> spreadMessages = new ArrayList<>();
+        MessageType messageType = messageTypeService.getMessageTypeEntityByName("join");
 
         //send message that creator had created this conversation
-        MessageDto creatorMessageDto = new MessageDto();
-        creatorMessageDto.setMessageType(messageTypeDTO);
-        creatorMessageDto.setRoom(responseDto);
-        creatorMessageDto.setUser(new UserDto(currentUser));
-        creatorMessageDto.setContent(currentUser.getUsername() + " đã tạo cuộc trò chuyện");
-//        MessageDto creatorMessageRes = messageService.createMessageAttachedUser(creatorMessageDto);
-////        simpMessagingTemplate.convertAndSendToUser(currentUser.getId().toString(), "/privateMessage", creatorMessageRes);
-//        spreadMessages.add(creatorMessageRes);
-//
-//        for (User user : joiningUsers) {
-//            if (currentUser.getId().equals(user.getId())) continue;
-//            //send message each user had joined this conversation
-//            MessageDTO messageDto = new MessageDTO();
-//            messageDto.setMessageType(messageTypeDTO);
-//            messageDto.setRoom(responseDto);
-//            messageDto.setUser(new UserDTO(user));
-//            messageDto.setContent(user.getUsername() + " joined");
-//            MessageDTO messageRes = messageService.createMessageAttachedUser(messageDto);
-////            simpMessagingTemplate.convertAndSendToUser(user.getId().toString(), "/privateMessage", messageRes);
-//            spreadMessages.add(messageRes);
-//        }
-//
-//        responseDto.setMessages(spreadMessages);
-//        for (MessageDTO messageDTO : spreadMessages) {
-//            messageDTO.getRoom().setParticipants(roomService.getAllJoinedUsersByRoomId(messageDTO.getRoom().getId()));
-//            for (User userIn : joiningUsers) {
-//                simpMessagingTemplate.convertAndSendToUser(userIn.getId().toString(), "/privateMessage", messageDTO);
-//            }
-//        }
+        Message creatorMessage = new Message();
+        creatorMessage.setMessageType(messageType);
+        creatorMessage.setRoom(response);
+        creatorMessage.setUser(currentUser);
+        creatorMessage.setContent(currentUser.getUsername() + " đã tạo cuộc trò chuyện");
 
-        return responseDto;
+        Message savedCreatorMessage = messageRepository.save(creatorMessage);
+
+        List<MessageDto> spreadMessages = new ArrayList<>();
+        spreadMessages.add(new MessageDto(savedCreatorMessage));
+
+        for (User user : joiningUsers) {
+            if (currentUser.getId().equals(user.getId())) continue;
+            //send message each user had joined this conversation
+            Message userMessage = new Message();
+            userMessage.setMessageType(messageType);
+            userMessage.setRoom(response);
+            userMessage.setUser(user);
+            userMessage.setContent(user.getUsername() + " đã tham gia cuộc trò chuyện");
+
+            Message savedUserMessage = messageRepository.save(creatorMessage);
+
+            spreadMessages.add(new MessageDto(savedUserMessage));
+        }
+
+        for (MessageDto messageDTO : spreadMessages) {
+            for (User userIn : joiningUsers) {
+                simpMessagingTemplate.convertAndSendToUser(userIn.getId().toString(), "/privateMessage", messageDTO);
+
+                if (!userIn.getId().equals(currentUser.getId())) {
+                    NotificationDto noti = new NotificationDto();
+                    noti.setContent(currentUser.getUsername() + " đã thêm bạn vào cuộc trò chuyện mới");
+                    noti.setCreateDate(new Date());
+                    noti.setActor(new UserDto(currentUser));
+
+                    simpMessagingTemplate.convertAndSendToUser(userIn.getId().toString(), "/notification", noti);
+                }
+            }
+        }
+
+        return new RoomDto(response);
     }
 
     @Override
     public RoomDto unjoinGroupChat(UUID groupChatId) {
-//        if (!isInRoomChat(groupChatId)) return null;
-//
-//        User currentUser = userService.getCurrentLoginUserEntity();
-//        if (currentUser == null) return null;
-//        Room unjoinRoom = roomRepository.findById(groupChatId).orElse(null);
-//        if (unjoinRoom == null) return null;
-//        UserRoom userRoom = userRoomRepository.findByUserIdAndRoomId(currentUser.getId(), unjoinRoom.getId());
-//        if (userRoom == null) return null;
-//
-//        unjoinRoom = roomRepository.findById(groupChatId).orElse(null);
-//        RoomDto res = new RoomDto(unjoinRoom);
-//        res.setParticipants(getAllJoinedUsersByRoomId(res.getId()));
-//        //notify other users that an user had left this conversation
-//        MessageDto leftMessageDto = new MessageDto();
-//        leftMessageDto.setRoom(res);
-//        leftMessageDto.setContent(currentUser.getUsername() + " left this conversation");
-//        leftMessageDto.setUser(new UserDto(currentUser));
-//        leftMessageDto.setMessageType(messageTypeService.getMessageTypeByName("left"));
-//        messageService.sendMessage(leftMessageDto);
-//
-//        userRoomService.deleteUserRoom(userRoom.getId());
-//
-//        return res;
-        return null;
+        if (!isInRoomChat(groupChatId)) return null;
+
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+        Room unjoinRoom = roomRepository.findById(groupChatId).orElse(null);
+        if (unjoinRoom == null) return null;
+        UserRoom userRoom = userRoomRepository.findByUserIdAndRoomId(currentUser.getId(), unjoinRoom.getId());
+        if (userRoom == null) return null;
+
+        unjoinRoom = roomRepository.findById(groupChatId).orElse(null);
+        RoomDto res = new RoomDto(unjoinRoom);
+        res.setParticipants(getAllJoinedUsersByRoomId(res.getId()));
+        //notify other users that an user had left this conversation
+        MessageDto leftMessageDto = new MessageDto();
+        leftMessageDto.setRoom(res);
+        leftMessageDto.setContent(currentUser.getUsername() + " left this conversation");
+        leftMessageDto.setUser(new UserDto(currentUser));
+        leftMessageDto.setMessageType(messageTypeService.getMessageTypeByName("left"));
+        messageService.sendMessage(leftMessageDto);
+
+        userRoomService.deleteUserRoom(userRoom.getId());
+
+        return res;
     }
 
     public RoomDto addUserIntoGroupChat(UUID userId, UUID roomId) {
@@ -274,6 +292,7 @@ public class RoomServiceImpl implements RoomService {
         messageService.sendMessage(joinMessageDto);
 
         response.setParticipants(getAllJoinedUsersByRoomId(updatedRoom.getId()));
+
         return response;
     }
 
@@ -293,8 +312,28 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Set<UserDto> getListFriendNotInRoom(UUID roomId) {
-        return null;
+    public List<UserDto> getListFriendNotInRoom(UUID roomId) {
+        if (!isInRoomChat(roomId)) return null;
+
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        Room room = roomRepository.findById(roomId).orElse(null);
+        if (room == null) return null;
+
+        List<UserDto> joinedUsers = roomService.getAllJoinedUsersByRoomId(roomId);
+        List<UUID> joinedUserIds = new ArrayList<>();
+        for (UserDto joinedUser : joinedUsers) {
+            joinedUserIds.add(joinedUser.getId());
+        }
+        List<UserDto> friendList = relationshipService.getAllFiends();
+        List<UserDto> res = new ArrayList<>();
+
+        for (UserDto friendDto : friendList) {
+            if (!joinedUserIds.contains(friendDto.getId())) res.add(friendDto);
+        }
+
+        return res;
     }
 
     @Override

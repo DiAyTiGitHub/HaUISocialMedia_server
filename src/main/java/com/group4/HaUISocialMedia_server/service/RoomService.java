@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface RoomService {
-    public Set<UserDto> getAllJoinedUsersByRoomId(UUID roomId);
+    public List<UserDto> getAllJoinedUsersByRoomId(UUID roomId);
 
     public RoomDto createRoom(RoomDto dto);
 
@@ -27,7 +27,7 @@ public interface RoomService {
 
     public boolean isInRoomChat(UUID roomId);
 
-    public Set<UserDto> getListFriendNotInRoom(UUID roomId);
+    public List<UserDto> getListFriendNotInRoom(UUID roomId);
 
     public RoomDto addMultipleUsersIntoGroupChat(UUID[] userIds, UUID roomId);
 

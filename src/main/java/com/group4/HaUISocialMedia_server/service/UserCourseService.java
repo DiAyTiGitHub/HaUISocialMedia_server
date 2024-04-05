@@ -17,4 +17,6 @@ public interface UserCourseService {
     public boolean deleteUserCourseById(UUID userCourseId);
 
     public List<UserCourseDto> getUserCourseOfUser(UUID userId);
+
+    public List<UserCourseDto> getUserCourseByResult(UUID userId, UUID courseResultId);
 }
