@@ -245,7 +245,22 @@ public class RelationshipServiceImpl implements RelationshipService {
         relationshipRepository.save(entity);
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
-        RelationshipDto relationshipDto = new RelationshipDto(entity);
+        Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
+        RelationshipDto relationshipDto = new RelationshipDto(relationship);
+        return relationshipDto;
+    }
+
+    @Override
+    public RelationshipDto unAcceptFriendRequest(UUID relationshipId) {
+        Relationship entity = relationshipRepository.findById(relationshipId).orElse(null);
+        if (entity == null) return null;
+        if(entity.getRequestSender() == null) return null;
+        //delete notification
+        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
+        //delete relationship
+        relationshipRepository.deleteById(relationshipId);
+        Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
+        RelationshipDto relationshipDto = new RelationshipDto(relationship);
         return relationshipDto;
     }
 
