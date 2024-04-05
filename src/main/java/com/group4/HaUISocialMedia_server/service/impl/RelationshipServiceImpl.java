@@ -249,6 +249,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         return relationshipDto;
     }
 
+
     @Override
     public List<UserDto> getAllFiends() {
         User currentUser = userService.getCurrentLoginUserEntity();
