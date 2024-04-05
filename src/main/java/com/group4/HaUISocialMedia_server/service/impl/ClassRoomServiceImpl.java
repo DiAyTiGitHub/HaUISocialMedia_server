@@ -25,8 +25,8 @@ public class ClassRoomServiceImpl implements ClassroomService {
 
     @Override
     public Set<ClassroomDto> getAllClassroom() {
-        Set<ClassroomDto> res = new HashSet<>();
-        List<Classroom> ds = classroomRepository.findAll();
+        Set<ClassroomDto> res = new TreeSet<>((cls1, cls2) -> cls1.getCode().compareTo(cls2.getCode()));
+        List<Classroom> ds = classroomRepository.getAllSortByCode();
         ds.stream()
                 .map(y -> {
                     ClassroomDto z = new ClassroomDto(y);
@@ -74,10 +74,10 @@ public class ClassRoomServiceImpl implements ClassroomService {
 
     @Override
     public Set<ClassroomDto> pagingClassroom(SearchObject searchObject) {
-        Set<ClassroomDto> li = new HashSet<>();
+        Set<ClassroomDto> li = new TreeSet<>((cls1, cls2) -> cls1.getCode().compareTo(cls2.getCode()));
         //Page là một đối tượng của interface Page trong Spring Data JPA dùng để thể hiện kết quả trả về theo phân trang
         //PageRequest: Là đối tượng của interface PageRequest, nó cung cấp thông tin phân trang khi truy vấn dữ liệu.
-        Page<Classroom> ds = classroomRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<Classroom> ds = classroomRepository.getPagingClassroom(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
        // List<Classroom> ds = classroomRepository.findAnyClassroom(searchObject.getPageSize(), searchObject.getPageIndex());
         ds.stream().map(ClassroomDto::new).forEach(li::add);
         return li;

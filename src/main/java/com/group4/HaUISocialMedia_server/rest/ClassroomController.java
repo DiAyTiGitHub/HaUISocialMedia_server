@@ -25,7 +25,7 @@ public class ClassroomController {
     @GetMapping("/all")
     public ResponseEntity<Set<ClassroomDto>> getAllClassroom(){
         Set<ClassroomDto> li = classroomService.getAllClassroom();
-        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
+        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
@@ -49,7 +49,7 @@ public class ClassroomController {
     @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<ClassroomDto> getById(@PathVariable("id") UUID id){
         ClassroomDto classroomDto1 = classroomService.getById(id);
-        if(classroomDto1 == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        if(classroomDto1 == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(classroomDto1, HttpStatus.OK);
     }
 
@@ -57,7 +57,7 @@ public class ClassroomController {
     @Transactional
     public ResponseEntity<Boolean> deleteById(@PathVariable("id")UUID id){
         ClassroomDto classroomDto = classroomService.getById(id);
-        if(classroomDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        if(classroomDto == null) return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         classroomService.deleteById(id);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
@@ -65,7 +65,7 @@ public class ClassroomController {
     @PostMapping("/paging")
     public ResponseEntity<Set<ClassroomDto>> pagingClass(@RequestBody SearchObject searchObject){
         Set<ClassroomDto> li = classroomService.pagingClassroom(searchObject);
-        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
+        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
