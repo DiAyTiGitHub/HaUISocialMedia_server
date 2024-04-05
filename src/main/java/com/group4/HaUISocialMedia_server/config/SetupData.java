@@ -92,64 +92,72 @@ public class SetupData implements ApplicationRunner {
     private CourseResultRepository courseResultRepository;
 
     private void initializeCourseResult() {
-        CourseResult A = courseResultRepository.findByName("Xuất sắc");
-        if (A == null) {
+        CourseResult test = courseResultRepository.findByName("Xuất sắc");
+        if (test == null) {
+            CourseResult A = new CourseResult();
             A.setCode("A");
             A.setName("Xuất sắc");
             A.setDescription("Học sinh đạt thành tích xuất sắc");
             courseResultRepository.save(A);
         }
 
-        CourseResult B_plus = courseResultRepository.findByName("Giỏi");
-        if (B_plus == null) {
+        CourseResult test1 = courseResultRepository.findByName("Giỏi");
+        if (test1 == null) {
+            CourseResult B_plus = new CourseResult();
             B_plus.setCode("B+");
             B_plus.setName("Giỏi");
             B_plus.setDescription("Học sinh đạt thành tích giỏi");
             courseResultRepository.save(B_plus);
         }
 
-        CourseResult B = courseResultRepository.findByName("Khá giỏi");
-        if (B == null) {
+        CourseResult test3 = courseResultRepository.findByName("Khá giỏi");
+        if (test3 == null) {
+            CourseResult B = new CourseResult();
             B.setCode("B");
             B.setName("Khá giỏi");
             B.setDescription("Học sinh đạt thành tích khá giỏi");
             courseResultRepository.save(B);
         }
 
-        CourseResult C_plus = courseResultRepository.findByName("Khá");
-        if (C_plus == null) {
+        CourseResult test4 = courseResultRepository.findByName("Khá");
+        if (test4 == null) {
+            CourseResult C_plus = new CourseResult();
             C_plus.setCode("C+");
             C_plus.setName("Khá");
             C_plus.setDescription("Học sinh đạt thành tích khá");
             courseResultRepository.save(C_plus);
         }
 
-        CourseResult C = courseResultRepository.findByName("Trung bình khá");
-        if (C == null) {
+        CourseResult test5 = courseResultRepository.findByName("Trung bình khá");
+        if (test5 == null) {
+            CourseResult C = new CourseResult();
             C.setCode("C");
             C.setName("Trung bình khá");
             C.setDescription("Học sinh đạt thành tích trung bình khá");
             courseResultRepository.save(C);
         }
 
-        CourseResult D_plus = courseResultRepository.findByName("Trung bình");
-        if (D_plus == null) {
+        CourseResult test6 = courseResultRepository.findByName("Trung bình");
+        if (test6 == null) {
+            CourseResult D_plus = new CourseResult();
             D_plus.setCode("D+");
             D_plus.setName("Trung bình");
             D_plus.setDescription("Học sinh đạt thành tích trung bình");
             courseResultRepository.save(D_plus);
         }
 
-        CourseResult D = courseResultRepository.findByName("Trung bình kém");
-        if (D == null) {
+        CourseResult test7 = courseResultRepository.findByName("Trung bình kém");
+        if (test7 == null) {
+            CourseResult D = new CourseResult();
             D.setCode("D");
             D.setName("Trung bình kém");
             D.setDescription("Học sinh đạt thành tích trung bình kém");
             courseResultRepository.save(D);
         }
 
-        CourseResult F = courseResultRepository.findByName("Kém");
-        if (F == null) {
+        CourseResult test8 = courseResultRepository.findByName("Kém");
+        if (test8 == null) {
+            CourseResult F = new CourseResult();
             F.setCode("F");
             F.setName("Kém");
             F.setDescription("Học sinh đạt thành tích kém");
