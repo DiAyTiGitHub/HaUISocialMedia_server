@@ -1,11 +1,14 @@
 package com.group4.HaUISocialMedia_server.config;
 
+import com.group4.HaUISocialMedia_server.dto.CourseResultDto;
 import com.group4.HaUISocialMedia_server.dto.MessageTypeDto;
 import com.group4.HaUISocialMedia_server.dto.NotificationTypeDto;
 import com.group4.HaUISocialMedia_server.dto.RoomTypeDto;
 import com.group4.HaUISocialMedia_server.entity.*;
+import com.group4.HaUISocialMedia_server.repository.CourseResultRepository;
 import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
+import com.group4.HaUISocialMedia_server.service.CourseResultService;
 import com.group4.HaUISocialMedia_server.service.MessageTypeService;
 import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
 import com.group4.HaUISocialMedia_server.service.RoomTypeService;
@@ -30,6 +33,7 @@ public class SetupData implements ApplicationRunner {
         initializeRoomType();
         initializeMessageType();
         initializeNotificationType();
+        initializeCourseResult();
     }
 
     @Autowired
@@ -83,6 +87,76 @@ public class SetupData implements ApplicationRunner {
         }
     }
 
+
+    @Autowired
+    private CourseResultRepository courseResultRepository;
+
+    private void initializeCourseResult() {
+        CourseResult A = courseResultRepository.findByName("Xuất sắc");
+        if (A == null) {
+            A.setCode("A");
+            A.setName("Xuất sắc");
+            A.setDescription("Học sinh đạt thành tích xuất sắc");
+            courseResultRepository.save(A);
+        }
+
+        CourseResult B_plus = courseResultRepository.findByName("Giỏi");
+        if (B_plus == null) {
+            B_plus.setCode("B+");
+            B_plus.setName("Giỏi");
+            B_plus.setDescription("Học sinh đạt thành tích giỏi");
+            courseResultRepository.save(B_plus);
+        }
+
+        CourseResult B = courseResultRepository.findByName("Khá giỏi");
+        if (B == null) {
+            B.setCode("B");
+            B.setName("Khá giỏi");
+            B.setDescription("Học sinh đạt thành tích khá giỏi");
+            courseResultRepository.save(B);
+        }
+
+        CourseResult C_plus = courseResultRepository.findByName("Khá");
+        if (C_plus == null) {
+            C_plus.setCode("C+");
+            C_plus.setName("Khá");
+            C_plus.setDescription("Học sinh đạt thành tích khá");
+            courseResultRepository.save(C_plus);
+        }
+
+        CourseResult C = courseResultRepository.findByName("Trung bình khá");
+        if (C == null) {
+            C.setCode("C");
+            C.setName("Trung bình khá");
+            C.setDescription("Học sinh đạt thành tích trung bình khá");
+            courseResultRepository.save(C);
+        }
+
+        CourseResult D_plus = courseResultRepository.findByName("Trung bình");
+        if (D_plus == null) {
+            D_plus.setCode("D+");
+            D_plus.setName("Trung bình");
+            D_plus.setDescription("Học sinh đạt thành tích trung bình");
+            courseResultRepository.save(D_plus);
+        }
+
+        CourseResult D = courseResultRepository.findByName("Trung bình kém");
+        if (D == null) {
+            D.setCode("D");
+            D.setName("Trung bình kém");
+            D.setDescription("Học sinh đạt thành tích trung bình kém");
+            courseResultRepository.save(D);
+        }
+
+        CourseResult F = courseResultRepository.findByName("Kém");
+        if (F == null) {
+            F.setCode("F");
+            F.setName("Kém");
+            F.setDescription("Học sinh đạt thành tích kém");
+            courseResultRepository.save(F);
+        }
+
+    }
 
 
     @Autowired

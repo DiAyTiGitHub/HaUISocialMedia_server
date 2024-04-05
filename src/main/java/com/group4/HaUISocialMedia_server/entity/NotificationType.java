@@ -19,6 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "tbl_notification_type")
 public class NotificationType implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "VARCHAR(36)")
