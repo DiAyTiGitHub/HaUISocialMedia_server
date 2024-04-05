@@ -5,6 +5,7 @@ import com.group4.HaUISocialMedia_server.dto.MessageTypeDto;
 import com.group4.HaUISocialMedia_server.dto.NotificationTypeDto;
 import com.group4.HaUISocialMedia_server.dto.RoomTypeDto;
 import com.group4.HaUISocialMedia_server.entity.*;
+import com.group4.HaUISocialMedia_server.repository.CourseRepository;
 import com.group4.HaUISocialMedia_server.repository.CourseResultRepository;
 import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
@@ -34,6 +35,7 @@ public class SetupData implements ApplicationRunner {
         initializeMessageType();
         initializeNotificationType();
         initializeCourseResult();
+        initializeCourse();
     }
 
     @Autowired
@@ -164,6 +166,192 @@ public class SetupData implements ApplicationRunner {
             courseResultRepository.save(F);
         }
 
+    }
+
+
+    @Autowired
+    private CourseRepository courseRepository;
+
+    private void initializeCourse() {
+        Course test = courseRepository.findByName("Giải tích");
+        if (test == null) {
+            Course A = new Course();
+            A.setCode("001");
+            A.setName("Giải tích");
+            A.setDescription("Môn học tính toán cơ bản");
+            courseRepository.save(A);
+        }
+
+        Course test1 = courseRepository.findByName("Đại số tuyến tính");
+        if (test1 == null) {
+            Course A = new Course();
+            A.setCode("002");
+            A.setName("Đại số tuyến tính");
+            A.setDescription("Môn học tính toán trung binh");
+            courseRepository.save(A);
+        }
+
+        Course test2 = courseRepository.findByName("Kỹ thuật lập trình");
+        if (test2 == null) {
+            Course A = new Course();
+            A.setCode("003");
+            A.setName("Kỹ thuật lập trình");
+            A.setDescription("Môn lập trình cơ bản");
+            courseRepository.save(A);
+        }
+
+        Course test3 = courseRepository.findByName("Lập trình hướng đối tượng");
+        if (test3 == null) {
+            Course A = new Course();
+            A.setCode("004");
+            A.setName("Lập trình hướng đối tượng");
+            A.setDescription("Môn lập trình hướng đối tượng");
+            courseRepository.save(A);
+        }
+
+        Course test4 = courseRepository.findByName("Java nâng cao");
+        if (test4 == null) {
+            Course A = new Course();
+            A.setCode("005");
+            A.setName("Java nâng cao");
+            A.setDescription("Môn học của java mạng socket");
+            courseRepository.save(A);
+        }
+
+        Course test5 = courseRepository.findByName("Lập trình java");
+        if (test5 == null) {
+            Course A = new Course();
+            A.setCode("006");
+            A.setName("Lập trình java");
+            A.setDescription("Môn học java cơ bản");
+            courseRepository.save(A);
+        }
+
+        Course test6 = courseRepository.findByName("Triết học");
+        if (test6 == null) {
+            Course A = new Course();
+            A.setCode("007");
+            A.setName("Triết học");
+            A.setDescription("Môn học liên quan đến đời sống xã hội");
+            courseRepository.save(A);
+        }
+
+        Course test7 = courseRepository.findByName("Lịch sử đảng");
+        if (test7 == null) {
+            Course A = new Course();
+            A.setCode("008");
+            A.setName("Lịch sử đảng");
+            A.setDescription("Môn học liên quan đến lịch sử đất nước");
+            courseRepository.save(A);
+        }
+
+        Course test8 = courseRepository.findByName("Pháp luật đại cương");
+        if (test8 == null) {
+            Course A = new Course();
+            A.setCode("009");
+            A.setName("Pháp luật đại cương");
+            A.setDescription("Môn liên quan đến pháp luật cơ bản");
+            courseRepository.save(A);
+        }
+
+        Course test9 = courseRepository.findByName("Lập trình C++");
+        if (test9 == null) {
+            Course A = new Course();
+            A.setCode("010");
+            A.setName("Lập trình C++");
+            A.setDescription("Môn lập trình C++ cơ bản");
+            courseRepository.save(A);
+        }
+
+        Course test10 = courseRepository.findByName("Lập trình .Net");
+        if (test10 == null) {
+            Course A = new Course();
+            A.setCode("011");
+            A.setName("Lập trình .Net");
+            A.setDescription("Môn học của C# cơ bản");
+            courseRepository.save(A);
+        }
+
+        Course test11 = courseRepository.findByName("ASP.Net");
+        if (test11 == null) {
+            Course A = new Course();
+            A.setCode("012");
+            A.setName("ASP.Net");
+            A.setDescription("Môn học liên quan đến C# nâng cao");
+            courseRepository.save(A);
+        }
+
+        Course test12 = courseRepository.findByName("Lập trình game");
+        if (test12== null) {
+            Course A = new Course();
+            A.setCode("013");
+            A.setName("Lập trình game");
+            A.setDescription("Môn lập trình game cơ bản");
+            courseRepository.save(A);
+        }
+
+        Course test13 = courseRepository.findByName("Thiết kế giao diện người dùng");
+        if (test13 == null) {
+            Course A = new Course();
+            A.setCode("014");
+            A.setName("Thiết kế giao diện người dùng");
+            A.setDescription("Môn thiết kế cơ bản về giao diện");
+            courseRepository.save(A);
+        }
+
+        Course test14 = courseRepository.findByName("Đồ họa máy tính");
+        if (test14 == null) {
+            Course A = new Course();
+            A.setCode("015");
+            A.setName("Đồ họa máy tính");
+            A.setDescription("Môn học về đồ họa máy tính");
+            courseRepository.save(A);
+        }
+
+        Course test15 = courseRepository.findByName("Kiến trúc máy tính");
+        if (test15 == null) {
+            Course A = new Course();
+            A.setCode("016");
+            A.setName("Kiến trúc máy tính");
+            A.setDescription("Môn học về kiến trúc máy tính");
+            courseRepository.save(A);
+        }
+
+        Course test16 = courseRepository.findByName("An toàn bảo mật thông tin");
+        if (test16 == null) {
+            Course A = new Course();
+            A.setCode("017");
+            A.setName("An toàn bảo mật thông tin");
+            A.setDescription("Môn học về an toàn bảo mật thông tin");
+            courseRepository.save(A);
+        }
+
+        Course test17 = courseRepository.findByName("Thiết kế web");
+        if (test17 == null) {
+            Course A = new Course();
+            A.setCode("018");
+            A.setName("Thiết kế web");
+            A.setDescription("Môn học về thiết kế web");
+            courseRepository.save(A);
+        }
+
+        Course test18 = courseRepository.findByName("Kiểm thử phần mềm");
+        if (test18 == null) {
+            Course A = new Course();
+            A.setCode("019");
+            A.setName("Kiểm thử phần mềm");
+            A.setDescription("Môn học về kiểm thử phần mềm");
+            courseRepository.save(A);
+        }
+
+        Course test19 = courseRepository.findByName("Thực tập chuyên ngành");
+        if (test19 == null) {
+            Course A = new Course();
+            A.setCode("020");
+            A.setName("Thực tập chuyên ngành");
+            A.setDescription("Môn học thực tập chuyên ngành");
+            courseRepository.save(A);
+        }
     }
 
 
