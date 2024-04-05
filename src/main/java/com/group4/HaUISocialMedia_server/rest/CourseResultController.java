@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,8 +56,8 @@ public class CourseResultController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Set<CourseResultDto>> getAllCourseResult(){
-        Set<CourseResultDto> li = courseResultService.getAllCourseResult();
+    public ResponseEntity<List<CourseResultDto>> getAllCourseResult(){
+        List<CourseResultDto> li = courseResultService.getAllCourseResult();
         if(li.isEmpty()) return  new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }

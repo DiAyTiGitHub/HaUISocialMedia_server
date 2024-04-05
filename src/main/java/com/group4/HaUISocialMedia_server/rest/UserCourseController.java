@@ -53,9 +53,16 @@ public class UserCourseController {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
-    @PostMapping("/total/{userId}")
+    @GetMapping("/total/{userId}")
     private ResponseEntity<List<UserCourseDto>> getUserCourseOfUser(@PathVariable UUID userId) {
         List<UserCourseDto> res = userCourseService.getUserCourseOfUser(userId);
+        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/coursesByResult/{userId}/{courseId}")
+    private ResponseEntity<List<UserCourseDto>> getUserCourseOfUser(@PathVariable UUID userId, @PathVariable UUID courseId) {
+        List<UserCourseDto> res = userCourseService.getUserCourseByResult(userId, courseId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

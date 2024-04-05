@@ -18,8 +18,8 @@ public class CourseResultDto {
     private String code;
     private String name;
     private String description;
-    private Set<CourseResultDto> courseResultDtos;
-    public CourseResultDto(CourseResult entity){
+
+    public CourseResultDto(CourseResult entity) {
         this.id = entity.getId();
         this.code = entity.getCode();
         this.name = entity.getName();

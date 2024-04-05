@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserCourseDto;
 import com.group4.HaUISocialMedia_server.entity.Course;
 import com.group4.HaUISocialMedia_server.entity.CourseResult;
@@ -14,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -114,6 +116,33 @@ public class UserCourseServiceImpl implements UserCourseService {
 
     @Override
     public List<UserCourseDto> getUserCourseOfUser(UUID userId) {
-        return null;
+        if (userId == null) return null;
+
+        List<UserCourse> entities = userCourseRepository.getUserCourseOfUser(userId);
+        if (entities == null) return null;
+
+        List<UserCourseDto> res = new ArrayList<>();
+        for (UserCourse uc : entities) {
+            UserCourseDto dto = new UserCourseDto(uc);
+            res.add(dto);
+        }
+
+        return res;
+    }
+
+    @Override
+    public List<UserCourseDto> getUserCourseByResult(UUID userId, UUID courseResultId) {
+        if (userId == null || courseResultId == null) return null;
+
+        List<UserCourse> entities = userCourseRepository.getUserCourseByResult(userId, courseResultId);
+        if (entities == null) return null;
+
+        List<UserCourseDto> res = new ArrayList<>();
+        for (UserCourse uc : entities) {
+            UserCourseDto dto = new UserCourseDto(uc);
+            res.add(dto);
+        }
+
+        return res;
     }
 }

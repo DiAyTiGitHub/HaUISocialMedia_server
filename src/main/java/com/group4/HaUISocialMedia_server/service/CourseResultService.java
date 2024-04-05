@@ -2,8 +2,8 @@ package com.group4.HaUISocialMedia_server.service;
 
 import com.group4.HaUISocialMedia_server.dto.CourseResultDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
-import com.group4.HaUISocialMedia_server.dto.UserDto;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,5 +18,5 @@ public interface CourseResultService {
 
     public CourseResultDto update(CourseResultDto courseResultDto);
 
-    public Set<CourseResultDto> getAllCourseResult();
+    public List<CourseResultDto> getAllCourseResult();
 }
