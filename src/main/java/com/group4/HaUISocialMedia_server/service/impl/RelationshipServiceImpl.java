@@ -224,7 +224,7 @@ public class RelationshipServiceImpl implements RelationshipService {
     }
 
     @Override
-    public RelationshipDto unFriendRequest(UUID relationshipId) {
+    public RelationshipDto unFriend(UUID relationshipId) {
         Relationship entity = relationshipRepository.findById(relationshipId).orElse(null);
         if (entity == null) return null;
         //delete notification

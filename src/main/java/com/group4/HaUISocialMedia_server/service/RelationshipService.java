@@ -21,7 +21,7 @@ public interface RelationshipService {
 
     public Set<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject);
 
-    public RelationshipDto unFriendRequest(UUID relationshipId);
+    public RelationshipDto unFriend(UUID relationshipId);
     public RelationshipDto unAcceptFriendRequest(UUID relationshipId);
 
     public List<UserDto> getAllFiends();

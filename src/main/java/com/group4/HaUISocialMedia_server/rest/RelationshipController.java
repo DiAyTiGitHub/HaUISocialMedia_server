@@ -73,15 +73,15 @@ public class RelationshipController {
     }
 
     @DeleteMapping("/unFriend/{relationshipId}")
-    public ResponseEntity<Boolean> unFriendRequest(@PathVariable("relationshipId") UUID relationshipId) {
-        RelationshipDto res = relationshipService.unFriendRequest(relationshipId);
+    public ResponseEntity<Boolean> unFriend(@PathVariable("relationshipId") UUID relationshipId) {
+        RelationshipDto res = relationshipService.unFriend(relationshipId);
         if (res == null)
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/unacceptFriend/{relationshipId}")
-    public ResponseEntity<Boolean> unAcceptFriend(@PathVariable("relationshipId") UUID relationshipId){
+    public ResponseEntity<Boolean> unAcceptFriendRequest(@PathVariable("relationshipId") UUID relationshipId){
         RelationshipDto res = relationshipService.unAcceptFriendRequest(relationshipId);
         if(res == null)
             return new ResponseEntity<>(true, HttpStatus.OK);
