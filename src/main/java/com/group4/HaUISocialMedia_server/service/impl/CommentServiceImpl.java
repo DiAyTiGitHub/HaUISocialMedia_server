@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Set<CommentDto> getParentCommentsOfPost(UUID postId) {
         Post post = postRepository.findById(postId).orElse(null);
-        if(post == null)
+        if (post == null)
             return null;
         Set<CommentDto> res = new HashSet<>();
         List<Comment> li = commentRepository.findAllByPost(postId);
@@ -47,10 +47,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Set<CommentDto> getSubCommentOfComment(UUID commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
-        if(comment == null)
+        if (comment == null)
             return null;
         Set<CommentDto> res = new HashSet<>();
-        Set<Comment> re =  comment.getSubComments();
+        Set<Comment> re = comment.getSubComments();
         re.stream().map(CommentDto::new).forEach(res::add);
         return res;
     }
@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentDto createComment(CommentDto dto) {
-        if(dto == null)
+        if (dto == null)
             return null;
         Comment comment = new Comment();
         comment.setContent(dto.getContent());
@@ -78,13 +78,13 @@ public class CommentServiceImpl implements CommentService {
 
 
         Post post = postRepository.findById(dto.getPost().getId()).orElse(null);
-        if(post == null)
+        if (post == null)
             return null;
         comment.setPost(post);
 
-        if(dto.getRepliedComment() != null){
+        if (dto.getRepliedComment() != null) {
             Comment commentParent = commentRepository.findById(dto.getRepliedComment().getId()).orElse(null);
-            if(commentParent != null){
+            if (commentParent != null) {
                 comment.setRepliedComment(commentParent);
                 //create notification
                 User receiverUser = commentParent.getOwner();
@@ -104,16 +104,22 @@ public class CommentServiceImpl implements CommentService {
 
         //create notification
         User receiverUser = post.getOwner();
-        NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
 
-        Notification notification = new Notification();
-        notification.setCreateDate(new Date());
-        notification.setContent(user.getUsername() + " đã bình luận một bài đăng của bạn");
-        notification.setReferenceId(post.getId());
-        notification.setOwner(receiverUser);
-        notification.setNotificationType(notificationType);
+        if (!receiverUser.getId().equals(user.getId())) {
+            NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
 
-        notificationService.save(new NotificationDto(notification));
+            Notification notification = new Notification();
+            notification.setCreateDate(new Date());
+            notification.setContent(user.getUsername() + " đã bình luận một bài đăng của bạn");
+            notification.setReferenceId(post.getId());
+            notification.setOwner(receiverUser);
+            notification.setActor(user);
+            notification.setNotificationType(notificationType);
+
+            notificationService.save(new NotificationDto(notification));
+        }
+
+
         return new CommentDto(comment1);
     }
 
@@ -122,7 +128,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto updateComment(CommentDto dto) {
         Comment comment = commentRepository.findById(dto.getId()).orElse(null);
 
-        if(comment == null)
+        if (comment == null)
             return null;
         comment.setContent(dto.getContent());
         comment.setCreateDate(new Date());
@@ -145,7 +151,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentDto deleteComment(UUID commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
-        if(comment == null)
+        if (comment == null)
             return null;
         //Use to delete children of comment
         commentRepository.deleteAllByRepliedComment(comment.getId());

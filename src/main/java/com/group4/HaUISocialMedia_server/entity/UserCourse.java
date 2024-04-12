@@ -41,4 +41,6 @@ public class UserCourse implements Serializable {
     private Date modifyDate;
 
     private Double score;
+
+    private Boolean isValidated;
 }

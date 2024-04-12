@@ -52,39 +52,42 @@ public class LikeServiceImpl implements LikeService {
         like.setUserLike(user);
         like.setPost(post);
 
-        if(likeRepository.findByUserAndPost(postId, user.getId()) != null)
+        if (likeRepository.findByUserAndPost(postId, user.getId()) != null)
             return null;
+
         //Get the recipient notification
         //first check whether that notification for this post is existed or not
         User receiverUser = post.getOwner();
-        Notification oldNotification = notificationRepository.getOldLikeNotification(receiverUser.getId(), postId);
-        if (oldNotification == null) {
-            //handle if this is the first person liking this post
-            NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
+        if (!receiverUser.getId().equals(user.getId())) {
+            Notification oldNotification = notificationRepository.getOldLikeNotification(receiverUser.getId(), postId);
+            if (oldNotification == null) {
+                //handle if this is the first person liking this post
+                NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
 
-            Notification notification = new Notification();
-            notification.setCreateDate(new Date());
-            notification.setContent(user.getUsername() + " đã thích bài viết của bạn");
-            notification.setActor(user);
-            notification.setReferenceId(postId);
-            notification.setOwner(receiverUser);
-            notification.setNotificationType(notificationType);
+                Notification notification = new Notification();
+                notification.setCreateDate(new Date());
+                notification.setContent(user.getUsername() + " đã thích bài viết của bạn");
+                notification.setActor(user);
+                notification.setReferenceId(postId);
+                notification.setOwner(receiverUser);
+                notification.setNotificationType(notificationType);
 
-            Notification savedNotiEntity = notificationRepository.save(notification);
-            NotificationDto noti = new NotificationDto(savedNotiEntity);
-            //send this noti via socket
-            simpMessagingTemplate.convertAndSendToUser(receiverUser.getId().toString(), "/notification", noti);
-        } else {
-            //handle case notification announcing this post has been liked by other users before
-            oldNotification.setActor(user);
-            int numsOfOldLikes = getListLikesOfPost(postId).size();
-            oldNotification.setContent(user.getUsername() + " và " + numsOfOldLikes + " người khác đã thích bài viết của bạn: " + post.getContent());
-            oldNotification.setCreateDate(new Date());
+                Notification savedNotiEntity = notificationRepository.save(notification);
+                NotificationDto noti = new NotificationDto(savedNotiEntity);
+                //send this noti via socket
+                simpMessagingTemplate.convertAndSendToUser(receiverUser.getId().toString(), "/notification", noti);
+            } else {
+                //handle case notification announcing this post has been liked by other users before
+                oldNotification.setActor(user);
+                int numsOfOldLikes = getListLikesOfPost(postId).size();
+                oldNotification.setContent(user.getUsername() + " và " + numsOfOldLikes + " người khác đã thích bài viết của bạn: " + post.getContent());
+                oldNotification.setCreateDate(new Date());
 
-            Notification savedNotiEntity = notificationRepository.save(oldNotification);
-            NotificationDto noti = new NotificationDto(savedNotiEntity);
-            //send this noti via socket
-            simpMessagingTemplate.convertAndSendToUser(receiverUser.getId().toString(), "/notification", noti);
+                Notification savedNotiEntity = notificationRepository.save(oldNotification);
+                NotificationDto noti = new NotificationDto(savedNotiEntity);
+                //send this noti via socket
+                simpMessagingTemplate.convertAndSendToUser(receiverUser.getId().toString(), "/notification", noti);
+            }
         }
 
 
@@ -107,29 +110,33 @@ public class LikeServiceImpl implements LikeService {
         if (post == null)
             return false;
 
-        if(likeRepository.findByUserAndPost(postId, user.getId()) == null)
+        if (likeRepository.findByUserAndPost(postId, user.getId()) == null)
             return false;
         likeRepository.deleteByIdPost(postId, user.getId());
 
         Notification oldNotification = notificationRepository.getOldLikeNotification(post.getOwner().getId(), postId);
 
-        //handling for notification
-        int numsOfOldLikes = getListLikesOfPost(postId).size();
-        if (numsOfOldLikes == 1) {
 
-            // only one person likes this post, this person dislikes the post, then the notification for this post of owner will be deleted
-            notificationRepository.delete(oldNotification);
-        } else {
+        if (oldNotification != null) {
+            //handling for notification
+            int numsOfOldLikes = getListLikesOfPost(postId).size();
+            if (numsOfOldLikes == 1) {
 
-            // update content of old notification, just -1 numsOfLikes for the post
-            oldNotification.setCreateDate(new Date());
-            List<Like> likesOfPost = likeRepository.findByPost(postId);
-            // but we have to find who is the latest user like the post for updating the noti content
-            oldNotification.setContent(likesOfPost.get(0).getUserLike() + " và " + (likesOfPost.size() - 1) + " người khác đã thích bài viết của bạn: " + post.getContent());
-            oldNotification.setActor(likesOfPost.get(0).getUserLike());
+                // only one person likes this post, this person dislikes the post, then the notification for this post of owner will be deleted
+                notificationRepository.delete(oldNotification);
+            } else {
 
-            notificationRepository.save(oldNotification);
+                // update content of old notification, just -1 numsOfLikes for the post
+                oldNotification.setCreateDate(new Date());
+                List<Like> likesOfPost = likeRepository.findByPost(postId);
+                // but we have to find who is the latest user like the post for updating the noti content
+                oldNotification.setContent(likesOfPost.get(0).getUserLike() + " và " + (likesOfPost.size() - 1) + " người khác đã thích bài viết của bạn: " + post.getContent());
+                oldNotification.setActor(likesOfPost.get(0).getUserLike());
+
+                notificationRepository.save(oldNotification);
+            }
         }
+
         return true;
     }
 }
