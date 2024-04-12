@@ -3,9 +3,11 @@ package com.group4.HaUISocialMedia_server.service.impl;
 import com.group4.HaUISocialMedia_server.config.JwtTokenProvider;
 import com.group4.HaUISocialMedia_server.dto.LoginDto;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.entity.BoardRecord;
 import com.group4.HaUISocialMedia_server.entity.Classroom;
 import com.group4.HaUISocialMedia_server.entity.Role;
 import com.group4.HaUISocialMedia_server.entity.User;
+import com.group4.HaUISocialMedia_server.repository.BoardRecordRepository;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.AuthService;
@@ -40,6 +42,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BoardRecordRepository boardRecordRepository;
 
     @Override
     public String login(LoginDto loginDto) {
@@ -114,6 +119,22 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPhoneNumber(dto.getPhoneNumber());
 
         User savedUser = userRepository.save(newUser);
+
+        if (savedUser == null) return null;
+
+        BoardRecord record = new BoardRecord();
+        record.setUser(savedUser);
+        record.setNumsOfA(0);
+        record.setNumsOfBPlus(0);
+        record.setNumsOfB(0);
+        record.setNumsOfCPlus(0);
+        record.setNumsOfC(0);
+        record.setNumsOfDPlus(0);
+        record.setNumsOfD(0);
+
+        BoardRecord savedRecord = boardRecordRepository.save(record);
+        if (savedRecord == null) return null;
+
         return new UserDto(savedUser);
     }
 }

@@ -71,7 +71,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Message> messages;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<UserRoom> userRooms;
 
