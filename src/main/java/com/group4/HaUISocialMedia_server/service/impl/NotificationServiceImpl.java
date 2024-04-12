@@ -90,7 +90,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Set<NotificationDto> getAnyNotification(SearchObject searchObject) {
         Set<NotificationDto> res = new HashSet<>();
-        Page<Notification> li = notificationRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Page<Notification> li = notificationRepository.findAll(PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
     }
@@ -100,7 +100,7 @@ public class NotificationServiceImpl implements NotificationService {
         User currentUser = userService.getCurrentLoginUserEntity();
 
         Set<NotificationDto> res = new HashSet<>();
-        List<Notification> li = notificationRepository.pagingNotificationByUserId(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<Notification> li = notificationRepository.pagingNotificationByUserId(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
     }
