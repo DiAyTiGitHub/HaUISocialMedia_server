@@ -15,10 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -38,7 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Set<NotificationDto> getAllNotifications() {
         User user = userService.getCurrentLoginUserEntity();
-        Set<NotificationDto> res = new HashSet<>();
+        Set<NotificationDto> res = new TreeSet<>((noti1, noti2) -> noti2.getCreateDate().compareTo(noti1.getCreateDate()));
         List<Notification> li = notificationRepository.findAllByUser(user.getId());
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
@@ -99,7 +96,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Set<NotificationDto> pagingNotification(SearchObject searchObject) {
         User currentUser = userService.getCurrentLoginUserEntity();
 
-        Set<NotificationDto> res = new HashSet<>();
+        Set<NotificationDto> res = new TreeSet<>((noti1, noti2) -> noti2.getCreateDate().compareTo(noti1.getCreateDate()));
         List<Notification> li = notificationRepository.pagingNotificationByUserId(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         li.stream().map(NotificationDto::new).forEach(res::add);
         return res;
