@@ -58,7 +58,7 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<Set<UserDto>> getByUsername(@RequestBody SearchObject searchObject) {
         Set<UserDto> li = userService.searchByUsername(searchObject);
         if (li == null) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);

@@ -130,10 +130,13 @@ public class LikeServiceImpl implements LikeService {
                 oldNotification.setCreateDate(new Date());
                 List<Like> likesOfPost = likeRepository.findByPost(postId);
                 // but we have to find who is the latest user like the post for updating the noti content
-                oldNotification.setContent(likesOfPost.get(0).getUserLike() + " và " + (likesOfPost.size() - 1) + " người khác đã thích bài viết của bạn: " + post.getContent());
-                oldNotification.setActor(likesOfPost.get(0).getUserLike());
+                if(likesOfPost.size() > 0){
+                    oldNotification.setContent(likesOfPost.get(0).getUserLike() + " và " + (likesOfPost.size() - 1) + " người khác đã thích bài viết của bạn: " + post.getContent());
+                    oldNotification.setActor(likesOfPost.get(0).getUserLike());
 
-                notificationRepository.save(oldNotification);
+                    notificationRepository.save(oldNotification);
+                }
+
             }
         }
 
