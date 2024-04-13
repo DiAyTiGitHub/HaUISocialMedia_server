@@ -46,5 +46,7 @@ public class Post implements Serializable {
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Notification> notifications;
 
 }

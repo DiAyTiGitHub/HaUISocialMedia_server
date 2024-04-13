@@ -68,7 +68,7 @@ public class LikeServiceImpl implements LikeService {
                 notification.setCreateDate(new Date());
                 notification.setContent(user.getUsername() + " đã thích bài viết của bạn");
                 notification.setActor(user);
-                notification.setReferenceId(postId);
+                notification.setPost(post);
                 notification.setOwner(receiverUser);
                 notification.setNotificationType(notificationType);
 

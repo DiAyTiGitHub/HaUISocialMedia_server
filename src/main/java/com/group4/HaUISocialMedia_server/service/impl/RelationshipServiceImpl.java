@@ -77,7 +77,6 @@ public class RelationshipServiceImpl implements RelationshipService {
         Notification notification = new Notification();
         notification.setCreateDate(new Date());
         notification.setContent(requestSender.getUsername() + " đã gửi lời mời kết bạn");
-        notification.setReferenceId(requestSender.getId());
         notification.setOwner(receiver);
         notification.setActor(requestSender);
         notification.setNotificationType(notificationType);
@@ -133,7 +132,6 @@ public class RelationshipServiceImpl implements RelationshipService {
         notification.setCreateDate(new Date());
         notification.setActor(receiver);
         notification.setContent(receiver.getUsername() + " đã chấp nhận lời mời kết bạn");
-        notification.setReferenceId(receiver.getId());
         notification.setOwner(requestSender);
         notification.setNotificationType(notificationType);
 

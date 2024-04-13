@@ -21,12 +21,12 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     @Query("SELECT n FROM Notification n where n.owner.id =:idOwner order by n.createDate desc")
     public List<Notification> pagingNotificationByUserId(@Param("idOwner") UUID id, Pageable pageable);
 
-    @Query("select n from Notification n where n.owner.id = :currentUserId and n.notificationType.name like 'Post' and n.referenceId = :postId")
+    @Query("select n from Notification n where n.owner.id = :currentUserId and n.notificationType.name like 'Post' and n.post.id = :postId")
     public Notification getOldLikeNotification(@Param("currentUserId") UUID currentUserId, @Param("postId") UUID postId);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Notification n WHERE n.referenceId =:idPost")
+    @Query("DELETE FROM Notification n WHERE n.post.id =:idPost")
     public void deleteNotificationByIdPost(@Param("idPost") UUID idPost);
 
     @Modifying

@@ -125,7 +125,7 @@ public class PostServiceImpl implements PostService {
             noti.setNotificationType(notificationTypeRepository.findByName("Post"));
 
             //postId now is referenceId in notification
-            noti.setReferenceId(savedEntity.getId());
+            noti.setPost(savedEntity);
             Notification savedNoti = notificationRepository.save(noti);
 
             //send this noti via socket

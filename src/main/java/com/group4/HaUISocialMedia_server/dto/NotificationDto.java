@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.dto;
 
 import com.group4.HaUISocialMedia_server.entity.Notification;
 import com.group4.HaUISocialMedia_server.entity.NotificationType;
+import com.group4.HaUISocialMedia_server.entity.Post;
 import com.group4.HaUISocialMedia_server.entity.User;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,7 +25,7 @@ public class NotificationDto {
     private NotificationTypeDto notificationType;
     private UserDto owner;
     private UserDto actor;
-    private UUID referenceId;
+    private PostDto post;
 
     public NotificationDto(Notification notification) {
         this.id = notification.getId();
@@ -34,7 +35,8 @@ public class NotificationDto {
             this.notificationType = new NotificationTypeDto(notification.getNotificationType());
         if (notification.getOwner() != null)
             this.owner = new UserDto(notification.getOwner());
-        this.referenceId = notification.getReferenceId();
+        if(notification.getPost() != null)
+            this.post = new PostDto(notification.getPost());
 
         if (notification.getActor() != null)
             this.actor = new UserDto(notification.getActor());

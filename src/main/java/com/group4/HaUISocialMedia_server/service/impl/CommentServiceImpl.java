@@ -93,7 +93,7 @@ public class CommentServiceImpl implements CommentService {
                 Notification notification = new Notification();
                 notification.setCreateDate(new Date());
                 notification.setContent(user.getUsername() + " đã trả lời bình luận của bạn trong một bài viết");
-                notification.setReferenceId(post.getId());
+                notification.setPost(post);
                 notification.setOwner(receiverUser);
                 notification.setNotificationType(notificationType);
 
@@ -111,7 +111,7 @@ public class CommentServiceImpl implements CommentService {
             Notification notification = new Notification();
             notification.setCreateDate(new Date());
             notification.setContent(user.getUsername() + " đã bình luận một bài đăng của bạn");
-            notification.setReferenceId(post.getId());
+            notification.setPost(post);
             notification.setOwner(receiverUser);
             notification.setActor(user);
             notification.setNotificationType(notificationType);
