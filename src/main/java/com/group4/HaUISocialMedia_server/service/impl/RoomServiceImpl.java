@@ -121,7 +121,15 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.findById(roomId).orElse(null);
         if (room == null)
             return null;
-        return new RoomDto(room);
+
+        RoomDto response = new RoomDto(room);
+        List<UserDto> partticipants = getAllJoinedUsersByRoomId(room.getId());
+        List<MessageDto> messages = messageService.get20LatestMessagesByRoomId(response.getId());
+
+        response.setParticipants(partticipants);
+        response.setMessages(messages);
+
+        return response;
     }
 
     @Override
