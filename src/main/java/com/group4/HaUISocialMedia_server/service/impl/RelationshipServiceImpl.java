@@ -191,7 +191,22 @@ public class RelationshipServiceImpl implements RelationshipService {
             } else
                 res.add(new UserDto(user));
         }
+        return res;
+    }
 
+    @Override
+    public List<UserDto> pagingNewUser(SearchObject searchObject) {
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<UserDto> res = new ArrayList<>();
+        for (User user : response) {
+            if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
+                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
+            } else
+                res.add(new UserDto(user));
+        }
         return res;
     }
 
