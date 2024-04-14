@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -25,7 +26,7 @@ public class PostServiceImpl implements PostService {
     private RelationshipRepository relationshipRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private PostImageService postImageService;
 
     @Autowired
     private UserService userService;
@@ -107,7 +108,8 @@ public class PostServiceImpl implements PostService {
         entity.setCreateDate(new Date());
         entity.setContent(dto.getContent());
         entity.setOwner(currentUser);
-        entity.setImage(dto.getImage());
+//        if(!dto.getImages().isEmpty())
+//            entity.setPostImages(dto.getImages().stream().map(PostImageDTO::new));
 
         Post savedEntity = postRepository.save(entity);
 
@@ -206,6 +208,8 @@ public class PostServiceImpl implements PostService {
         PostDto responseDto = new PostDto(entity);
         responseDto.setLikes(likeService.getListLikesOfPost(responseDto.getId()));
         responseDto.setComments(commentService.getParentCommentsOfPost(responseDto.getId()));
+//        responseDto.setImages(entity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
+        responseDto.setImages(postImageService.sortImage(entity.getId()));
         return responseDto;
     }
 }

@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 @Setter
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "tbl_post_image")
 public class PostImage implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "VARCHAR(36)")
@@ -32,4 +34,7 @@ public class PostImage implements Serializable {
 
     @Column(columnDefinition = "longtext")
     private String description;
+
+    @Column
+    private Date createDate;
 }

@@ -14,7 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RelationshipDto {
+
     private UUID id;
+
     private UserDto requestSender;
 
     private UserDto receiver;
