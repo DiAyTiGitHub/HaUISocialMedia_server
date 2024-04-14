@@ -19,6 +19,8 @@ public interface RelationshipService {
 
     public List<UserDto> getCurrentFriends(SearchObject searchObject);
 
+    public List<UserDto> pagingNewUser(SearchObject searchObject);
+
     public Set<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject);
 
     public RelationshipDto unFriend(UUID relationshipId);

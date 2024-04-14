@@ -63,6 +63,13 @@ public class RelationshipController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @PostMapping("/pagingNewUser")
+    public ResponseEntity<List<UserDto>> pagingNewUser(@RequestBody SearchObject searchObject){
+        List<UserDto> res = relationshipService.pagingNewUser(searchObject);
+        if(res == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
     @PostMapping("/friends/{userId}")
     public ResponseEntity<Set<UserDto>> pagingFriendsOfUser(@PathVariable("userId") UUID userId, @RequestBody SearchObject searchObject) {

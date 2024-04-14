@@ -20,10 +20,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "SELECT * FROM tbl_user u WHERE u.last_name LIKE %?1% OR u.first_name LIKE %?1% OR u.username LIKE %?1% LIMIT ?2 OFFSET ?3", nativeQuery = true)
     List<User> getByUserName(String keyword, int limit, int offset);
 
-    @Query( "select u from User u where u.role = 'USER' and u.id in (select r.requestSender.id from Relationship r where r.requestSender.id = :currentUserId and r.state = true ) or u.id in (select r.receiver.id from Relationship r where r.receiver.id = :currentUserId and r.state = true )")
+    @Query( "select u from User u where u.id in (select r.receiver.id from Relationship r where r.requestSender.id = :currentUserId and r.state = true ) or u.id in (select r.requestSender.id from Relationship r where r.receiver.id = :currentUserId and r.state = true )")
     List<User> findAllCurentFriend(@Param("currentUserId") UUID currentUserId, Pageable pageable);
 
-    @Query( "select u from User u where u.role = 'USER' and u.id not in (select r.requestSender.id from Relationship r where r.requestSender.id = :currentUserId and r.state = true ) or u.id not in (select r.receiver.id from Relationship r where r.receiver.id = :currentUserId and r.state = true )")
+    @Query( "select u from User u where u.role like 'USER' and u.id != :currentUserId and u.id not in (select r.receiver.id from Relationship r where r.requestSender.id = :currentUserId and r.state = true ) and u.id not in (select r.requestSender.id from Relationship r where r.receiver.id = :currentUserId and r.state = true ) and u.id not in (select r.receiver.id from Relationship r where r.requestSender.id = :currentUserId and r.state = false )")
     List<User> findNewFriend(@Param("currentUserId") UUID currentUserId, Pageable pageable);
 
     @Query(value = "SELECT u.id FROM User u WHERE u.role NOT LIKE 'ADMIN'")
