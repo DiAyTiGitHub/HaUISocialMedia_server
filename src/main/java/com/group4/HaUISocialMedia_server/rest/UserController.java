@@ -40,14 +40,14 @@ public class UserController {
 
     @GetMapping("/username/{name}")
     public ResponseEntity<UserDto> getByName(@PathVariable("name") String name) {
-        if (userService.getByUserName(name) == null) new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        if (userService.getByUserName(name) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userService.getByUserName(name), HttpStatus.OK);
     }
 
     @GetMapping("/delete/{id}")
     public ResponseEntity<Boolean> deleteById(@PathVariable("id") UUID id) {
         UserDto userDto = userService.getById(id);
-        if (userDto == null) return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        if (userDto == null) return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
         userService.deleteById(id);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
@@ -61,7 +61,7 @@ public class UserController {
     @PostMapping("/search")
     public ResponseEntity<Set<UserDto>> getByUsername(@RequestBody SearchObject searchObject) {
         Set<UserDto> li = userService.searchByUsername(searchObject);
-        if (li == null) return new ResponseEntity<>(li, HttpStatus.NOT_FOUND);
+        if (li == null) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
@@ -73,7 +73,14 @@ public class UserController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @GetMapping(value = "")
+    public ResponseEntity<UserDto> getCurrentLoginUser() {
+        UserDto res = userService.getCurrentLoginUser();
 
+        if (res == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
 
 }

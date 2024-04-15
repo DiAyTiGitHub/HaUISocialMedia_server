@@ -39,8 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(UUID userId)
-    {
+    public UserDto getById(UUID userId) {
         Optional<User> user = userRepository.findById(userId);
         return user.map(UserDto::new).orElseThrow(() -> new RuntimeException("User not found"));
     }
@@ -60,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto updateUser(UserDto dto) {
         User entity = userService.getCurrentLoginUserEntity();
-        if(entity == null)
+        if (entity == null)
             return null;
         entity.setCode(dto.getCode());
         entity.setFirstName(dto.getFirstName());
@@ -73,7 +72,7 @@ public class UserServiceImpl implements UserService {
         entity.setAvatar(dto.getAvatar());
         entity.setPhoneNumber(dto.getPhoneNumber());
 
-        if(dto.getClassroomDto() != null)
+        if (dto.getClassroomDto() != null)
             entity.setClassroom(classroomRepository.findById(dto.getClassroomDto().getId()).orElse(null));
         userRepository.saveAndFlush(entity);
         return dto;
@@ -130,5 +129,11 @@ public class UserServiceImpl implements UserService {
         return res;
     }
 
+    @Override
+    public UserDto getCurrentLoginUser() {
+        User currentUser = this.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
 
+        return new UserDto(currentUser);
+    }
 }
