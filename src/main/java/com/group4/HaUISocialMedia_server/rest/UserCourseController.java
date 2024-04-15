@@ -39,12 +39,12 @@ public class UserCourseController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PutMapping("")
-    private ResponseEntity<UserCourseDto> updateUserCourse(@RequestBody UserCourseDto dto) {
-        UserCourseDto res = userCourseService.updateUserCourse(dto);
-        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
+//    @PutMapping("")
+//    private ResponseEntity<UserCourseDto> updateUserCourse(@RequestBody UserCourseDto dto) {
+//        UserCourseDto res = userCourseService.updateUserCourse(dto);
+//        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        return new ResponseEntity<>(res, HttpStatus.OK);
+//    }
 
     @DeleteMapping("/{userCourseId}")
     private ResponseEntity<Boolean> deleteUserCourseById(@PathVariable UUID userCourseId) {
@@ -65,5 +65,13 @@ public class UserCourseController {
         List<UserCourseDto> res = userCourseService.getUserCourseByResult(userId, courseId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/allow-userCourse/{userCourseId}")
+    private ResponseEntity<UserCourseDto> allowUserCourse(@PathVariable("userCourseId")UUID userCourseId){
+        UserCourseDto userCourseDto = userCourseService.setIsValidGiveUserCourse(userCourseId);
+        if(userCourseDto == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userCourseDto, HttpStatus.OK);
     }
 }

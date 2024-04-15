@@ -31,9 +31,9 @@ public class CourseDto {
         this.code = course.getCode();
         this.name = course.getName();
         this.description = course.getDescription();
-        if(course.getUserCourses() != null && !course.getUserCourses().isEmpty()){
-            this.userCourses = new HashSet<>();
-            course.getUserCourses().stream().map(UserCourseDto::new).forEach(this.userCourses::add);
-        }
+//        if(course.getUserCourses() != null && !course.getUserCourses().isEmpty()){
+//            this.userCourses = new HashSet<>();
+//            course.getUserCourses().stream().map(UserCourseDto::new).forEach(this.userCourses::add);
+//        }
     }
 }

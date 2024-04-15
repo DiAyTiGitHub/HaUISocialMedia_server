@@ -27,9 +27,9 @@ public class UserCourseDto {
     private Date modifyDate;
     private Boolean isValidated;
 
-    public UserCourseDto(UserCourse entity) {
-        if (entity != null) {
-            this.id = entity.getId();
+        public UserCourseDto(UserCourse entity) {
+             if (entity != null) {
+                 this.id = entity.getId();
             if (entity.getUser() != null)
                 this.user = new UserDto(entity.getUser());
             if (entity.getCourseResult() != null)

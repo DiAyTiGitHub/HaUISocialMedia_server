@@ -13,10 +13,13 @@ import java.util.UUID;
 
 @Repository
 public interface UserCourseRepository extends JpaRepository<UserCourse, UUID> {
-    @Query(value = "select uc from UserCourse uc where uc.user.id = :userId order by uc.courseResult.name, uc.course.name")
+    @Query("select uc from UserCourse uc where uc.user.id = :userId order by uc.courseResult.name, uc.course.name")
     List<UserCourse> getUserCourseOfUser(@Param("userId") UUID userId);
 
-    @Query(value = "select uc from UserCourse uc where uc.user.id = :userId and uc.courseResult.id = :courseResultId " +
+    @Query("SELECT uc FROM UserCourse uc WHERE uc.user.id = :userId and uc.course.id = :courseId")
+    public UserCourse findUserCourseByUserAndCourse(@Param("userId")UUID userId, @Param("courseId")UUID courseId);
+
+    @Query("select uc from UserCourse uc where uc.user.id = :userId and uc.courseResult.id = :courseResultId " +
             "order by uc.course.name")
     List<UserCourse> getUserCourseByResult(@Param("userId") UUID userId, @Param("courseResultId") UUID courseResultId);
 }

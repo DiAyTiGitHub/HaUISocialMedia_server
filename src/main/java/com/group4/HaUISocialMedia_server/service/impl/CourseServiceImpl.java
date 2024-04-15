@@ -11,10 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -80,6 +77,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto getById(UUID id) {
-        return new CourseDto(courseRepository.findById(id).orElse(null));
+        return new CourseDto(Objects.requireNonNull(courseRepository.findById(id).orElse(null)));
     }
 }

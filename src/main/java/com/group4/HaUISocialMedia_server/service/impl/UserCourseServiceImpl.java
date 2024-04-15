@@ -2,10 +2,9 @@ package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserCourseDto;
-import com.group4.HaUISocialMedia_server.entity.Course;
-import com.group4.HaUISocialMedia_server.entity.CourseResult;
-import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.entity.UserCourse;
+import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.entity.*;
+import com.group4.HaUISocialMedia_server.repository.BoardRecordRepository;
 import com.group4.HaUISocialMedia_server.repository.CourseRepository;
 import com.group4.HaUISocialMedia_server.repository.CourseResultRepository;
 import com.group4.HaUISocialMedia_server.repository.UserCourseRepository;
@@ -35,6 +34,9 @@ public class UserCourseServiceImpl implements UserCourseService {
     @Autowired
     private CourseResultRepository courseResultRepository;
 
+    @Autowired
+    private BoardRecordRepository boardRecordRepository;
+
     @Override
     public UserCourseDto getUserCourseById(UUID userCourseId) {
         if (userCourseId == null) return null;
@@ -46,20 +48,44 @@ public class UserCourseServiceImpl implements UserCourseService {
     @Override
     public UserCourseDto createUserCourse(UserCourseDto dto) {
         if (dto == null) return null;
-
         User currentUser = userService.getCurrentLoginUserEntity();
-        if (dto.getUser() != null) {
+        if (dto.getUser() != null)
             currentUser = userService.getUserEntityById(dto.getUser().getId());
+        //Check if it's already in the userCourse table
+        UserCourse userCourse = userCourseRepository.findUserCourseByUserAndCourse(currentUser.getId(), dto.getCourse().getId());
+        //if's already, update
+        if(userCourse != null)
+        {
+            dto.setId(userCourse.getId());
+            return updateUserCourse(dto);
         }
+
+
         if (currentUser == null) return null;
 
+//            BoardRecord boardRecord = boardRecordRepository.getRecordOfStudent(currentUser.getId());
+
         if (dto.getCourse() == null) return null;
-        Course course = courseRepository.findById(dto.getCourse().getId()).orElse(null);
+            Course course = courseRepository.findById(dto.getCourse().getId()).orElse(null);
         if (course == null) return null;
 
         if (dto.getCourseResult() == null) return null;
-        CourseResult courseResult = courseResultRepository.findById(dto.getCourseResult().getId()).orElse(null);
+            CourseResult courseResult = courseResultRepository.findById(dto.getCourseResult().getId()).orElse(null);
+
         if (courseResult == null) return null;
+//            String scoreChar = dto.getCourseResult().getCode();
+
+//        switch (scoreChar) {
+//            case "A" -> boardRecord.setNumsOfA(boardRecord.getNumsOfA() + 1);
+//            case "B+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfBPlus() + 1);
+//            case "B" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfB() + 1);
+//            case "C+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfCPlus() + 1);
+//            case "C" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfC() + 1);
+//            case "D+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfDPlus() + 1);
+//            default -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfD() + 1);
+//        }
+
+//        boardRecordRepository.saveAndFlush(boardRecord);
 
         UserCourse entity = new UserCourse();
         entity.setCourse(course);
@@ -67,9 +93,9 @@ public class UserCourseServiceImpl implements UserCourseService {
         entity.setUser(currentUser);
         entity.setScore(dto.getScore());
         entity.setModifyDate(new Date());
+        entity.setIsValidated(false);
 
         UserCourse savedEntity = userCourseRepository.save(entity);
-        if (savedEntity == null) return null;
 
         return new UserCourseDto(savedEntity);
     }
@@ -91,14 +117,29 @@ public class UserCourseServiceImpl implements UserCourseService {
         UserCourse entity = userCourseRepository.findById(dto.getId()).orElse(null);
         if (entity == null) return null;
 
+        BoardRecord boardRecord = boardRecordRepository.getRecordOfStudent(currentUser.getId());
+        String scoreChar = entity.getCourseResult().getCode();
+
+        switch (scoreChar) {
+            case "A" -> boardRecord.setNumsOfA(boardRecord.getNumsOfA() - 1);
+            case "B+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfBPlus() - 1);
+            case "B" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfB() - 1);
+            case "C+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfCPlus() - 1);
+            case "C" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfC() - 1);
+            case "D+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfDPlus() - 1);
+            default -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfD() - 1);
+        }
+
+        boardRecordRepository.saveAndFlush(boardRecord);
+
         entity.setCourse(course);
         entity.setCourseResult(courseResult);
         entity.setUser(currentUser);
         entity.setScore(dto.getScore());
         entity.setModifyDate(new Date());
+        entity.setIsValidated(false);
 
         UserCourse savedEntity = userCourseRepository.save(entity);
-        if (savedEntity == null) return null;
 
         return new UserCourseDto(savedEntity);
     }
@@ -108,9 +149,7 @@ public class UserCourseServiceImpl implements UserCourseService {
         if (userCourseId == null) return false;
         UserCourse entity = userCourseRepository.findById(userCourseId).orElse(null);
         if (entity == null) return false;
-
         userCourseRepository.delete(entity);
-
         return true;
     }
 
@@ -145,4 +184,36 @@ public class UserCourseServiceImpl implements UserCourseService {
 
         return res;
     }
+
+    @Override
+    public UserCourseDto setIsValidGiveUserCourse(UUID userCourseId) {
+        UserCourse entity = userCourseRepository.findById(userCourseId).orElse(null);
+        if(entity == null)
+            return null;
+        if(entity.getIsValidated())
+            return null;
+        entity.setIsValidated(true);
+
+        UserDto user = userService.getById(entity.getUser().getId());
+        if(user == null)
+            return null;
+        BoardRecord boardRecord = boardRecordRepository.getRecordOfStudent(user.getId());
+
+        String scoreChar = entity.getCourseResult().getCode();
+
+        switch (scoreChar) {
+            case "A" -> boardRecord.setNumsOfA(boardRecord.getNumsOfA() + 1);
+            case "B+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfBPlus() + 1);
+            case "B" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfB() + 1);
+            case "C+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfCPlus() + 1);
+            case "C" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfC() + 1);
+            case "D+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfDPlus() + 1);
+            default -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfD() + 1);
+        }
+
+        boardRecordRepository.saveAndFlush(boardRecord);
+        return new UserCourseDto(entity);
+    }
+
+
 }

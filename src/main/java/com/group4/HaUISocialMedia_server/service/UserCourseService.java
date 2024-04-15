@@ -19,4 +19,6 @@ public interface UserCourseService {
     public List<UserCourseDto> getUserCourseOfUser(UUID userId);
 
     public List<UserCourseDto> getUserCourseByResult(UUID userId, UUID courseResultId);
+
+    public UserCourseDto setIsValidGiveUserCourse(UUID userCourseId);
 }
