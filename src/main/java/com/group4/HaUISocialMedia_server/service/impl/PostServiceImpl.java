@@ -1,10 +1,7 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.*;
-import com.group4.HaUISocialMedia_server.entity.Notification;
-import com.group4.HaUISocialMedia_server.entity.Post;
-import com.group4.HaUISocialMedia_server.entity.Relationship;
-import com.group4.HaUISocialMedia_server.entity.User;
+import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
+    @Autowired
+    private PostImageRepository postImageRepository;
+
     @Autowired
     private PostRepository postRepository;
 
@@ -108,11 +108,22 @@ public class PostServiceImpl implements PostService {
         entity.setCreateDate(new Date());
         entity.setContent(dto.getContent());
         entity.setOwner(currentUser);
-//        if(!dto.getImages().isEmpty())
-//            entity.setPostImages(dto.getImages().stream().map(PostImageDTO::new));
+
 
         Post savedEntity = postRepository.save(entity);
-
+        if (!dto.getImages().isEmpty()) {
+            entity.setPostImages(dto.getImages().stream().map(x -> {
+                PostImage postImage = new PostImage();
+                // postImage.setId(x.getId());
+                 if(x.getPost() != null)
+                     postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
+                postImage.setDescription(x.getDescription());
+                postImage.setImage(x.getImage());
+                postImage.setCreateDate(new Date());
+                postImageRepository.save(postImage);
+                return postImage;
+            }).collect(Collectors.toSet()));
+        }
         //alert all friends that this user has created new post
         SearchObject so = new SearchObject();
         so.setPageIndex(1);
@@ -135,6 +146,7 @@ public class PostServiceImpl implements PostService {
         }
 
         PostDto responseDto = new PostDto(savedEntity);
+        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
         return responseDto;
     }
 
