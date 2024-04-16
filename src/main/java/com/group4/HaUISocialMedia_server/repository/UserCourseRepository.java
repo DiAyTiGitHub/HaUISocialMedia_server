@@ -16,6 +16,12 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, UUID> {
     @Query("select uc from UserCourse uc where uc.user.id = :userId order by uc.courseResult.name, uc.course.name")
     List<UserCourse> getUserCourseOfUser(@Param("userId") UUID userId);
 
+    @Query("SELECT uc FROM UserCourse uc WHERE uc.user.id = :userId and uc.isValidated = true")
+    public List<UserCourse> getAllCourseAdminAllow(@Param("userId")UUID userId);
+
+    @Query("SELECT uc FROM UserCourse uc WHERE uc.user.id = :userId and uc.isValidated = false")
+    public List<UserCourse> getAllCourseWaitAdminAllow(@Param("userId")UUID userId);
+
     @Query("SELECT uc FROM UserCourse uc WHERE uc.user.id = :userId and uc.course.id = :courseId")
     public UserCourse findUserCourseByUserAndCourse(@Param("userId")UUID userId, @Param("courseId")UUID courseId);
 

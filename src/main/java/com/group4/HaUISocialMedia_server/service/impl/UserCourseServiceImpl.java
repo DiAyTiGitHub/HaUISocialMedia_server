@@ -14,10 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -213,6 +210,22 @@ public class UserCourseServiceImpl implements UserCourseService {
 
         boardRecordRepository.saveAndFlush(boardRecord);
         return new UserCourseDto(entity);
+    }
+
+    @Override
+    public Set<UserCourseDto> getAllCourseAdminAllow(UUID userId) {
+        List<UserCourse> li = userCourseRepository.getAllCourseAdminAllow(userId);
+        Set<UserCourseDto> res = new HashSet<>();
+        li.stream().map(UserCourseDto::new).forEach(res::add);
+        return res;
+    }
+
+    @Override
+    public Set<UserCourseDto> getAllCourseWaitAdminAllow(UUID userId) {
+        List<UserCourse> li = userCourseRepository.getAllCourseWaitAdminAllow(userId);
+        Set<UserCourseDto> res = new HashSet<>();
+        li.stream().map(UserCourseDto::new).forEach(res::add);
+        return res;
     }
 
 

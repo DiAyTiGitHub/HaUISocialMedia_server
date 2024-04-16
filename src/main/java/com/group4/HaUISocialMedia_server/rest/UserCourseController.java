@@ -74,4 +74,20 @@ public class UserCourseController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userCourseDto, HttpStatus.OK);
     }
+
+    @GetMapping("/all-course-admin-allow/{userId}")
+    private ResponseEntity<Set<UserCourseDto>> getAllCourseAdminAllow(@PathVariable("userId")UUID userCourseId){
+        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseAdminAllow(userCourseId);
+        if(userCourseDto == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userCourseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-course-wait-admin-allow/{userId}")
+    private ResponseEntity<Set<UserCourseDto>> getAllWaitCourseAdminAllow(@PathVariable("userId")UUID userCourseId){
+        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseAdminAllow(userCourseId);
+        if(userCourseDto == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userCourseDto, HttpStatus.OK);
+    }
 }
