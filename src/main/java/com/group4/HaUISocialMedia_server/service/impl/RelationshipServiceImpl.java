@@ -260,7 +260,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         relationshipRepository.deleteById(relationshipId);
         Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
         RelationshipDto relationshipDto = new RelationshipDto(relationship);
-        return relationshipDto;
+        return null;
     }
 
     @Override
@@ -273,8 +273,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
         Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
-        RelationshipDto relationshipDto = new RelationshipDto(relationship);
-        return relationshipDto;
+        return null;
     }
 
 

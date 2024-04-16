@@ -109,7 +109,7 @@ public class RoomController {
     }
 
     @GetMapping("/joinedPrivateRooms")
-    public ResponseEntity<List<RoomDto>> getListFriendNotInRoom() {
+    public ResponseEntity<List<RoomDto>> getAllPrivateRooms() {
         List<RoomDto> res = roomService.getAllPrivateRooms();
         if (res != null)
             return new ResponseEntity<>(res, HttpStatus.OK);

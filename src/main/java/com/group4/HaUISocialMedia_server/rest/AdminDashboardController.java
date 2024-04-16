@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping("/api/")
+@RequestMapping("/api/admin-dashboard")
 public class AdminDashboardController {
 
     @PreAuthorize("hasRole('ADMIN')")

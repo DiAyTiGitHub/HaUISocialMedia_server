@@ -84,7 +84,7 @@ public class RelationshipController {
         RelationshipDto res = relationshipService.unFriend(relationshipId);
         if (res == null)
             return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/unacceptFriend/{relationshipId}")
@@ -92,6 +92,6 @@ public class RelationshipController {
         RelationshipDto res = relationshipService.unAcceptFriendRequest(relationshipId);
         if(res == null)
             return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 }
