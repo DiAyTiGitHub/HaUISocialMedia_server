@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.repository;
 
+import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.Relationship;
 import com.group4.HaUISocialMedia_server.entity.User;
@@ -28,5 +29,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query(value = "SELECT u.id FROM User u WHERE u.role NOT LIKE 'ADMIN'")
     List<UUID> getAllStudentIds();
+
+
 
 }

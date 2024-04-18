@@ -67,9 +67,9 @@ public class RelationshipServiceImpl implements RelationshipService {
         Relationship savedEntity = relationshipRepository.save(entity);
 
         //set Relationship
-        UserDto recieverDto = new UserDto(receiver);
-        RelationshipDto relationshipDto = new RelationshipDto(entity);
-        recieverDto.setRelationshipDto(relationshipDto);
+//        UserDto recieverDto = new UserDto(receiver);
+//        RelationshipDto relationshipDto = new RelationshipDto(entity);
+//        recieverDto.setRelationshipDto(relationshipDto);
 
         //
         NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Friend");
@@ -142,9 +142,9 @@ public class RelationshipServiceImpl implements RelationshipService {
         simpMessagingTemplate.convertAndSendToUser(requestSender.getId().toString(), "/notification", willSendNoti);
 
         //set Relationship
-        UserDto recieverDto = new UserDto(requestSender);
-        RelationshipDto relationshipDto = new RelationshipDto(entity);
-        recieverDto.setRelationshipDto(relationshipDto);
+//        UserDto recieverDto = new UserDto(requestSender);
+//        RelationshipDto relationshipDto = new RelationshipDto(entity);
+//        recieverDto.setRelationshipDto(relationshipDto);
 
         return new RelationshipDto(savedRelationship);
     }
