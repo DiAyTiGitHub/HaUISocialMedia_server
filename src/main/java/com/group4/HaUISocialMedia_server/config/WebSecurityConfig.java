@@ -51,8 +51,8 @@ public class WebSecurityConfig {
 //                    authorize.requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER");
 //                    authorize.requestMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("ADMIN", "USER");
 //                    authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll();
-                    authorize.requestMatchers("/api/auth/**").permitAll();
-                    authorize.requestMatchers("/ws/**").permitAll();
+                    authorize.requestMatchers("/api/auth/**", "/ws/**").permitAll();
+//                    authorize.requestMatchers("/ws/**").permitAll();
                     authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     authorize.anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults());

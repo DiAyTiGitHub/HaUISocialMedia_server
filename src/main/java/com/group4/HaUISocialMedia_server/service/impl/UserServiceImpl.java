@@ -1,9 +1,12 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.entity.Relationship;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
+import com.group4.HaUISocialMedia_server.repository.RelationshipRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
@@ -30,6 +33,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RelationshipRepository relationshipRepository;
+
     @Override
     public Set<UserDto> getAllUsers() {
         Set<UserDto> res = new HashSet<>();
@@ -40,8 +46,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(UUID userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.map(UserDto::new).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElse(null);
+        UserDto userDto = new UserDto();
+        Relationship relationship = relationshipRepository.getRelationshipByUserId(userId);
+        RelationshipDto relationshipDto = new RelationshipDto(relationship);
+        userDto.setRelationshipDto(relationshipDto);
+        //return user.map(UserDto::new).orElseThrow(() -> new RuntimeException("User not found"));
+        return userDto;
     }
 
     @Override

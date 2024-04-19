@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/relationship")
 public class RelationshipController {
     @Autowired
