@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
@@ -24,6 +25,13 @@ public class LeadingDashBoardController {
     @PostMapping(value = "")
     public ResponseEntity<PageResult> getLeadingDashBoard(@RequestBody SearchDashboardDto searchDashboardDto) {
         PageResult res = leadingDashboardService.pagingLeadingDashboard(searchDashboardDto);
+        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}")
+    public ResponseEntity<BoardRecordDto> getLeadingDashBoard(@PathVariable("userId") UUID userId) {
+        BoardRecordDto res = leadingDashboardService.getDashboardOfStudent(userId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

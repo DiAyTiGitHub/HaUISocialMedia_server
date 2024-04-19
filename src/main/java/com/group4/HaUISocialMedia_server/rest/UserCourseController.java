@@ -85,7 +85,7 @@ public class UserCourseController {
 
     @GetMapping("/all-course-wait-admin-allow/{userId}")
     private ResponseEntity<Set<UserCourseDto>> getAllWaitCourseAdminAllow(@PathVariable("userId")UUID userCourseId){
-        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseAdminAllow(userCourseId);
+        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseWaitAdminAllow(userCourseId);
         if(userCourseDto == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userCourseDto, HttpStatus.OK);

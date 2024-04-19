@@ -17,9 +17,11 @@ public interface BoardRecordRepository extends JpaRepository<BoardRecord, UUID> 
     @Query("SELECT r from BoardRecord r where r.user.id = :userId")
     public BoardRecord getRecordOfStudent(@Param("userId") UUID userId);
 
-    @Query("SELECT r from BoardRecord r " +
+    @Query("SELECT r from BoardRecord r "
+            +
             "where r.user.code like %:keyword% or r.user.username like %:keyword% or r.user.firstName like %:keyword% " +
             "order by " +
-            "r.numsOfA, r.numsOfBPlus, r.numsOfB, r.numsOfCPlus, r.numsOfC, r.numsOfDPlus, r.numsOfD, r.lastModifyDate")
+            "r.numsOfA, r.numsOfBPlus, r.numsOfB, r.numsOfCPlus, r.numsOfC, r.numsOfDPlus, r.numsOfD, r.lastModifyDate"
+    )
     public List<BoardRecord> getLeadingDashboard(@Param("keyword") String keyword, Pageable pageable);
 }

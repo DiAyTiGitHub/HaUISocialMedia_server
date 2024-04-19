@@ -35,14 +35,30 @@ public class LeadingDashboardServiceImpl implements LeadingDashboardService {
         pageResult.setPageIndex(searchObject.getPageIndex());
         List<UUID> studentIds = userRepository.getAllStudentIds();
         pageResult.setTotalElements(studentIds.size());
-        List<BoardRecord> topDashboard = boardRecordRepository.getLeadingDashboard(searchObject.getKeyWord(),
-                PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        String kw = "";
+        if (searchObject.getKeyWord() != null) kw = searchObject.getKeyWord();
+        List<BoardRecord> topDashboard = boardRecordRepository.getLeadingDashboard(kw,
+                PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         List<BoardRecordDto> res = new ArrayList<>();
 
         for (BoardRecord record : topDashboard) {
             res.add(new BoardRecordDto(record));
         }
 
+        pageResult.setData(res);
+
         return pageResult;
+    }
+
+    @Override
+    public BoardRecordDto getDashboardOfStudent(UUID userId) {
+        if (userId == null) return null;
+
+        User student = userRepository.findById(userId).orElse(null);
+        if (student == null || !student.getRole().equals("USER")) return null;
+
+        BoardRecord record = boardRecordRepository.getRecordOfStudent(userId);
+
+        return new BoardRecordDto(record);
     }
 }

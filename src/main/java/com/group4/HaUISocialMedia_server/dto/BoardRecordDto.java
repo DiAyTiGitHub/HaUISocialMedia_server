@@ -35,14 +35,17 @@ public class BoardRecordDto {
     private Date lastModifyDate;
 
     public BoardRecordDto(BoardRecord entity) {
-        this.id = entity.getId();
-        this.numsOfA = entity.getNumsOfA();
-        this.numsOfB = entity.getNumsOfB();
-        this.numsOfBPlus = entity.getNumsOfBPlus();
-        this.numsOfC = entity.getNumsOfC();
-        this.numsOfCPlus = entity.getNumsOfCPlus();
-        this.numsOfD = entity.getNumsOfC();
-        this.numsOfDPlus = entity.getNumsOfCPlus();
-        this.lastModifyDate = entity.getLastModifyDate();
+        if (entity != null) {
+            this.id = entity.getId();
+            if (entity.getUser() != null) this.user = new UserDto(entity.getUser());
+            this.numsOfA = entity.getNumsOfA();
+            this.numsOfB = entity.getNumsOfB();
+            this.numsOfBPlus = entity.getNumsOfBPlus();
+            this.numsOfC = entity.getNumsOfC();
+            this.numsOfCPlus = entity.getNumsOfCPlus();
+            this.numsOfD = entity.getNumsOfC();
+            this.numsOfDPlus = entity.getNumsOfCPlus();
+            this.lastModifyDate = entity.getLastModifyDate();
+        }
     }
 }

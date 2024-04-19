@@ -51,8 +51,7 @@ public class UserCourseServiceImpl implements UserCourseService {
         //Check if it's already in the userCourse table
         UserCourse userCourse = userCourseRepository.findUserCourseByUserAndCourse(currentUser.getId(), dto.getCourse().getId());
         //if's already, update
-        if(userCourse != null)
-        {
+        if (userCourse != null) {
             dto.setId(userCourse.getId());
             return updateUserCourse(dto);
         }
@@ -63,11 +62,11 @@ public class UserCourseServiceImpl implements UserCourseService {
 //            BoardRecord boardRecord = boardRecordRepository.getRecordOfStudent(currentUser.getId());
 
         if (dto.getCourse() == null) return null;
-            Course course = courseRepository.findById(dto.getCourse().getId()).orElse(null);
+        Course course = courseRepository.findById(dto.getCourse().getId()).orElse(null);
         if (course == null) return null;
 
         if (dto.getCourseResult() == null) return null;
-            CourseResult courseResult = courseResultRepository.findById(dto.getCourseResult().getId()).orElse(null);
+        CourseResult courseResult = courseResultRepository.findById(dto.getCourseResult().getId()).orElse(null);
 
         if (courseResult == null) return null;
 //            String scoreChar = dto.getCourseResult().getCode();
@@ -127,6 +126,7 @@ public class UserCourseServiceImpl implements UserCourseService {
             default -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfD() - 1);
         }
 
+        boardRecord.setLastModifyDate(new Date());
         boardRecordRepository.saveAndFlush(boardRecord);
 
         entity.setCourse(course);
@@ -185,14 +185,14 @@ public class UserCourseServiceImpl implements UserCourseService {
     @Override
     public UserCourseDto setIsValidGiveUserCourse(UUID userCourseId) {
         UserCourse entity = userCourseRepository.findById(userCourseId).orElse(null);
-        if(entity == null)
+        if (entity == null)
             return null;
-        if(entity.getIsValidated())
+        if (entity.getIsValidated())
             return null;
         entity.setIsValidated(true);
 
         UserDto user = userService.getById(entity.getUser().getId());
-        if(user == null)
+        if (user == null)
             return null;
         BoardRecord boardRecord = boardRecordRepository.getRecordOfStudent(user.getId());
 
@@ -208,6 +208,7 @@ public class UserCourseServiceImpl implements UserCourseService {
             default -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfD() + 1);
         }
 
+        boardRecord.setLastModifyDate(new Date());
         boardRecordRepository.saveAndFlush(boardRecord);
         return new UserCourseDto(entity);
     }

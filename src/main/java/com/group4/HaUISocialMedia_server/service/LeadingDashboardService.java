@@ -5,7 +5,10 @@ import com.group4.HaUISocialMedia_server.dto.PageResult;
 import com.group4.HaUISocialMedia_server.dto.SearchDashboardDto;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface LeadingDashboardService {
     public PageResult pagingLeadingDashboard(SearchDashboardDto searchObject);
+
+    public BoardRecordDto getDashboardOfStudent(UUID userId);
 }
