@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,7 +48,9 @@ public class Post implements Serializable {
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Notification> notifications;
 
-//    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
-//    private Set<Group> groups;
+    @ManyToOne
+    @JoinColumn(name = "groupId")
+    @JsonIgnore
+    private Group group;
 
 }

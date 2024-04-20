@@ -25,6 +25,7 @@ public class PostDto {
     private Set<LikeDto> likes;
     private Set<CommentDto> comments;
     private Set<PostImageDTO> images;
+    private GroupDto group;
 
     public PostDto(Post entity) {
         this.id = entity.getId();
@@ -33,6 +34,9 @@ public class PostDto {
         if (entity.getOwner() != null) {
             this.creator = new UserDto(entity.getOwner());
         }
+
+        if(entity.getGroup() != null)
+            this.group = new GroupDto(entity.getGroup());
 
 //        if (entity.getLikes() != null && !entity.getLikes().isEmpty()) {
 //            this.likes = new HashSet<>();

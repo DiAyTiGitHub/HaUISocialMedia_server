@@ -54,4 +54,8 @@ public class Group {
     @JsonIgnore
     private Set<UserGroup> users;
 
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Post> posts;
+
 }
