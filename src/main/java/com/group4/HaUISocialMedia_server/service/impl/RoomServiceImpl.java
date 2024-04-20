@@ -180,7 +180,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         roomChat.setName("Bạn và  " + joinUserIds.length + " người khác");
-        if (newGroupChat.getName() != null && newGroupChat.getName().length() > 0)
+        if (newGroupChat.getName() != null && !newGroupChat.getName().isEmpty())
             roomChat.setName(newGroupChat.getName());
 
         roomChat.setUserRooms(userRooms);
@@ -189,8 +189,6 @@ public class RoomServiceImpl implements RoomService {
 
         //chatRoom is finally created done in database
         Room response = roomRepository.save(roomChat);
-        if (response == null)
-            return null;
 
         MessageType messageType = messageTypeService.getMessageTypeEntityByName("join");
 

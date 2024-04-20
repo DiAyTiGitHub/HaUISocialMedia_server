@@ -47,4 +47,7 @@ public class Post implements Serializable {
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Notification> notifications;
 
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.REMOVE)
+    private Set<Group> groups;
+
 }
