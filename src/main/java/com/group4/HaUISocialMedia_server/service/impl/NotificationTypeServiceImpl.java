@@ -81,7 +81,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeService {
     public Set<NotificationTypeDto> getAnyNotificationType(SearchObject searchObject) {
         Set<NotificationTypeDto> se = new HashSet<>();
 
-        Page<NotificationType> li = notificationTypeRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Page<NotificationType> li = notificationTypeRepository.findAll(PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
         li.stream().map(NotificationTypeDto::new).forEach(se::add);
         return se;
     }

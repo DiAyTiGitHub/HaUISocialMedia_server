@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/message")
 public class MessageController {
     @Autowired
@@ -32,5 +32,12 @@ public class MessageController {
         List<MessageDto> res = messageService.get20LatestMessagesByRoomId(roomId);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<MessageDto> sendMessage(@RequestBody MessageDto message) {
+        MessageDto res = messageService.sendMessage(message);
+        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<MessageDto>(res, HttpStatus.OK);
     }
 }

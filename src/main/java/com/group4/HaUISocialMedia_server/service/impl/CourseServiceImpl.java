@@ -70,7 +70,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Set<CourseDto> pagingCourses(SearchObject searchObject) {
         Set<CourseDto> se = new HashSet<>();
-        Page<Course> li = courseRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Page<Course> li = courseRepository.findAll(PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
         li.stream().map(CourseDto::new).forEach(se::add);
         return se;
     }
