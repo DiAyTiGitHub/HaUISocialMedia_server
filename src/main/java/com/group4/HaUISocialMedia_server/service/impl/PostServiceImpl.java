@@ -83,6 +83,7 @@ public class PostServiceImpl implements PostService {
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+            postDto.setImages(postImageService.sortImage(postDto.getId()));
         }
 
         return res;
@@ -115,7 +116,7 @@ public class PostServiceImpl implements PostService {
             entity.setPostImages(dto.getImages().stream().map(x -> {
                 PostImage postImage = new PostImage();
                 // postImage.setId(x.getId());
-                 if(x.getPost() != null)
+                //if(x.getPost() != null)
                      postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
                 postImage.setDescription(x.getDescription());
                 postImage.setImage(x.getImage());
