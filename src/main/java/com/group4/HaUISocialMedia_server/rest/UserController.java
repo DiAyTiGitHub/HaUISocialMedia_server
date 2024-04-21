@@ -32,10 +32,11 @@ public class UserController {
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<UserDto> getById(@PathVariable("id") UUID id) {
-        if (userService.getById(id) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getById(@PathVariable("userId") UUID userId) {
+        UserDto res = userService.getById(userId);
+        if (res == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/username/{name}")
