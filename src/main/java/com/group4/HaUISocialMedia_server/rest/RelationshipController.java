@@ -63,7 +63,7 @@ public class RelationshipController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/pagingNewUser")
+    @PostMapping("/suggesting-users")
     public ResponseEntity<List<UserDto>> pagingNewUser(@RequestBody SearchObject searchObject){
         List<UserDto> res = relationshipService.pagingNewUser(searchObject);
         if(res == null)
@@ -87,7 +87,7 @@ public class RelationshipController {
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/unacceptFriend/{relationshipId}")
+    @DeleteMapping("/unAcceptFriend/{relationshipId}")
     public ResponseEntity<Boolean> unAcceptFriendRequest(@PathVariable("relationshipId") UUID relationshipId){
         RelationshipDto res = relationshipService.unAcceptFriendRequest(relationshipId);
         if(res == null)

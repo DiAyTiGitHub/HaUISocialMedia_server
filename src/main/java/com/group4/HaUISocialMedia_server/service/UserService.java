@@ -4,6 +4,7 @@ import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.User;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,9 +28,4 @@ public interface UserService {
     public UserDto getCurrentLoginUser();
 
     public User getUserEntityById(UUID userId);
-
-    public Set<UserDto> pagingNewUser(SearchObject searchObject);
-
-
-
 }
