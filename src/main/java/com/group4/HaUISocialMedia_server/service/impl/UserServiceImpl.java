@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     public Set<UserDto> pagingUser(SearchObject searchObject) {
         Set<UserDto> se = new HashSet<>();
 
-        Page<User> li = userRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Page<User> li = userRepository.findAll(PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
 
         li.stream().map(UserDto::new).forEach(se::add);
         return se;
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
         Set<UserDto> res = new HashSet<>();
         for (User user : response) {
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {

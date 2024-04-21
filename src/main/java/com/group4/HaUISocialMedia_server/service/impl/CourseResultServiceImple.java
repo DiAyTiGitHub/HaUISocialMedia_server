@@ -23,7 +23,7 @@ public class CourseResultServiceImple implements CourseResultService {
     @Override
     public Set<CourseResultDto> pagingCourseResult(SearchObject searchObject) {
         Set<CourseResultDto> se = new HashSet<>();
-        Page<CourseResult> li = courseResultRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Page<CourseResult> li = courseResultRepository.findAll(PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
         li.stream().map(CourseResultDto::new).forEach(se::add);
         return se;
     }

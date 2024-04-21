@@ -77,7 +77,7 @@ public class ClassRoomServiceImpl implements ClassroomService {
         Set<ClassroomDto> li = new TreeSet<>((cls1, cls2) -> cls1.getCode().compareTo(cls2.getCode()));
         //Page là một đối tượng của interface Page trong Spring Data JPA dùng để thể hiện kết quả trả về theo phân trang
         //PageRequest: Là đối tượng của interface PageRequest, nó cung cấp thông tin phân trang khi truy vấn dữ liệu.
-        List<Classroom> ds = classroomRepository.getPagingClassroom(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<Classroom> ds = classroomRepository.getPagingClassroom(PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
        // List<Classroom> ds = classroomRepository.findAnyClassroom(searchObject.getPageSize(), searchObject.getPageIndex());
         ds.stream().map(ClassroomDto::new).forEach(li::add);
         return li;
