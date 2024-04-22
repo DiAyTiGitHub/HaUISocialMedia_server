@@ -32,10 +32,11 @@ public class UserController {
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<UserDto> getById(@PathVariable("id") UUID id) {
-        if (userService.getById(id) == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getById(@PathVariable("userId") UUID userId) {
+        UserDto res = userService.getById(userId);
+        if (res == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/username/{name}")
@@ -63,14 +64,6 @@ public class UserController {
         Set<UserDto> li = userService.searchByUsername(searchObject);
         if (li == null) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
-    }
-
-    @PostMapping("/pagingNewUser")
-    public ResponseEntity<Set<UserDto>> getCurrentFriends(@RequestBody SearchObject searchObject) {
-        Set<UserDto> res = userService.pagingNewUser(searchObject);
-        if (res == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping(value = "")

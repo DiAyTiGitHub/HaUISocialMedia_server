@@ -46,13 +46,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(UUID userId) {
+        if (userId == null) return null;
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
         User user = userRepository.findById(userId).orElse(null);
-        UserDto userDto = new UserDto();
-        Relationship relationship = relationshipRepository.getRelationshipByUserId(userId);
-        RelationshipDto relationshipDto = new RelationshipDto(relationship);
-        userDto.setRelationshipDto(relationshipDto);
-        //return user.map(UserDto::new).orElseThrow(() -> new RuntimeException("User not found"));
-        return userDto;
+        if (user == null) return null;
+
+        UserDto res = new UserDto(user);
+
+        if (!currentUser.getId().equals(userId)) {
+            Relationship relationship = relationshipRepository.getRelationshipBetweenCurrentUserAndViewingUser(currentUser.getId(), userId);
+
+            if (relationship != null) {
+                RelationshipDto relationshipDto = new RelationshipDto(relationship);
+                res.setRelationship(relationshipDto);
+            }
+        }
+
+        return res;
     }
 
     @Override
@@ -101,7 +113,7 @@ public class UserServiceImpl implements UserService {
     public Set<UserDto> pagingUser(SearchObject searchObject) {
         Set<UserDto> se = new HashSet<>();
 
-        Page<User> li = userRepository.findAll(PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
+        Page<User> li = userRepository.findAll(PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
 
         li.stream().map(UserDto::new).forEach(se::add);
         return se;
@@ -121,23 +133,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserEntityById(UUID userId) {
         return userRepository.findById(userId).orElse(null);
-    }
-
-    @Override
-    public Set<UserDto> pagingNewUser(SearchObject searchObject) {
-        User currentUser = getCurrentLoginUserEntity();
-        if (currentUser == null) return null;
-
-        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
-        Set<UserDto> res = new HashSet<>();
-        for (User user : response) {
-            if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
-                if (relationshipService.containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
-            } else
-                res.add(new UserDto(user));
-        }
-
-        return res;
     }
 
     @Override

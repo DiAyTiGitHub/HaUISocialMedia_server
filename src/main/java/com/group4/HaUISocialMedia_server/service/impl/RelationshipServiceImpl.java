@@ -154,7 +154,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
+        List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
             res.add(new RelationshipDto(relationship));
@@ -168,7 +168,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<Relationship> response = relationshipRepository.findAllSentFriendRequestRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
+        List<Relationship> response = relationshipRepository.findAllSentFriendRequestRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
             res.add(new RelationshipDto(relationship));
@@ -183,7 +183,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
+        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         List<UserDto> res = new ArrayList<>();
         for (User user : response) {
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
@@ -199,14 +199,15 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findNewFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
+        String keyword = "";
+        if (searchObject.getKeyWord() != null) keyword = searchObject.getKeyWord();
+        List<User> response = userRepository.findNewUsers(keyword, currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+
         List<UserDto> res = new ArrayList<>();
         for (User user : response) {
-            if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
-                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
-            } else
-                res.add(new UserDto(user));
+            res.add(new UserDto(user));
         }
+
         return res;
     }
 
@@ -224,7 +225,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getUserEntityById(userId);
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex()-1, searchObject.getPageSize()));
+        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         Set<UserDto> res = new HashSet<>();
         for (User user : response) {
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
@@ -259,21 +260,36 @@ public class RelationshipServiceImpl implements RelationshipService {
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
         Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
-        RelationshipDto relationshipDto = new RelationshipDto(relationship);
-        return null;
+//        RelationshipDto relationshipDto = new RelationshipDto(relationship);
+//        return null;ư
+        RelationshipDto relationshipDto = null;
+        if(relationship == null){
+            return null;
+        }else{
+            relationshipDto = new RelationshipDto(relationship);
+        }
+
+        return relationshipDto;
     }
 
     @Override
     public RelationshipDto unAcceptFriendRequest(UUID relationshipId) {
         Relationship entity = relationshipRepository.findById(relationshipId).orElse(null);
         if (entity == null) return null;
-        if(entity.getRequestSender() == null) return null;
+        if (entity.getRequestSender() == null) return null;
         //delete notification
         notificationRepository.deleteNotificationAddFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
         Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
-        return null;
+        RelationshipDto relationshipDto = null;
+        if(relationship == null){
+            return null;
+        }else{
+           relationshipDto = new RelationshipDto(relationship);
+        }
+
+        return relationshipDto;
     }
 
 
