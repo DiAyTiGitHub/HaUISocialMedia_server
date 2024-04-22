@@ -25,7 +25,7 @@ public class ClassroomController {
     @GetMapping("/all")
     public ResponseEntity<Set<ClassroomDto>> getAllClassroom(){
         Set<ClassroomDto> li = classroomService.getAllClassroom();
-        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
+        if(li.isEmpty()) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
