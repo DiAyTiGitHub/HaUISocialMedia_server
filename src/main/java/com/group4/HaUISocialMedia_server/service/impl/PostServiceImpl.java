@@ -208,6 +208,7 @@ public class PostServiceImpl implements PostService {
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+            postDto.setImages(postImageService.sortImage(postDto.getId()));
         }
 
         return res;

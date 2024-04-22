@@ -1,9 +1,6 @@
 package com.group4.HaUISocialMedia_server.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group4.HaUISocialMedia_server.entity.*;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +30,7 @@ public class UserDto {
     private String phoneNumber;
     private ClassroomDto classroomDto;
     private RelationshipDto relationshipDto;
-    private Set<UserGroupDto> groups;
+    private Set<MemberDto> groups;
 
 //    private Set<UserCourse> userCourses;
 //    private Set<Message> messages;

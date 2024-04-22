@@ -1,7 +1,7 @@
 package com.group4.HaUISocialMedia_server.service;
 
 import com.group4.HaUISocialMedia_server.dto.GroupDto;
-import com.group4.HaUISocialMedia_server.dto.UserGroupDto;
+import com.group4.HaUISocialMedia_server.dto.MemberDto;
 
 import java.util.UUID;
 
@@ -11,9 +11,9 @@ public interface GroupService {
 
     public GroupDto updateGroup(GroupDto groupDto);
 
-    public UserGroupDto joinGroupRequest(UUID groupId);
+    public MemberDto joinGroupRequest(UUID groupId);
 
-    public UserGroupDto approvedJoinGroupRequest(UUID userGroupId);
+    public MemberDto approvedJoinGroupRequest(UUID userGroupId);
 
     public boolean cancelJoinGroupRequest(UUID userGroupId);
 

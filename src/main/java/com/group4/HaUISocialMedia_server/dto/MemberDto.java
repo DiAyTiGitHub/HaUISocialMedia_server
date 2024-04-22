@@ -1,11 +1,6 @@
 package com.group4.HaUISocialMedia_server.dto;
 
-import com.group4.HaUISocialMedia_server.entity.Group;
-import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.entity.UserGroup;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.group4.HaUISocialMedia_server.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +13,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserGroupDto {
+public class MemberDto {
 
     private UUID id;
     private Date joinDate;
@@ -27,7 +22,7 @@ public class UserGroupDto {
     private UserDto user;
     private GroupDto group;
 
-    public UserGroupDto(UserGroup entity){
+    public MemberDto(Member entity){
         this.id = entity.getId();
         this.joinDate = entity.getJoinDate();
         this.role = entity.getRole();

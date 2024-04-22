@@ -52,10 +52,9 @@ public class Group {
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<UserGroup> users;
+    private Set<Member> userJoins;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Post> posts;
-
 }
