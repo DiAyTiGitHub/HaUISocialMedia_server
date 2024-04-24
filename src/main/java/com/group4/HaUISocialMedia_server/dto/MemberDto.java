@@ -1,6 +1,7 @@
 package com.group4.HaUISocialMedia_server.dto;
 
 import com.group4.HaUISocialMedia_server.entity.Member;
+import com.group4.HaUISocialMedia_server.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class MemberDto {
 
     private UUID id;
     private Date joinDate;
-    private String role;
+    private Role role;
     private boolean isApproved;
     private UserDto user;
     private GroupDto group;

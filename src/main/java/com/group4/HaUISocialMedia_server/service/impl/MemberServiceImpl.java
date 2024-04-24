@@ -9,7 +9,6 @@ import com.group4.HaUISocialMedia_server.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -45,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
         Member oldMember = memberRepository.findById(memberDto.getId()).orElse(null);
         if(oldMember == null)
             return null;
-        oldMember.setJoinDate(new Date());
+       // oldMember.setJoinDate(new Date());
         oldMember.setApproved(true);
         oldMember.setRole(memberDto.getRole());
 
@@ -53,11 +52,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean deleteUserGroup(UUID userGroupId) {
-        Member oldMember = memberRepository.findById(userGroupId).orElse(null);
+    public boolean deleteUserGroup(UUID memberId) {
+        Member oldMember = memberRepository.findById(memberId).orElse(null);
         if(oldMember == null)
             return false;
-        memberRepository.delete(oldMember);
+        memberRepository.deleteById(memberId);
         return true;
     }
 }

@@ -30,7 +30,7 @@ public class Member implements Serializable {
     private Date joinDate;
 
     @Column(nullable = false)
-    private String role;
+    private Role role;
 
     @Column
     private boolean isApproved;

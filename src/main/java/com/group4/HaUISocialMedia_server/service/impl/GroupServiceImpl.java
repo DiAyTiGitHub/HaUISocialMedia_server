@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.GroupDto;
 import com.group4.HaUISocialMedia_server.dto.MemberDto;
+import com.group4.HaUISocialMedia_server.dto.PostDto;
 import com.group4.HaUISocialMedia_server.entity.Group;
 import com.group4.HaUISocialMedia_server.entity.Role;
 import com.group4.HaUISocialMedia_server.entity.User;
@@ -12,13 +13,11 @@ import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.GroupService;
 import com.group4.HaUISocialMedia_server.service.MemberService;
 import com.group4.HaUISocialMedia_server.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,8 +55,9 @@ public class GroupServiceImpl implements GroupService {
 
         Set<Member> userList = new HashSet<>();
         Member userAdmin = new Member();
-        userAdmin.setRole(Role.ADMIN.name());
+        userAdmin.setRole(Role.ADMIN);
         userAdmin.setApproved(true);
+        userAdmin.setJoinDate(new Date());
         userAdmin.setUser(userService.getCurrentLoginUserEntity());
         userAdmin.setGroup(group);
         memberService.createUserGroup(new MemberDto(userAdmin));
@@ -69,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
             Member member = new Member();
             member.setGroup(group);
             member.setApproved(true);
-            member.setRole(Role.USER.name());
+            member.setRole(Role.USER);
             member.setUser(user);
             member.setJoinDate(new Date());
             MemberDto memberDto = memberService.createUserGroup(new MemberDto(member));
@@ -92,18 +92,27 @@ public class GroupServiceImpl implements GroupService {
         oldGroup.setAvatar(groupDto.getAvatar());
         oldGroup.setBackGroundImage(groupDto.getBackGroundImage());
         oldGroup.setDescription(groupDto.getDescription());
-        return new GroupDto(groupRepository.saveAndFlush(oldGroup));
+
+        GroupDto groupDto1 = new GroupDto(groupRepository.saveAndFlush(oldGroup));
+
+        if(oldGroup.getUserJoins() != null)
+            groupDto1.setUserJoins(oldGroup.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+        if(oldGroup.getPosts() != null)
+            groupDto1.setPosts(oldGroup.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+        return groupDto1;
     }
 
     @Override
     public MemberDto joinGroupRequest(UUID groupId) {
+        if(memberRepository.isEmpty(userService.getCurrentLoginUserEntity().getId(), groupId) != null)
+            return null;
         Member newMember = new Member();
         Group group = groupRepository.findById(groupId).orElse(null);
         if(group != null)
             newMember.setGroup(group);
         newMember.setUser(userService.getCurrentLoginUserEntity());
         newMember.setApproved(false);
-        newMember.setRole(Role.USER.name());
+        newMember.setRole(Role.USER);
         return memberService.createUserGroup(new MemberDto(newMember));
     }
 
@@ -112,26 +121,33 @@ public class GroupServiceImpl implements GroupService {
         Member userRequest = memberRepository.findById(userGroupId).orElse(null);
         if(userRequest == null)
             return null;
+        if(userRequest.isApproved())
+            return null;
         userRequest.setApproved(true);
         userRequest.setJoinDate(new Date());
-        return memberService.createUserGroup(new MemberDto(userRequest));
+        return memberService.updateUserGroup(new MemberDto(userRequest));
     }
 
     @Override
-    public boolean cancelJoinGroupRequest(UUID userGroupId) {
-        Member userRequest = memberRepository.findById(userGroupId).orElse(null);
-        if(userRequest == null)
+    public boolean cancelJoinGroupRequest(UUID memberId) {
+        Member userRequest = memberRepository.findById(memberId).orElse(null);
+        if(userRequest == null || userRequest.isApproved())
             return false;
-        memberService.deleteUserGroup(userRequest.getId());
+        memberRepository.removeById(memberId);
         return true;
     }
 
     @Override
     public boolean leaveGroup(UUID groupId) {
+        if(isAdminGroup(groupId)){
+            List<Member> li = memberRepository.getNumberUserIsAdmin(groupId);
+            if(li.size() <= 1)
+                return false;
+        }
         Member oldMember = memberRepository.findUserGroup(userService.getCurrentLoginUserEntity().getId(), groupId);
-        if(oldMember == null)
+        if(oldMember == null || !oldMember.isApproved())
             return false;
-        memberService.deleteUserGroup(oldMember.getId());
+        memberRepository.removeById(oldMember.getId());
         return true;
     }
 
@@ -146,7 +162,100 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public boolean isAdminGroup(UUID groupId) {
-        return groupRepository.findAdmin(groupId, userService.getCurrentLoginUserEntity().getId()) != null;
+        return memberRepository.isAdminGroup(userService.getCurrentLoginUserEntity().getId(), groupId) != null;
+    }
+
+    @Override
+    public Set<GroupDto> getAllJoinedGroupOfUser(UUID userId) {
+        List<Member> li = memberRepository.getAllJoinedGroup(userId);
+        Set<GroupDto> res = new HashSet<>();
+        li.stream().map(x -> {
+            GroupDto groupDto = null;
+            if(x.getGroup() != null)
+                 groupDto = new GroupDto(x.getGroup());
+            if(x.getGroup().getUserJoins() != null)
+                groupDto.setUserJoins(x.getGroup().getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+            if(x.getGroup().getPosts() != null)
+                groupDto.setPosts(x.getGroup().getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+            return groupDto;
+        }).forEach(res::add);
+        return res;
+    }
+
+    @Override
+    public Set<GroupDto> searchGroupByName(String name) {
+        List<Group> li = groupRepository.findGroupByName(name);
+        Set<GroupDto> res = new HashSet<>();
+        li.stream().map(x -> {
+            GroupDto groupDto = new GroupDto(x);
+            if(x.getUserJoins() != null)
+                groupDto.setUserJoins(x.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+            if(x.getPosts() != null)
+                groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+            return groupDto;
+        }).forEach(res::add);
+        return res;
+    }
+
+    @Override
+    public MemberDto dutyAdmin(UUID memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if(memberRepository.isAdminGroup(member.getUser().getId(), member.getGroup().getId()) != null || !member.isApproved())
+            return null;
+        MemberDto memberDto1 = new MemberDto(member);
+        memberDto1.setRole(Role.ADMIN);
+
+        return memberService.updateUserGroup(memberDto1);
+    }
+
+    @Override
+    public boolean cancelDutyAdmin(UUID memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if(memberRepository.isAdminGroup(member.getUser().getId(), member.getGroup().getId()) == null || !member.isApproved())
+            return false;
+        MemberDto memberDto1 = new MemberDto(member);
+        memberDto1.setRole(Role.USER);
+
+        memberService.updateUserGroup(memberDto1);
+        return true;
+    }
+
+    @Override
+    public Set<MemberDto> getAllUserWaitJoinedGroup(UUID groupId) {
+        List<Member> li = memberRepository.getAllUserWaitJoinedGroup(groupId);
+        Set<MemberDto> res = new HashSet<>();
+        li.stream().map(MemberDto::new).forEach(res::add);
+        return res;
+    }
+
+    @Override
+    public boolean kickUserLeaveFGroup(UUID memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if(member == null || memberRepository.isAdminGroup(member.getUser().getId(), member.getGroup().getId()) != null)
+            return false;
+        memberRepository.removeById(member.getId());
+        return true;
+    }
+
+    @Override
+    public GroupDto findById(UUID groupId) {
+        Group group = groupRepository.findById(groupId).orElse(null);
+        if(group == null)
+            return null;
+        GroupDto groupDto = new GroupDto(group);
+        if(group.getUserJoins() != null)
+            groupDto.setUserJoins(group.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+        if(group.getPosts() != null)
+            groupDto.setPosts(group.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+        return groupDto;
+    }
+
+    @Override
+    public GroupDto findGroupByMember(UUID memberId) {
+        Member member = (memberRepository.findById(memberId)).orElse(null);
+        if(member.getGroup() == null)
+            return null;
+        return new GroupDto(member.getGroup());
     }
 }
 
