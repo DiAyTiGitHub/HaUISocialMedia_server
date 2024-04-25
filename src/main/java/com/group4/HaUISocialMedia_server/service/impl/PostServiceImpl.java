@@ -100,6 +100,8 @@ public class PostServiceImpl implements PostService {
         return true;
     }
 
+
+
     @Override
     public PostDto createPost(PostDto dto) {
         User currentUser = userService.getCurrentLoginUserEntity();
@@ -110,14 +112,13 @@ public class PostServiceImpl implements PostService {
         entity.setContent(dto.getContent());
         entity.setOwner(currentUser);
 
-
         Post savedEntity = postRepository.save(entity);
         if (!dto.getImages().isEmpty()) {
             entity.setPostImages(dto.getImages().stream().map(x -> {
                 PostImage postImage = new PostImage();
                 // postImage.setId(x.getId());
                 //if(x.getPost() != null)
-                     postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
+                postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
                 postImage.setDescription(x.getDescription());
                 postImage.setImage(x.getImage());
                 postImage.setCreateDate(new Date());
@@ -225,4 +226,12 @@ public class PostServiceImpl implements PostService {
         responseDto.setImages(postImageService.sortImage(entity.getId()));
         return responseDto;
     }
+
+    @Override
+    public PostDto updateBackgroundImage(PostDto postDto) {
+        return null;
+    }
+
+
+
 }
