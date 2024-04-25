@@ -39,4 +39,6 @@ public interface GroupService {
     public GroupDto findById(UUID groupId);
 
     public GroupDto findGroupByMember(UUID memberId);
+
+    public boolean isJoinedGroup(UUID groupId);
 }

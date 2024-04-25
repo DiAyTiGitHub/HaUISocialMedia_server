@@ -14,6 +14,8 @@ public interface PostService {
 
     public PostDto createPost(PostDto dto);
 
+    //public PostDto createPostInGroup(PostDto dto, UUID groupId);
+
     public PostDto updatePost(PostDto dto);
 
     public boolean deletePost(UUID postId);

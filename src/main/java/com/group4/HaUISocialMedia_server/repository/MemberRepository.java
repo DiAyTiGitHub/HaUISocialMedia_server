@@ -48,4 +48,7 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     @Query("DELETE FROM Member m WHERE m.id = :memberId")
     public void removeById(@Param("memberId")UUID memberId);
 
+//    @Query("select m FROM Member m WHERE m.user.id = :userId and m.group.id = :groupId and m.isApproved = TRUE")
+//
+
 }

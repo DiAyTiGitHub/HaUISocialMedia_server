@@ -146,4 +146,9 @@ public class GroupController {
             return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
         return groupService.kickUserLeaveFGroup(memberId) ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/check-user-join-group/{groupId}")
+    public ResponseEntity<Boolean> isJoinGroup(@PathVariable UUID groupId){
+        return groupService.isJoinedGroup(groupId) ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -257,6 +257,12 @@ public class GroupServiceImpl implements GroupService {
             return null;
         return new GroupDto(member.getGroup());
     }
+
+    @Override
+    public boolean isJoinedGroup(UUID groupId) {
+        Member member = memberRepository.isEmpty(userService.getCurrentLoginUserEntity().getId(), groupId);
+        return member != null && member.isApproved();
+    }
 }
 
 
