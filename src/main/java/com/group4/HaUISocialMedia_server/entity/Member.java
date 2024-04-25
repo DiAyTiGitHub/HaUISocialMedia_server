@@ -17,8 +17,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "tbl_user_group")
-public class UserGroup implements Serializable {
+@Table(name = "tbl_member")
+public class Member implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,7 +30,7 @@ public class UserGroup implements Serializable {
     private Date joinDate;
 
     @Column(nullable = false)
-    private String role;
+    private Role role;
 
     @Column
     private boolean isApproved;

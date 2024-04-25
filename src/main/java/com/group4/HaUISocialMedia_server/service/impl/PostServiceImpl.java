@@ -49,6 +49,9 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private GroupRepository groupRepository;
+
     @Override
     public Set<PostDto> getNewsFeed(SearchObject searchObject) {
         User currentUser = userService.getCurrentLoginUserEntity();
@@ -100,8 +103,6 @@ public class PostServiceImpl implements PostService {
         return true;
     }
 
-
-
     @Override
     public PostDto createPost(PostDto dto) {
         User currentUser = userService.getCurrentLoginUserEntity();
@@ -111,6 +112,8 @@ public class PostServiceImpl implements PostService {
         entity.setCreateDate(new Date());
         entity.setContent(dto.getContent());
         entity.setOwner(currentUser);
+        if(dto.getGroup() != null)
+            entity.setGroup(groupRepository.findById(dto.getGroup().getId()).orElse(null));
 
         Post savedEntity = postRepository.save(entity);
         if (!dto.getImages().isEmpty()) {
@@ -118,7 +121,7 @@ public class PostServiceImpl implements PostService {
                 PostImage postImage = new PostImage();
                 // postImage.setId(x.getId());
                 //if(x.getPost() != null)
-                postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
+                     postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
                 postImage.setDescription(x.getDescription());
                 postImage.setImage(x.getImage());
                 postImage.setCreateDate(new Date());
@@ -151,6 +154,58 @@ public class PostServiceImpl implements PostService {
         responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
         return responseDto;
     }
+
+//    @Override
+//    public PostDto createPostInGroup(PostDto dto, UUID groupId) {
+//        User currentUser = userService.getCurrentLoginUserEntity();
+//        if (currentUser == null || dto == null) return null;
+//
+//        Post entity = new Post();
+//        entity.setCreateDate(new Date());
+//        entity.setContent(dto.getContent());
+//        entity.setOwner(currentUser);
+//        if(dto.)
+//        entity.setGroup();
+//
+//        Post savedEntity = postRepository.save(entity);
+//        if (!dto.getImages().isEmpty()) {
+//            entity.setPostImages(dto.getImages().stream().map(x -> {
+//                PostImage postImage = new PostImage();
+//                // postImage.setId(x.getId());
+//                //if(x.getPost() != null)
+//                postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
+//                postImage.setDescription(x.getDescription());
+//                postImage.setImage(x.getImage());
+//                postImage.setCreateDate(new Date());
+//                postImageRepository.save(postImage);
+//                return postImage;
+//            }).collect(Collectors.toSet()));
+//        }
+//        //alert all friends that this user has created new post
+//        SearchObject so = new SearchObject();
+//        so.setPageIndex(1);
+//        so.setPageSize(5000);
+//        List<UserDto> listFriends = relationshipService.getCurrentFriends(so);
+//        for (UserDto friend : listFriends) {
+//            Notification noti = new Notification();
+//            noti.setActor(currentUser);
+//            noti.setCreateDate(new Date());
+//            noti.setContent(currentUser.getUsername() + " đã tạo một bài viết mới: " + savedEntity.getContent());
+//            noti.setOwner(userService.getUserEntityById(friend.getId()));
+//            noti.setNotificationType(notificationTypeRepository.findByName("Post"));
+//
+//            //postId now is referenceId in notification
+//            noti.setPost(savedEntity);
+//            Notification savedNoti = notificationRepository.save(noti);
+//
+//            //send this noti via socket
+//            simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
+//        }
+//
+//        PostDto responseDto = new PostDto(savedEntity);
+//        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
+//        return responseDto;
+//    }
 
 
     @Override
@@ -209,6 +264,7 @@ public class PostServiceImpl implements PostService {
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+            postDto.setImages(postImageService.sortImage(postDto.getId()));
         }
 
         return res;
@@ -226,12 +282,4 @@ public class PostServiceImpl implements PostService {
         responseDto.setImages(postImageService.sortImage(entity.getId()));
         return responseDto;
     }
-
-    @Override
-    public PostDto updateBackgroundImage(PostDto postDto) {
-        return null;
-    }
-
-
-
 }

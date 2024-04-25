@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
             if (relationship != null) {
                 RelationshipDto relationshipDto = new RelationshipDto(relationship);
-                res.setRelationship(relationshipDto);
+                res.setRelationshipDto(relationshipDto);
             }
         }
 

@@ -1,8 +1,6 @@
 package com.group4.HaUISocialMedia_server.dto;
 
 import com.group4.HaUISocialMedia_server.entity.Group;
-import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.entity.UserGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +24,7 @@ public class GroupDto {
     private String backGroundImage;
     private Date createDate;
     private UserDto user;
-    private Set<UserGroupDto> users;
+    private Set<MemberDto> userJoins;
     private Set<PostDto> posts;
 
     public GroupDto(Group entity){
