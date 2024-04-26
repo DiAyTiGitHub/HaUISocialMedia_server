@@ -76,16 +76,16 @@ public class UserCourseController {
     }
 
     @GetMapping("/all-course-admin-allow/{userId}")
-    private ResponseEntity<Set<UserCourseDto>> getAllCourseAdminAllow(@PathVariable("userId")UUID userCourseId){
-        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseAdminAllow(userCourseId);
+    private ResponseEntity<Set<UserCourseDto>> getAllCourseAdminAllow(@PathVariable("userId")UUID userId){
+        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseAdminAllow(userId);
         if(userCourseDto == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userCourseDto, HttpStatus.OK);
     }
 
     @GetMapping("/all-course-wait-admin-allow/{userId}")
-    private ResponseEntity<Set<UserCourseDto>> getAllWaitCourseAdminAllow(@PathVariable("userId")UUID userCourseId){
-        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseWaitAdminAllow(userCourseId);
+    private ResponseEntity<Set<UserCourseDto>> getAllWaitCourseAdminAllow(@PathVariable("userId")UUID userId){
+        Set<UserCourseDto> userCourseDto = userCourseService.getAllCourseWaitAdminAllow(userId);
         if(userCourseDto == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userCourseDto, HttpStatus.OK);
