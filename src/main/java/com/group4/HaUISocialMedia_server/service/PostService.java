@@ -23,4 +23,6 @@ public interface PostService {
     public Set<PostDto> getPostsOfUser(UUID userId, SearchObject searchObject);
 
     public boolean hasAuthorityToChange(UUID postId);
+
+    public PostDto updateBackgroundImage(PostDto postDto);
 }

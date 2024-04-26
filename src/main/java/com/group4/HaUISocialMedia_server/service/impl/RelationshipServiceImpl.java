@@ -247,29 +247,15 @@ public class RelationshipServiceImpl implements RelationshipService {
         //delete message
         messageRepository.deleteMessageByRoomId(entity.getRoom().getId());
         //delete room user
-        UserRoom userRoom = new UserRoom();
-        userRoom = userRoomRepository.deleteUserRoomByRoom(entity.getRoom());
-        //set room
-//        Room room = roomRepository.findById(entity.getRoom().getId()).orElse(null);
-//        room.
-        //delete room
-        roomRepository.deleteById(entity.getRoom().getId());
-        Room room = roomRepository.findById(entity.getRoom().getId()).orElse(null);
-        entity.setRoom(room);
-        relationshipRepository.save(entity);
+        userRoomRepository.deleteUserRoomsByRoom(entity.getRoom());
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
-        Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
-//        RelationshipDto relationshipDto = new RelationshipDto(relationship);
-//        return null;ư
-        RelationshipDto relationshipDto = null;
-        if(relationship == null){
-            return null;
-        }else{
-            relationshipDto = new RelationshipDto(relationship);
-        }
-
-        return relationshipDto;
+        //delete room
+        roomRepository.deleteById(entity.getRoom().getId());
+//        Room room = roomRepository.findById(entity.getRoom().getId()).orElse(null);
+//        entity.setRoom(room);
+//        relationshipRepository.save(entity);
+        return null;
     }
 
     @Override
@@ -281,15 +267,15 @@ public class RelationshipServiceImpl implements RelationshipService {
         notificationRepository.deleteNotificationAddFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
-        Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
-        RelationshipDto relationshipDto = null;
-        if(relationship == null){
-            return null;
-        }else{
-           relationshipDto = new RelationshipDto(relationship);
-        }
+//        Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
+//        RelationshipDto relationshipDto = null;
+//        if(relationship == null){
+//            return null;
+//        }else{
+//           relationshipDto = new RelationshipDto(relationship);
+//        }
 
-        return relationshipDto;
+        return null;
     }
 
 

@@ -18,7 +18,7 @@ public interface UserRoomRepository extends JpaRepository<UserRoom, UUID> {
 
     @Modifying
     @Transactional
-    UserRoom deleteUserRoomByRoom(Room room);
+    void deleteUserRoomsByRoom(Room room);
 
     //  Pageable bắt buộc phải viết ở tham số cuối nếu muốn phân trang
     @Query("SELECT ur FROM UserRoom ur where ur.user.id = :userId and ur.room.name LIKE %:nameRoom%")

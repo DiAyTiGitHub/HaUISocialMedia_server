@@ -111,6 +111,7 @@ public class PostServiceImpl implements PostService {
         return true;
     }
 
+
     @Override
     public PostDto createPost(PostDto dto) {
         User currentUser = userService.getCurrentLoginUserEntity();
@@ -289,5 +290,12 @@ public class PostServiceImpl implements PostService {
 //        responseDto.setImages(entity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
         responseDto.setImages(postImageService.sortImage(entity.getId()));
         return responseDto;
+    }
+
+
+    @Override
+    public PostDto updateBackgroundImage(PostDto postDto) {
+
+        return null;
     }
 }
