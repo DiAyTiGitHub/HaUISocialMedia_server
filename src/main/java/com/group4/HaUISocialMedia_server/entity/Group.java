@@ -27,7 +27,7 @@ public class Group {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String code;
 
     @Column(nullable = false)

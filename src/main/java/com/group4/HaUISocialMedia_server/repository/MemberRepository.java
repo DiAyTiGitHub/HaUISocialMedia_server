@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.repository;
 
+import com.group4.HaUISocialMedia_server.entity.Group;
 import com.group4.HaUISocialMedia_server.entity.Member;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,8 +42,8 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     public List<Member> getAllJoinedGroup(@Param("userId")UUID userId);
 
     //get list request wait admin approve of user
-    @Query("SELECT m FROM Member m WHERE m.user.id = :userId and m.isApproved = false")
-    public List<Member> getListRequestWaitAdminApprove(@Param("userId")UUID userId);
+    @Query("SELECT g FROM Group g WHERE g.id NOT IN (:groups)")
+    public List<Group> getAllGroupUserNotYetJoin(@Param("groups")List<UUID> groups);
 
     @Modifying
     @Transactional

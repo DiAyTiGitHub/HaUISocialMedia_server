@@ -280,6 +280,37 @@ public class GroupServiceImpl implements GroupService {
         }).forEach(res::add);
         return res;
     }
+
+    @Override
+    public Set<GroupDto> getAllGroupUserNotYetJoin() {
+//        Set<GroupDto> allGroup = groupRepository.findAll().stream().map(x -> {
+//            GroupDto groupDto = new GroupDto(x);
+//            if (x.getUserJoins() != null)
+//                groupDto.setUserJoins(x.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+//            if (x.getPosts() != null)
+//                groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+//            return groupDto;
+//        }).collect(Collectors.toSet());
+//        Set<GroupDto> resGroupSmall = getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId());
+//        if(!resGroupSmall.isEmpty())
+//           //  return allGroup.removeAll(getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId())) ? allGroup : null;
+//             allGroup.removeAll(resGroupSmall);
+//        return allGroup;
+        List<UUID> groupIds = getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId()).stream().map(GroupDto::getId).toList();
+
+        List<Group> li = memberRepository.getAllGroupUserNotYetJoin(groupIds);
+        Set<GroupDto> groupDtos = new HashSet<>();
+        li.stream().map(x -> {
+            GroupDto groupDto = new GroupDto(x);
+            if (x.getUserJoins() != null)
+                groupDto.setUserJoins(x.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+            if (x.getPosts() != null)
+                groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+            return groupDto;
+        }).forEach(groupDtos::add);
+
+        return groupDtos;
+    }
 }
 
 

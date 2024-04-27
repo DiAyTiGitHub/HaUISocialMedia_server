@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,5 +38,17 @@ public class GroupDto {
         this.createDate = entity.getCreateDate();
         if(entity.getUser() != null)
             this.user = new UserDto(entity.getUser());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GroupDto groupDto)) return false;
+        return Objects.equals(getId(), groupDto.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

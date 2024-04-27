@@ -43,4 +43,6 @@ public interface GroupService {
     public boolean isJoinedGroup(UUID groupId);
 
     public Set<GroupDto> getAllGroupUserIsAdmin();
+
+    public Set<GroupDto> getAllGroupUserNotYetJoin();
 }
