@@ -263,6 +263,23 @@ public class GroupServiceImpl implements GroupService {
         Member member = memberRepository.isEmpty(userService.getCurrentLoginUserEntity().getId(), groupId);
         return member != null && member.isApproved();
     }
+
+    @Override
+    public Set<GroupDto> getAllGroupUserIsAdmin() {
+        List<Member> li = memberRepository.getAllGroupUserIsAdmin(userService.getCurrentLoginUserEntity().getId());
+        Set<GroupDto> res = new HashSet<>();
+        li.stream().map(x -> {
+            GroupDto groupDto = null;
+            if(x.getGroup() != null)
+                groupDto = new GroupDto(x.getGroup());
+            if(x.getGroup().getUserJoins() != null)
+                groupDto.setUserJoins(x.getGroup().getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+            if(x.getGroup().getPosts() != null)
+                groupDto.setPosts(x.getGroup().getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+            return groupDto;
+        }).forEach(res::add);
+        return res;
+    }
 }
 
 

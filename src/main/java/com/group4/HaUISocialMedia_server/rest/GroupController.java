@@ -151,4 +151,10 @@ public class GroupController {
     public ResponseEntity<Boolean> isJoinGroup(@PathVariable UUID groupId){
         return groupService.isJoinedGroup(groupId) ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/get-all-group-user-is-admin")
+    public ResponseEntity<Set<GroupDto>> getAllGroupUserIsAdmin(){
+        Set<GroupDto> res = groupService.getAllGroupUserIsAdmin();
+        return res.isEmpty() ? new ResponseEntity<>(null, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(res, HttpStatus.OK);
+    }
 }
