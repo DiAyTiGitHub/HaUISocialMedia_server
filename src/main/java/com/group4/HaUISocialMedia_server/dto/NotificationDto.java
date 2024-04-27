@@ -26,6 +26,7 @@ public class NotificationDto {
     private UserDto owner;
     private UserDto actor;
     private PostDto post;
+    private GroupDto groupDto;
 
     public NotificationDto(Notification notification) {
         this.id = notification.getId();
@@ -40,5 +41,8 @@ public class NotificationDto {
 
         if (notification.getActor() != null)
             this.actor = new UserDto(notification.getActor());
+
+        if(notification.getGroup() != null)
+            this.groupDto = new GroupDto(notification.getGroup());
     }
 }

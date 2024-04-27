@@ -3,13 +3,8 @@ package com.group4.HaUISocialMedia_server.service.impl;
 import com.group4.HaUISocialMedia_server.dto.GroupDto;
 import com.group4.HaUISocialMedia_server.dto.MemberDto;
 import com.group4.HaUISocialMedia_server.dto.PostDto;
-import com.group4.HaUISocialMedia_server.entity.Group;
-import com.group4.HaUISocialMedia_server.entity.Role;
-import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.entity.Member;
-import com.group4.HaUISocialMedia_server.repository.GroupRepository;
-import com.group4.HaUISocialMedia_server.repository.MemberRepository;
-import com.group4.HaUISocialMedia_server.repository.UserRepository;
+import com.group4.HaUISocialMedia_server.entity.*;
+import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.GroupService;
 import com.group4.HaUISocialMedia_server.service.MemberService;
 import com.group4.HaUISocialMedia_server.service.UserService;
@@ -37,6 +32,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationTypeRepository notificationTypeRepository;
 
     @Override
     public GroupDto createGroup(GroupDto groupDto) {
@@ -125,6 +126,18 @@ public class GroupServiceImpl implements GroupService {
             return null;
         userRequest.setApproved(true);
         userRequest.setJoinDate(new Date());
+
+        Notification notification = new Notification();
+        notification.setOwner(userRequest.getUser());
+        notification.setGroup(userRequest.getGroup());
+        notification.setCreateDate(new Date());
+        notification.setActor(userService.getCurrentLoginUserEntity());
+        notification.setContent("Yêu cầu tham gia nhóm " + userRequest.getGroup().getName() + " đã được duyệt");
+        NotificationType notificationType = notificationTypeRepository.findByName("Group");
+
+        if(notificationType != null)
+            notification.setNotificationType(notificationType);
+        notificationRepository.save(notification);
         return memberService.updateUserGroup(new MemberDto(userRequest));
     }
 

@@ -453,6 +453,15 @@ public class SetupData implements ApplicationRunner {
             friendDto.setDescription("add friend, accept friend");
             notificationTypeService.save(friendDto);
         }
+
+        NotificationType group = notificationTypeService.getNotificationTypeEntityByName("Group");
+        if (group == null) {
+            NotificationTypeDto groupDto =new NotificationTypeDto();
+            groupDto.setCode("003");
+            groupDto.setName("Group");
+            groupDto.setDescription("approve request, update background group");
+            notificationTypeService.save(groupDto);
+        }
     }
 
 

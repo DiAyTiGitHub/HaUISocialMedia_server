@@ -48,4 +48,9 @@ public class Notification implements Serializable {
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    @JsonIgnore
+    private Group group;
 }
