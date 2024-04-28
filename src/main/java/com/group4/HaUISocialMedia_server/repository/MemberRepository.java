@@ -33,6 +33,10 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     @Query("SELECT m FROM Member m WHERE m.group.id = :groupId and m.isApproved = false")
     public List<Member> getAllUserWaitJoinedGroup(@Param("groupId")UUID groupId);
 
+    //get all user joined group
+    @Query("SELECT m FROM Member m WHERE m.group.id = :groupId and m.isApproved = true")
+    public List<Member> getAllUserJoinedGroup(@Param("groupId")UUID groupId);
+
     //get number user is admin in group
     @Query("SELECT m FROM Member m WHERE m.group.id = :groupId and m.role = com.group4.HaUISocialMedia_server.entity.Role.ADMIN")
     public List<Member> getNumberUserIsAdmin(@Param("groupId")UUID groupId);

@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.rest;
 
+import com.group4.HaUISocialMedia_server.dto.GetAllUserOfGroupDto;
 import com.group4.HaUISocialMedia_server.dto.GroupDto;
 import com.group4.HaUISocialMedia_server.dto.MemberDto;
 import com.group4.HaUISocialMedia_server.entity.Group;
@@ -162,5 +163,16 @@ public class GroupController {
     public ResponseEntity<Set<GroupDto>> getAllGroupUserNotYeJoin(){
         Set<GroupDto> res = groupService.getAllGroupUserNotYetJoin();
         return res == null ? new ResponseEntity<>(null, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all-user-of-group/{groupId}")
+    public ResponseEntity<GetAllUserOfGroupDto> getAllUserOfGroup(@PathVariable("groupId")UUID id){
+        if(!groupService.isAdminGroup(id))
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        Set<MemberDto> getAllUserJoined = groupService.getAllUserJoinedGroup(id);
+        Set<MemberDto> getAllUserWaitJoin = groupService.getAllUserWaitJoinedGroup(id);
+
+        GetAllUserOfGroupDto newGetAllUserOfGroupDto = new GetAllUserOfGroupDto(getAllUserJoined, getAllUserWaitJoin);
+        return new ResponseEntity<>(newGetAllUserOfGroupDto, HttpStatus.OK);
     }
 }
