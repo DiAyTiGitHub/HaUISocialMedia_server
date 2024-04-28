@@ -396,7 +396,7 @@ public class SetupData implements ApplicationRunner {
         }
 
         MessageType recall = messageTypeService.getMessageTypeEntityByName("recall");
-        if (notification == null) {
+        if (recall == null) {
             MessageTypeDto dto = new MessageTypeDto();
             dto.setCode("006");
             dto.setName("recall");

@@ -6,10 +6,7 @@ import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.*;
-import com.group4.HaUISocialMedia_server.service.NotificationService;
-import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
-import com.group4.HaUISocialMedia_server.service.RelationshipService;
-import com.group4.HaUISocialMedia_server.service.UserService;
+import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -48,6 +45,9 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private MessageTypeService messageTypeService;
 
     @Override
     public RelationshipDto sendAddFriendRequest(UUID receiverId) {
@@ -145,6 +145,41 @@ public class RelationshipServiceImpl implements RelationshipService {
 //        UserDto recieverDto = new UserDto(requestSender);
 //        RelationshipDto relationshipDto = new RelationshipDto(entity);
 //        recieverDto.setRelationshipDto(relationshipDto);
+
+
+        //create very first messages for a room
+        //common messageType is chat
+        MessageType messageTypeNoti = messageTypeService.getMessageTypeEntityByName("notification");
+        if (messageTypeNoti == null) return null;
+
+        Message acFriendMessage = new Message();
+        acFriendMessage.setSendDate(new Date());
+        acFriendMessage.setContent(receiver.getUsername() + " đã chấp nhận lơi mời kết bạn");
+        acFriendMessage.setMessageType(messageTypeNoti);
+        acFriendMessage.setRoom(savedRoom);
+
+        messageRepository.save(acFriendMessage);
+
+        //join messageType
+        MessageType joinMessageType = messageTypeService.getMessageTypeEntityByName("join");
+
+        Message senderJoinMessage = new Message();
+        senderJoinMessage.setSendDate(new Date());
+        senderJoinMessage.setContent(requestSender.getUsername() + " đã tham gia cuộc trò chuyện");
+        senderJoinMessage.setMessageType(joinMessageType);
+        senderJoinMessage.setRoom(savedRoom);
+
+        messageRepository.save(senderJoinMessage);
+
+        Message recieverJoinMessage = new Message();
+        recieverJoinMessage.setSendDate(new Date());
+        recieverJoinMessage.setContent(receiver.getUsername() + " đã tham gia cuộc trò chuyện");
+        recieverJoinMessage.setMessageType(joinMessageType);
+        recieverJoinMessage.setRoom(savedRoom);
+
+        messageRepository.save(recieverJoinMessage);
+
+
 
         return new RelationshipDto(savedRelationship);
     }
