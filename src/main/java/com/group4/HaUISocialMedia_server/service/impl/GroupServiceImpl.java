@@ -324,6 +324,14 @@ public class GroupServiceImpl implements GroupService {
 
         return groupDtos;
     }
+
+    @Override
+    public Set<MemberDto> getAllUserJoinedGroup(UUID groupId) {
+        List<Member> li = memberRepository.getAllUserJoinedGroup(groupId);
+        Set<MemberDto> res = new HashSet<>();
+        li.stream().map(MemberDto::new).forEach(res::add);
+        return res;
+    }
 }
 
 

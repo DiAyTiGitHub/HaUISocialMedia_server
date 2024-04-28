@@ -45,4 +45,6 @@ public interface GroupService {
     public Set<GroupDto> getAllGroupUserIsAdmin();
 
     public Set<GroupDto> getAllGroupUserNotYetJoin();
+
+    public Set<MemberDto> getAllUserJoinedGroup(UUID groupId);
 }
