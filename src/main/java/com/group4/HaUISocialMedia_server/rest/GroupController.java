@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.rest;
 
+import com.group4.HaUISocialMedia_server.dto.GetAllUserOfGroupDto;
 import com.group4.HaUISocialMedia_server.dto.GroupDto;
 import com.group4.HaUISocialMedia_server.dto.MemberDto;
 import com.group4.HaUISocialMedia_server.entity.Group;
@@ -97,16 +98,16 @@ public class GroupController {
     @GetMapping("/get-all-joined-group/{userId}")
     public ResponseEntity<Set<GroupDto>> getAllJoinedGroupOfUser(@PathVariable UUID userId){
         Set<GroupDto> res = groupService.getAllJoinedGroupOfUser(userId);
-        if(res.isEmpty())
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        if(res.isEmpty())
+//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @GetMapping("/search-name/{name}")
     public ResponseEntity<Set<GroupDto>> searchByName(@PathVariable("name") String name){
         Set<GroupDto> res = groupService.searchGroupByName(name);
-        if(res.isEmpty())
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        if(res.isEmpty())
+//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -115,8 +116,8 @@ public class GroupController {
         if(!groupService.isAdminGroup(groupService.findGroupByMember(memberId).getId()))
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         MemberDto memberDto = groupService.dutyAdmin(memberId);
-        if(memberDto == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        if(memberDto == null)
+//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
@@ -134,8 +135,8 @@ public class GroupController {
         if(!groupService.isAdminGroup(groupId))
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         Set<MemberDto> res = groupService.getAllUserWaitJoinedGroup(groupId);
-        if(res.isEmpty())
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        if(res.isEmpty())
+//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -150,5 +151,28 @@ public class GroupController {
     @GetMapping("/check-user-join-group/{groupId}")
     public ResponseEntity<Boolean> isJoinGroup(@PathVariable UUID groupId){
         return groupService.isJoinedGroup(groupId) ? new ResponseEntity<>(true, HttpStatus.OK) : new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/get-all-group-user-is-admin")
+    public ResponseEntity<Set<GroupDto>> getAllGroupUserIsAdmin(){
+        Set<GroupDto> res = groupService.getAllGroupUserIsAdmin();
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all-group-user-not-yet-join")
+    public ResponseEntity<Set<GroupDto>> getAllGroupUserNotYeJoin(){
+        Set<GroupDto> res = groupService.getAllGroupUserNotYetJoin();
+        return res == null ? new ResponseEntity<>(null, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all-user-of-group/{groupId}")
+    public ResponseEntity<GetAllUserOfGroupDto> getAllUserOfGroup(@PathVariable("groupId")UUID id){
+        if(!groupService.isAdminGroup(id))
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        Set<MemberDto> getAllUserJoined = groupService.getAllUserJoinedGroup(id);
+        Set<MemberDto> getAllUserWaitJoin = groupService.getAllUserWaitJoinedGroup(id);
+
+        GetAllUserOfGroupDto newGetAllUserOfGroupDto = new GetAllUserOfGroupDto(getAllUserJoined, getAllUserWaitJoin);
+        return new ResponseEntity<>(newGetAllUserOfGroupDto, HttpStatus.OK);
     }
 }

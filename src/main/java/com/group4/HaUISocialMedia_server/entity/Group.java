@@ -27,7 +27,7 @@ public class Group {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column
     private String code;
 
     @Column(nullable = false)
@@ -57,4 +57,8 @@ public class Group {
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Post> posts;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Notification> notifications;
 }

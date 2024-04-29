@@ -3,13 +3,8 @@ package com.group4.HaUISocialMedia_server.service.impl;
 import com.group4.HaUISocialMedia_server.dto.GroupDto;
 import com.group4.HaUISocialMedia_server.dto.MemberDto;
 import com.group4.HaUISocialMedia_server.dto.PostDto;
-import com.group4.HaUISocialMedia_server.entity.Group;
-import com.group4.HaUISocialMedia_server.entity.Role;
-import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.entity.Member;
-import com.group4.HaUISocialMedia_server.repository.GroupRepository;
-import com.group4.HaUISocialMedia_server.repository.MemberRepository;
-import com.group4.HaUISocialMedia_server.repository.UserRepository;
+import com.group4.HaUISocialMedia_server.entity.*;
+import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.GroupService;
 import com.group4.HaUISocialMedia_server.service.MemberService;
 import com.group4.HaUISocialMedia_server.service.UserService;
@@ -37,6 +32,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationTypeRepository notificationTypeRepository;
 
     @Override
     public GroupDto createGroup(GroupDto groupDto) {
@@ -125,6 +126,18 @@ public class GroupServiceImpl implements GroupService {
             return null;
         userRequest.setApproved(true);
         userRequest.setJoinDate(new Date());
+
+        Notification notification = new Notification();
+        notification.setOwner(userRequest.getUser());
+        notification.setGroup(userRequest.getGroup());
+        notification.setCreateDate(new Date());
+        notification.setActor(userService.getCurrentLoginUserEntity());
+        notification.setContent("Yêu cầu tham gia nhóm " + userRequest.getGroup().getName() + " đã được duyệt");
+        NotificationType notificationType = notificationTypeRepository.findByName("Group");
+
+        if(notificationType != null)
+            notification.setNotificationType(notificationType);
+        notificationRepository.save(notification);
         return memberService.updateUserGroup(new MemberDto(userRequest));
     }
 
@@ -262,6 +275,62 @@ public class GroupServiceImpl implements GroupService {
     public boolean isJoinedGroup(UUID groupId) {
         Member member = memberRepository.isEmpty(userService.getCurrentLoginUserEntity().getId(), groupId);
         return member != null && member.isApproved();
+    }
+
+    @Override
+    public Set<GroupDto> getAllGroupUserIsAdmin() {
+        List<Member> li = memberRepository.getAllGroupUserIsAdmin(userService.getCurrentLoginUserEntity().getId());
+        Set<GroupDto> res = new HashSet<>();
+        li.stream().map(x -> {
+            GroupDto groupDto = null;
+            if(x.getGroup() != null)
+                groupDto = new GroupDto(x.getGroup());
+            if(x.getGroup().getUserJoins() != null)
+                groupDto.setUserJoins(x.getGroup().getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+            if(x.getGroup().getPosts() != null)
+                groupDto.setPosts(x.getGroup().getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+            return groupDto;
+        }).forEach(res::add);
+        return res;
+    }
+
+    @Override
+    public Set<GroupDto> getAllGroupUserNotYetJoin() {
+//        Set<GroupDto> allGroup = groupRepository.findAll().stream().map(x -> {
+//            GroupDto groupDto = new GroupDto(x);
+//            if (x.getUserJoins() != null)
+//                groupDto.setUserJoins(x.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+//            if (x.getPosts() != null)
+//                groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+//            return groupDto;
+//        }).collect(Collectors.toSet());
+//        Set<GroupDto> resGroupSmall = getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId());
+//        if(!resGroupSmall.isEmpty())
+//           //  return allGroup.removeAll(getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId())) ? allGroup : null;
+//             allGroup.removeAll(resGroupSmall);
+//        return allGroup;
+        List<UUID> groupIds = getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId()).stream().map(GroupDto::getId).toList();
+
+        List<Group> li = memberRepository.getAllGroupUserNotYetJoin(groupIds);
+        Set<GroupDto> groupDtos = new HashSet<>();
+        li.stream().map(x -> {
+            GroupDto groupDto = new GroupDto(x);
+            if (x.getUserJoins() != null)
+                groupDto.setUserJoins(x.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
+            if (x.getPosts() != null)
+                groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+            return groupDto;
+        }).forEach(groupDtos::add);
+
+        return groupDtos;
+    }
+
+    @Override
+    public Set<MemberDto> getAllUserJoinedGroup(UUID groupId) {
+        List<Member> li = memberRepository.getAllUserJoinedGroup(groupId);
+        Set<MemberDto> res = new HashSet<>();
+        li.stream().map(MemberDto::new).forEach(res::add);
+        return res;
     }
 }
 

@@ -6,7 +6,6 @@ import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +51,9 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private GroupRepository groupRepository;
 
+    @Autowired
+    private GroupService groupService;
+
     @Override
     public Set<PostDto> getNewsFeed(SearchObject searchObject) {
         User currentUser = userService.getCurrentLoginUserEntity();
@@ -82,6 +84,11 @@ public class PostServiceImpl implements PostService {
         //Nên chúng ta cần dùng Lamda collection để có thể sắp xếp nó
         Set<PostDto> res = new TreeSet<>((post1, post2) -> post2.getCreateDate().compareTo(post1.getCreateDate()));
         res.addAll(newsFeed);
+
+        Set<GroupDto> resGroup = groupService.getAllJoinedGroupOfUser(currentUser.getId());
+        resGroup.forEach(x -> {
+            res.addAll(x.getPosts());
+        });
 
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));

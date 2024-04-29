@@ -1,5 +1,6 @@
 package com.group4.HaUISocialMedia_server.repository;
 
+import com.group4.HaUISocialMedia_server.entity.Group;
 import com.group4.HaUISocialMedia_server.entity.Member;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +33,10 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     @Query("SELECT m FROM Member m WHERE m.group.id = :groupId and m.isApproved = false")
     public List<Member> getAllUserWaitJoinedGroup(@Param("groupId")UUID groupId);
 
+    //get all user joined group
+    @Query("SELECT m FROM Member m WHERE m.group.id = :groupId and m.isApproved = true")
+    public List<Member> getAllUserJoinedGroup(@Param("groupId")UUID groupId);
+
     //get number user is admin in group
     @Query("SELECT m FROM Member m WHERE m.group.id = :groupId and m.role = com.group4.HaUISocialMedia_server.entity.Role.ADMIN")
     public List<Member> getNumberUserIsAdmin(@Param("groupId")UUID groupId);
@@ -40,8 +46,8 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     public List<Member> getAllJoinedGroup(@Param("userId")UUID userId);
 
     //get list request wait admin approve of user
-    @Query("SELECT m FROM Member m WHERE m.user.id = :userId and m.isApproved = false")
-    public List<Member> getListRequestWaitAdminApprove(@Param("userId")UUID userId);
+    @Query("SELECT g FROM Group g WHERE g.id NOT IN (:groups)")
+    public List<Group> getAllGroupUserNotYetJoin(@Param("groups")List<UUID> groups);
 
     @Modifying
     @Transactional
@@ -50,5 +56,10 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
 //    @Query("select m FROM Member m WHERE m.user.id = :userId and m.group.id = :groupId and m.isApproved = TRUE")
 //
+    // get all Groups that users admin
+    @Query("SELECT m FROM Member m WHERE m.role = com.group4.HaUISocialMedia_server.entity.Role.ADMIN and m.user.id = :userId")
+    public List<Member> getAllGroupUserIsAdmin(@PathVariable("userId")UUID userId);
+
+    // @Query("SELECT ")
 
 }
