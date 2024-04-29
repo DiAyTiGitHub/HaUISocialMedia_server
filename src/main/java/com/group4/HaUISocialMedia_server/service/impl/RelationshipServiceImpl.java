@@ -160,24 +160,24 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         messageRepository.save(acFriendMessage);
 
-        //join messageType
-        MessageType joinMessageType = messageTypeService.getMessageTypeEntityByName("join");
-
-        Message senderJoinMessage = new Message();
-        senderJoinMessage.setSendDate(new Date());
-        senderJoinMessage.setContent(requestSender.getUsername() + " đã tham gia cuộc trò chuyện");
-        senderJoinMessage.setMessageType(joinMessageType);
-        senderJoinMessage.setRoom(savedRoom);
-
-        messageRepository.save(senderJoinMessage);
-
-        Message recieverJoinMessage = new Message();
-        recieverJoinMessage.setSendDate(new Date());
-        recieverJoinMessage.setContent(receiver.getUsername() + " đã tham gia cuộc trò chuyện");
-        recieverJoinMessage.setMessageType(joinMessageType);
-        recieverJoinMessage.setRoom(savedRoom);
-
-        messageRepository.save(recieverJoinMessage);
+//        //join messageType
+//        MessageType joinMessageType = messageTypeService.getMessageTypeEntityByName("join");
+//
+//        Message senderJoinMessage = new Message();
+//        senderJoinMessage.setSendDate(new Date());
+//        senderJoinMessage.setContent(requestSender.getUsername() + " đã tham gia cuộc trò chuyện");
+//        senderJoinMessage.setMessageType(joinMessageType);
+//        senderJoinMessage.setRoom(savedRoom);
+//
+//        messageRepository.save(senderJoinMessage);
+//
+//        Message recieverJoinMessage = new Message();
+//        recieverJoinMessage.setSendDate(new Date());
+//        recieverJoinMessage.setContent(receiver.getUsername() + " đã tham gia cuộc trò chuyện");
+//        recieverJoinMessage.setMessageType(joinMessageType);
+//        recieverJoinMessage.setRoom(savedRoom);
+//
+//        messageRepository.save(recieverJoinMessage);
 
 
 
