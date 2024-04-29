@@ -215,11 +215,8 @@ public class PostServiceImpl implements PostService {
 
         Post entity = postRepository.findById(dto.getId()).orElse(null);
         if (entity == null) return null;
-
         entity.setContent(dto.getContent());
-
         Post savedEntity = postRepository.save(entity);
-
         PostDto responseDto = new PostDto(savedEntity);
         responseDto.setLikes(likeService.getListLikesOfPost(responseDto.getId()));
         responseDto.setComments(commentService.getParentCommentsOfPost(responseDto.getId()));
@@ -286,8 +283,86 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public PostDto updateBackgroundImage(PostDto postDto) {
+    public PostDto updateBackgroundImage(String image) {
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if(currentUser == null) return  null;
+        Post entity = new Post();
+        entity.setCreateDate(new Date());
+        entity.setOwner(currentUser);
+        postRepository.save(entity);
 
-        return null;
+        PostImage postImage = new PostImage();
+        postImage.setPost(entity);
+        postImage.setImage(image);
+        postImageRepository.save(postImage);
+        Post savedEntity = postRepository.save(entity);
+
+
+        //alert all friends that this user has created new post
+        SearchObject so = new SearchObject();
+        so.setPageIndex(1);
+        so.setPageSize(5000);
+        List<UserDto> listFriends = relationshipService.getCurrentFriends(so);
+        for (UserDto friend : listFriends) {
+            Notification noti = new Notification();
+            noti.setActor(currentUser);
+            noti.setCreateDate(new Date());
+            noti.setContent(currentUser.getUsername() + " đã cập nhật mới một ảnh bìa: " + savedEntity.getContent());
+            noti.setOwner(userService.getUserEntityById(friend.getId()));
+            noti.setNotificationType(notificationTypeRepository.findByName("Post"));
+
+            //postId now is referenceId in notification
+            noti.setPost(savedEntity);
+            Notification savedNoti = notificationRepository.save(noti);
+
+            //send this noti via socket
+            simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
+        }
+
+//        PostDto responseDto = new PostDto(savedEntity);
+//        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
+        return new PostDto(savedEntity);
+    }
+
+    @Override
+    public PostDto updateProfileImage(String image) {
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if(currentUser == null) return  null;
+        Post entity = new Post();
+        entity.setCreateDate(new Date());
+        entity.setOwner(currentUser);
+        postRepository.save(entity);
+
+        PostImage postImage = new PostImage();
+        postImage.setPost(entity);
+        postImage.setImage(image);
+        postImageRepository.save(postImage);
+        Post savedEntity = postRepository.save(entity);
+
+
+        //alert all friends that this user has created new post
+        SearchObject so = new SearchObject();
+        so.setPageIndex(1);
+        so.setPageSize(5000);
+        List<UserDto> listFriends = relationshipService.getCurrentFriends(so);
+        for (UserDto friend : listFriends) {
+            Notification noti = new Notification();
+            noti.setActor(currentUser);
+            noti.setCreateDate(new Date());
+            noti.setContent(currentUser.getUsername() + " đã cập nhật mới ảnh đại diện " + savedEntity.getContent());
+            noti.setOwner(userService.getUserEntityById(friend.getId()));
+            noti.setNotificationType(notificationTypeRepository.findByName("Post"));
+
+            //postId now is referenceId in notification
+            noti.setPost(savedEntity);
+            Notification savedNoti = notificationRepository.save(noti);
+
+            //send this noti via socket
+            simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
+        }
+
+//        PostDto responseDto = new PostDto(savedEntity);
+//        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
+        return new PostDto(savedEntity);
     }
 }

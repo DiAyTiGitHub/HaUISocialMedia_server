@@ -24,5 +24,7 @@ public interface PostService {
 
     public boolean hasAuthorityToChange(UUID postId);
 
-    public PostDto updateBackgroundImage(PostDto postDto);
+    public PostDto updateBackgroundImage(String image);
+
+    public PostDto updateProfileImage(String image);
 }

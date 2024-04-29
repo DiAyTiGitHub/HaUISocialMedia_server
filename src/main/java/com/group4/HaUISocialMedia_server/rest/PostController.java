@@ -6,6 +6,7 @@ import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,5 +68,21 @@ public class PostController {
 
         if (!res) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<Boolean>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/BackgroundImage")
+    public ResponseEntity<PostDto> updateBackground(@RequestParam String backgroundImage) {
+        PostDto res = postService.updateBackgroundImage(backgroundImage);
+        if (!postService.hasAuthorityToChange(res.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/profileImage")
+    public ResponseEntity<PostDto> updateProfile(@RequestParam String profileImage) {
+        PostDto res = postService.updateProfileImage(profileImage);
+        if (!postService.hasAuthorityToChange(res.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
     }
 }
