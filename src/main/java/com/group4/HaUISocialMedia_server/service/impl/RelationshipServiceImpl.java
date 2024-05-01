@@ -277,7 +277,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         Relationship entity = relationshipRepository.findById(relationshipId).orElse(null);
         if (entity == null) return null;
         //delete notification
-        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
+        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getReceiver().getId(), entity.getRequestSender().getId());
         notificationRepository.deleteNotificationAcceptFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
         //delete message
         messageRepository.deleteMessageByRoomId(entity.getRoom().getId());
@@ -299,7 +299,7 @@ public class RelationshipServiceImpl implements RelationshipService {
         if (entity == null) return null;
         if (entity.getRequestSender() == null) return null;
         //delete notification
-        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getRequestSender().getId(), entity.getReceiver().getId());
+        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getReceiver().getId(), entity.getRequestSender().getId() );
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
 //        Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
