@@ -1,12 +1,11 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.GroupDto;
 import com.group4.HaUISocialMedia_server.dto.NotificationDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.entity.Notification;
 import com.group4.HaUISocialMedia_server.entity.User;
-import com.group4.HaUISocialMedia_server.repository.NotificationRepository;
-import com.group4.HaUISocialMedia_server.repository.NotificationTypeRepository;
-import com.group4.HaUISocialMedia_server.repository.UserRepository;
+import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.NotificationService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
@@ -32,6 +31,12 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private GroupRepository groupRepository;
+
     @Override
     public Set<NotificationDto> getAllNotifications() {
         User user = userService.getCurrentLoginUserEntity();
@@ -53,7 +58,10 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setOwner(userRepository.findById(notificationDto.getOwner().getId()).orElse(null));
         if (notificationDto.getActor() != null)
             notification.setActor(userRepository.findById(notificationDto.getActor().getId()).orElse(null));
-
+        if(notificationDto.getPost() != null)
+            notification.setPost(postRepository.findById(notificationDto.getPost().getId()).orElse(null));
+        if(notificationDto.getGroupDto() != null)
+            notification.setGroup(groupRepository.findById(notificationDto.getGroupDto().getId()).orElse(null));
         notification.setContent(notificationDto.getContent());
         notification.setCreateDate(notificationDto.getCreateDate());
         return new NotificationDto(notificationRepository.save(notification));
