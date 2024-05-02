@@ -27,4 +27,5 @@ public interface PostService {
     public PostDto updateBackgroundImage(String image);
 
     public PostDto updateProfileImage(String image);
+
 }

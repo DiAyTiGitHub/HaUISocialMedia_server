@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.service;
 
 import com.group4.HaUISocialMedia_server.dto.GroupDto;
 import com.group4.HaUISocialMedia_server.dto.MemberDto;
+import com.group4.HaUISocialMedia_server.dto.PostDto;
 
 import java.util.Set;
 import java.util.UUID;
@@ -47,4 +48,7 @@ public interface GroupService {
     public Set<GroupDto> getAllGroupUserNotYetJoin();
 
     public Set<MemberDto> getAllUserJoinedGroup(UUID groupId);
+
+    public Set<PostDto> findPostInGroup(String content, UUID groupId);
+
 }

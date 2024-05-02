@@ -351,6 +351,12 @@ public class GroupServiceImpl implements GroupService {
         li.stream().map(MemberDto::new).forEach(res::add);
         return res;
     }
+
+    @Override
+    public Set<PostDto> findPostInGroup(String content, UUID groupId) {
+        Set<PostDto> res= findById(groupId).getPosts().stream().filter(x -> x.getContent().contains(content)).collect(Collectors.toSet());
+        return res;
+    }
 }
 
 
