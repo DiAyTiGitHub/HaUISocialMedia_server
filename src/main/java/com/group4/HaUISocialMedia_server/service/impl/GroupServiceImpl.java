@@ -5,9 +5,7 @@ import com.group4.HaUISocialMedia_server.dto.MemberDto;
 import com.group4.HaUISocialMedia_server.dto.PostDto;
 import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.*;
-import com.group4.HaUISocialMedia_server.service.GroupService;
-import com.group4.HaUISocialMedia_server.service.MemberService;
-import com.group4.HaUISocialMedia_server.service.UserService;
+import com.group4.HaUISocialMedia_server.service.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +36,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
+
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private PostImageService postImageService;
 
     @Override
     public GroupDto createGroup(GroupDto groupDto) {
@@ -259,7 +266,13 @@ public class GroupServiceImpl implements GroupService {
         if(group.getUserJoins() != null)
             groupDto.setUserJoins(group.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
         if(group.getPosts() != null)
-            groupDto.setPosts(group.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+            groupDto.setPosts(group.getPosts().stream().map(x -> {
+                PostDto postDto = new PostDto(x);
+                postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
+                postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+                postDto.setImages(postImageService.sortImage(postDto.getId()));
+                return postDto;
+            }).collect(Collectors.toSet()));
         return groupDto;
     }
 
@@ -288,7 +301,13 @@ public class GroupServiceImpl implements GroupService {
             if(x.getGroup().getUserJoins() != null)
                 groupDto.setUserJoins(x.getGroup().getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
             if(x.getGroup().getPosts() != null)
-                groupDto.setPosts(x.getGroup().getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+                groupDto.setPosts(x.getGroup().getPosts().stream().map(y -> {
+                    PostDto postDto = new PostDto(y);
+                    postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
+                    postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+                    postDto.setImages(postImageService.sortImage(postDto.getId()));
+                    return postDto;
+                }).collect(Collectors.toSet()));
             return groupDto;
         }).forEach(res::add);
         return res;

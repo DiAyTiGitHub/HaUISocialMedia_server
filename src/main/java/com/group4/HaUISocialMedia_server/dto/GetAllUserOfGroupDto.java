@@ -17,5 +17,4 @@ public class GetAllUserOfGroupDto {
 
     private Set<MemberDto> getAllUserWaiting;
 
-
 }
