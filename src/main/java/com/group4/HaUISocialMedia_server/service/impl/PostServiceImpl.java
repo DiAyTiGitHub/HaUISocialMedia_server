@@ -316,10 +316,13 @@ public class PostServiceImpl implements PostService {
             //send this noti via socket
             simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
         }
-
+        UserDto userDto = new UserDto(entity.getOwner());
+        userDto.setBackground(image);
+        PostDto responseDto = new PostDto(savedEntity);
+        responseDto.setCreator(userDto);
 //        PostDto responseDto = new PostDto(savedEntity);
 //        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
-        return new PostDto(savedEntity);
+        return responseDto;
     }
 
     @Override
@@ -336,7 +339,6 @@ public class PostServiceImpl implements PostService {
         postImage.setImage(image);
         postImageRepository.save(postImage);
         Post savedEntity = postRepository.save(entity);
-
 
         //alert all friends that this user has created new post
         SearchObject so = new SearchObject();
@@ -359,9 +361,12 @@ public class PostServiceImpl implements PostService {
             simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
         }
 
-//        PostDto responseDto = new PostDto(savedEntity);
 //        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
-        return new PostDto(savedEntity);
+        UserDto userDto = new UserDto(entity.getOwner());
+        userDto.setAvatar(image);
+        PostDto responseDto = new PostDto(savedEntity);
+        responseDto.setCreator(userDto);
+        return responseDto;
     }
 
     public String insertPercent(String word) {
