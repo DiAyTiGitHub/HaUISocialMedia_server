@@ -292,6 +292,8 @@ public class PostServiceImpl implements PostService {
         PostImage postImage = new PostImage();
         postImage.setPost(entity);
         postImage.setImage(image);
+        postImage.setDescription("backgroundImage");
+        postImage.setCreateDate(new Date());
         postImageRepository.save(postImage);
         Post savedEntity = postRepository.save(entity);
 
@@ -337,6 +339,8 @@ public class PostServiceImpl implements PostService {
         PostImage postImage = new PostImage();
         postImage.setPost(entity);
         postImage.setImage(image);
+        postImage.setDescription("profileImage");
+        postImage.setCreateDate(new Date());
         postImageRepository.save(postImage);
         Post savedEntity = postRepository.save(entity);
 

@@ -6,6 +6,7 @@ import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.Relationship;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
+import com.group4.HaUISocialMedia_server.repository.PostImageRepository;
 import com.group4.HaUISocialMedia_server.repository.RelationshipRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.UserService;
@@ -36,6 +37,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RelationshipRepository relationshipRepository;
 
+    @Autowired
+    private PostImageRepository postImageRepository;
+
     @Override
     public Set<UserDto> getAllUsers() {
         Set<UserDto> res = new HashSet<>();
@@ -63,6 +67,8 @@ public class UserServiceImpl implements UserService {
                 res.setRelationshipDto(relationshipDto);
             }
         }
+        res.setAvatar(postImageRepository.profileImage());
+        res.setBackground(postImageRepository.backgroundImage());
 
         return res;
     }

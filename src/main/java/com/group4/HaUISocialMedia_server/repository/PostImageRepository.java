@@ -14,4 +14,10 @@ public interface PostImageRepository extends JpaRepository<PostImage, UUID> {
 
     @Query("SELECT i FROM PostImage i WHERE i.post.id = :idPost")
     public List<PostImage> pagingSortImage(@Param("idPost")UUID idPost);
+
+    @Query("SELECT i.image FROM PostImage i where i.description like 'backgroundImage' ORDER BY i.createDate desc limit 1")
+    String backgroundImage ();
+
+    @Query("SELECT i.image FROM PostImage i where i.description like 'profileImage' ORDER BY i.createDate desc limit 1")
+    String profileImage ();
 }
