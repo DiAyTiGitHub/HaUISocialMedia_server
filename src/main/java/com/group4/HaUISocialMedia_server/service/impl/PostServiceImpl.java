@@ -84,7 +84,7 @@ public class PostServiceImpl implements PostService {
             joinedGroupIds.add((member.getId()));
         }
 
-        List<PostDto> newsFeed = postRepository.findNextPostFromMileStone(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+        List<PostDto> newsFeed = postRepository.findNextPostFromMileStone(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
         for (PostDto postDto : newsFeed) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
@@ -253,7 +253,7 @@ public class PostServiceImpl implements PostService {
         Date mileStoneDate = new Date();
         if (entity != null) mileStoneDate = entity.getCreateDate();
 
-        List<PostDto> newsFeed = postRepository.findPostOfUser(userId, mileStoneDate, PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+        List<PostDto> newsFeed = postRepository.findPostOfUser(userId, mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
         Set<PostDto> res = new TreeSet<>((post1, post2) -> post2.getCreateDate().compareTo(post1.getCreateDate()));
         res.addAll(newsFeed);
@@ -408,7 +408,7 @@ public class PostServiceImpl implements PostService {
             joinedGroupIds.add((member.getId()));
         }
 
-        List<PostDto> res = postRepository.findNextPostFromMileStoneWithKeyWord(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, keyword, PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+        List<PostDto> res = postRepository.findNextPostFromMileStoneWithKeyWord(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, keyword, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
