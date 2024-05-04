@@ -9,6 +9,7 @@ import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
 import com.group4.HaUISocialMedia_server.repository.PostImageRepository;
 import com.group4.HaUISocialMedia_server.repository.RelationshipRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
+import com.group4.HaUISocialMedia_server.service.PostService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PostImageRepository postImageRepository;
+
+    @Autowired
+    private PostService postService;
 
     @Override
     public Set<UserDto> getAllUsers() {
@@ -84,12 +88,19 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+
     @Override
     @Transactional
     public UserDto updateUser(UserDto dto) {
         User entity = userService.getCurrentLoginUserEntity();
         if (entity == null)
             return null;
+
+        //auto create background post
+        if(!entity.getBackground().equals(dto.getBackground())) postService.updateBackgroundImage(dto.getBackground());
+        //auto create avatar post
+        if(!entity.getAvatar().equals(dto.getAvatar())) postService.updateProfileImage(dto.getAvatar());
+
         entity.setCode(dto.getCode());
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
@@ -100,10 +111,13 @@ public class UserServiceImpl implements UserService {
         entity.setBirthDate(dto.getBirthDate());
         entity.setAvatar(dto.getAvatar());
         entity.setPhoneNumber(dto.getPhoneNumber());
+        entity.setBackground(dto.getBackground());
 
         if (dto.getClassroomDto() != null)
             entity.setClassroom(classroomRepository.findById(dto.getClassroomDto().getId()).orElse(null));
+
         userRepository.saveAndFlush(entity);
+
         return dto;
     }
 
@@ -154,7 +168,7 @@ public class UserServiceImpl implements UserService {
     public UserDto isDisable(UUID userId) {
         User currentUser = this.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
-        if(!currentUser.getRole().equals("ADMIN")) return  null;
+        if (!currentUser.getRole().equals("ADMIN")) return null;
         User entity = userRepository.findById(userId).orElse(null);
         entity.setDisable(true);
         userRepository.save(entity);
@@ -165,7 +179,7 @@ public class UserServiceImpl implements UserService {
     public UserDto updateStatus(UUID userId) {
         User currentUser = this.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
-        if(!currentUser.getRole().equals("ADMIN")) return  null;
+        if (!currentUser.getRole().equals("ADMIN")) return null;
         User entity = userRepository.findById(userId).orElse(null);
         entity.setDisable(false);
         userRepository.save(entity);

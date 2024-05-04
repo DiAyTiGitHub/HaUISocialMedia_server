@@ -72,21 +72,21 @@ public class PostController {
         return new ResponseEntity<Boolean>(res, HttpStatus.OK);
     }
 
-    @PostMapping("/BackgroundImage")
-    public ResponseEntity<PostDto> updateBackground(@RequestParam String backgroundImage) {
-        PostDto res = postService.updateBackgroundImage(backgroundImage);
-        if (!postService.hasAuthorityToChange(res.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
-    }
-
-    @PostMapping("/profileImage")
-    public ResponseEntity<PostDto> updateProfile(@RequestParam String profileImage) {
-        PostDto res = postService.updateProfileImage(profileImage);
-        if (!postService.hasAuthorityToChange(res.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
-    }
+//    @PostMapping("/BackgroundImage")
+//    public ResponseEntity<PostDto> updateBackground(@RequestParam String backgroundImage) {
+//        PostDto res = postService.updateBackgroundImage(backgroundImage);
+//        if (!postService.hasAuthorityToChange(res.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
+//    }
+//
+//    @PostMapping("/profileImage")
+//    public ResponseEntity<PostDto> updateProfile(@RequestParam String profileImage) {
+//        PostDto res = postService.updateProfileImage(profileImage);
+//        if (!postService.hasAuthorityToChange(res.getId())) return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+//        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
+//    }
 
 
 }
