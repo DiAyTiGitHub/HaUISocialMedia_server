@@ -59,6 +59,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostDto> getNewsFeed(SearchObject searchObject) {
+        if (searchObject == null) return null;
+        String keyword = insertPercent(searchObject.getKeyWord());
+
         User currentUser = userService.getCurrentLoginUserEntity();
 
         if (currentUser == null || searchObject == null) return null;
@@ -84,15 +87,15 @@ public class PostServiceImpl implements PostService {
             joinedGroupIds.add((member.getId()));
         }
 
-        List<PostDto> newsFeed = postRepository.findNextPostFromMileStone(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<PostDto> res = postRepository.findNextPostFromMileStoneWithKeyWord(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, keyword, PageRequest.of(0, searchObject.getPageSize()));
 
-        for (PostDto postDto : newsFeed) {
+        for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
             postDto.setImages(postImageService.sortImage(postDto.getId()));
         }
 
-        return newsFeed;
+        return res;
     }
 
     @Override
@@ -155,7 +158,10 @@ public class PostServiceImpl implements PostService {
         }
 
         PostDto responseDto = new PostDto(savedEntity);
-        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
+
+        if (savedEntity.getPostImages() != null && savedEntity.getPostImages().size() != 0)
+            responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
+
         return responseDto;
     }
 
@@ -245,7 +251,7 @@ public class PostServiceImpl implements PostService {
         User currentUser = userService.getCurrentLoginUserEntity();
 
         if (currentUser == null || searchObject == null) return null;
-
+        String keyword = insertPercent(searchObject.getKeyWord());
         Post entity = null;
         if (searchObject.getMileStoneId() != null)
             entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
@@ -253,7 +259,7 @@ public class PostServiceImpl implements PostService {
         Date mileStoneDate = new Date();
         if (entity != null) mileStoneDate = entity.getCreateDate();
 
-        List<PostDto> newsFeed = postRepository.findPostOfUser(userId, mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<PostDto> newsFeed = postRepository.findPostOfUser(userId, mileStoneDate, keyword, PageRequest.of(0, searchObject.getPageSize()));
 
         Set<PostDto> res = new TreeSet<>((post1, post2) -> post2.getCreateDate().compareTo(post1.getCreateDate()));
         res.addAll(newsFeed);
@@ -288,6 +294,7 @@ public class PostServiceImpl implements PostService {
         Post entity = new Post();
         entity.setCreateDate(new Date());
         entity.setOwner(currentUser);
+        entity.setContent(currentUser.getUsername() + " đã cập nhật ảnh bìa của anh ấy");
         postRepository.save(entity);
 
         PostImage postImage = new PostImage();
@@ -295,6 +302,7 @@ public class PostServiceImpl implements PostService {
         postImage.setImage(image);
         postImage.setDescription("backgroundImage");
         postImage.setCreateDate(new Date());
+
         postImageRepository.save(postImage);
         Post savedEntity = postRepository.save(entity);
 
@@ -336,6 +344,7 @@ public class PostServiceImpl implements PostService {
         Post entity = new Post();
         entity.setCreateDate(new Date());
         entity.setOwner(currentUser);
+        entity.setContent(currentUser.getUsername() + " đã cập nhật ảnh đại diện của anh ấy");
         postRepository.save(entity);
 
         PostImage postImage = new PostImage();
@@ -419,7 +428,7 @@ public class PostServiceImpl implements PostService {
             joinedGroupIds.add((member.getId()));
         }
 
-        List<PostDto> res = postRepository.findNextPostFromMileStoneWithKeyWord(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, keyword, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<PostDto> res = postRepository.findNextPostFromMileStoneWithKeyWord(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, keyword, PageRequest.of(0, searchObject.getPageSize()));
 
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));

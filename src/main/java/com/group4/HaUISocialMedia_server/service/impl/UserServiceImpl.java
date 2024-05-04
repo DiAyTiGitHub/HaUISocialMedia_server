@@ -97,9 +97,15 @@ public class UserServiceImpl implements UserService {
             return null;
 
         //auto create background post
-        if(!entity.getBackground().equals(dto.getBackground())) postService.updateBackgroundImage(dto.getBackground());
+        if (dto.getBackground() != null) {
+            if (!dto.getBackground().equals(entity.getBackground()))
+                postService.updateBackgroundImage(dto.getBackground());
+        }
         //auto create avatar post
-        if(!entity.getAvatar().equals(dto.getAvatar())) postService.updateProfileImage(dto.getAvatar());
+        if (dto.getAvatar() != null) {
+            if (!dto.getAvatar().equals(entity.getAvatar()))
+                postService.updateProfileImage(dto.getAvatar());
+        }
 
         entity.setCode(dto.getCode());
         entity.setFirstName(dto.getFirstName());
