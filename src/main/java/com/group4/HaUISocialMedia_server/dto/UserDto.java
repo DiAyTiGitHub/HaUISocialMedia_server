@@ -26,6 +26,7 @@ public class UserDto {
     private boolean gender;
     private Date birthDate;
     private String avatar;
+    private String background;
     private String role;
     private String phoneNumber;
     private ClassroomDto classroomDto;

@@ -16,6 +16,8 @@ public interface GroupRepository extends JpaRepository<Group, UUID> {
 //    public Group findAdmin(@Param("id")UUID idGroup, @Param("userId")UUID userId);
 
     @Query("SELECT g FROM Group g WHERE g.name LIKE %:name%")
-    public List<Group> findGroupByName(@Param("name")String name);
+    public List<Group> findGroupByName(@Param("name") String name);
+
+
 
 }

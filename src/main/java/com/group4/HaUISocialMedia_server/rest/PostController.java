@@ -3,6 +3,7 @@ package com.group4.HaUISocialMedia_server.rest;
 import com.group4.HaUISocialMedia_server.dto.MessageTypeDto;
 import com.group4.HaUISocialMedia_server.dto.PostDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
+import com.group4.HaUISocialMedia_server.entity.Post;
 import com.group4.HaUISocialMedia_server.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,8 +25,8 @@ public class PostController {
     private PostService postService;
 
     @PostMapping("/newsfeed")
-    public ResponseEntity<Set<PostDto>> pagingNewsFeed(@RequestBody SearchObject searchObject) {
-        Set<PostDto> res = postService.getNewsFeed(searchObject);
+    public ResponseEntity<List<PostDto>> pagingNewsFeed(@RequestBody SearchObject searchObject) {
+        List<PostDto> res = postService.getNewsFeed(searchObject);
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
@@ -85,4 +87,6 @@ public class PostController {
         if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<PostDto>(res, HttpStatus.OK);
     }
+
+
 }

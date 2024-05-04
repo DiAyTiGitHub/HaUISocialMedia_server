@@ -21,13 +21,30 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 //    @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) FROM Post p WHERE p.owner.id IN :userIds AND p.createDate < :mileStone ORDER BY p.createDate DESC LIMIT :limit OFFSET :offset")
 //    List<PostDto> findNext5PostFromMileStone(@Param("userIds") List<UUID> userIds, @Param("mileStone") Date mileStone, @Param("limit") int limit, @Param("offset") int offset);
 
-        //Cách 1: Truyền tham số
+    //Cách 1: Truyền tham số
 
-        //@Query("SELECT p FROM Post p WHERE p.owner.id IN :userIds AND p.createDate < :mileStone ORDER BY p.createDate DESC")
-       // List<PostDto> findNext5PostFromMileStone(@Param("userIds") List<UUID> userIds, @Param("mileStone") Date mileStone, Pageable pageable);
+    //@Query("SELECT p FROM Post p WHERE p.owner.id IN :userIds AND p.createDate < :mileStone ORDER BY p.createDate DESC")
+    // List<PostDto> findNext5PostFromMileStone(@Param("userIds") List<UUID> userIds, @Param("mileStone") Date mileStone, Pageable pageable);
 
 
-       // @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) FROM Post p WHERE p.owner.id IN :userIds AND p.createDate < :mileStone ORDER BY p.createDate desc LIMIT :limit OFFSET :offset")
-       @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) FROM Post p WHERE p.owner.id IN :userIds AND p.createDate < :mileStone ORDER BY p.createDate desc")
-       List<PostDto> findNext5PostFromMileStone(@Param("userIds") List<UUID> userIds, @Param("mileStone") Date mileStone, Pageable pageable);
+    // @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) FROM Post p WHERE p.owner.id IN :userIds AND p.createDate < :mileStone ORDER BY p.createDate desc LIMIT :limit OFFSET :offset")
+    @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) " +
+            "FROM Post p WHERE ((p.owner.id IN :userIds and p.group.id is null) or (p.group.id in :joinedGroupIds)) AND p.createDate < :mileStone " +
+            "ORDER BY p.createDate desc")
+    List<PostDto> findNextPostFromMileStone(@Param("userIds") List<UUID> userIds, @Param("joinedGroupIds") List<UUID> joinedGroupIds, @Param("mileStone") Date mileStone, Pageable pageable);
+
+    @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) " +
+            "FROM Post p WHERE (p.owner.id = :userId and p.group.id is null) AND p.createDate < :mileStone " +
+            "and (p.owner.code like :keyword or p.owner.username like :keyword " +
+            "or p.content like :keyword or p.owner.firstName like :keyword or p.owner.lastName like :keyword) " +
+            "ORDER BY p.createDate desc")
+    List<PostDto> findPostOfUser(@Param("userId") UUID userId, @Param("mileStone") Date mileStone, Pageable pageable);
+
+    @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) FROM Post p " +
+            "WHERE ((p.owner.id IN :userIds and p.group.id is null) or (p.group.id in :joinedGroupIds)) " +
+            "AND p.createDate < :mileStone " +
+            "and (p.owner.code like :keyword or p.owner.username like :keyword " +
+            "or p.content like :keyword or p.owner.firstName like :keyword or p.owner.lastName like :keyword) " +
+            "ORDER BY p.createDate desc")
+    List<PostDto> findNextPostFromMileStoneWithKeyWord(@Param("userIds") List<UUID> userIds, @Param("joinedGroupIds") List<UUID> joinedGroupIds, @Param("mileStone") Date mileStone, @Param("keyword") String keyword, Pageable pageable);
 }

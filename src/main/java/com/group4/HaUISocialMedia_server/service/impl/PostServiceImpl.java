@@ -54,8 +54,11 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Override
-    public Set<PostDto> getNewsFeed(SearchObject searchObject) {
+    public List<PostDto> getNewsFeed(SearchObject searchObject) {
         User currentUser = userService.getCurrentLoginUserEntity();
 
         if (currentUser == null || searchObject == null) return null;
@@ -75,28 +78,21 @@ public class PostServiceImpl implements PostService {
             userIds.add(relationship.getRequestSender().getId());
         }
 
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<UUID> joinedGroupIds = new ArrayList<>();
+        List<Member> joinedGroups = memberRepository.getAllJoinedGroup(currentUser.getId());
+        for (Member member : joinedGroups) {
+            joinedGroupIds.add((member.getId()));
+        }
 
-        //Cách 2: Truyền tham so
-        // List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<PostDto> newsFeed = postRepository.findNextPostFromMileStone(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
-        //Vì khi đưa List vào Set thì thứ tự sắp xếp từ trước nó đã bị thay đổi ví dụ 9 8 7 6 -> set sẽ thành 9 7 6 8
-        //Nên chúng ta cần dùng Lamda collection để có thể sắp xếp nó
-        Set<PostDto> res = new TreeSet<>((post1, post2) -> post2.getCreateDate().compareTo(post1.getCreateDate()));
-        res.addAll(newsFeed);
-
-        Set<GroupDto> resGroup = groupService.getAllJoinedGroupOfUser(currentUser.getId());
-        resGroup.forEach(x -> {
-            res.addAll(x.getPosts());
-        });
-
-        for (PostDto postDto : res) {
+        for (PostDto postDto : newsFeed) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
             postDto.setImages(postImageService.sortImage(postDto.getId()));
         }
 
-        return res;
+        return newsFeed;
     }
 
     @Override
@@ -120,7 +116,7 @@ public class PostServiceImpl implements PostService {
         entity.setCreateDate(new Date());
         entity.setContent(dto.getContent());
         entity.setOwner(currentUser);
-        if(dto.getGroup() != null)
+        if (dto.getGroup() != null)
             entity.setGroup(groupRepository.findById(dto.getGroup().getId()).orElse(null));
 
         Post savedEntity = postRepository.save(entity);
@@ -129,7 +125,7 @@ public class PostServiceImpl implements PostService {
                 PostImage postImage = new PostImage();
                 // postImage.setId(x.getId());
                 //if(x.getPost() != null)
-                     postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
+                postImage.setPost(postRepository.findById(savedEntity.getId()).orElse(null));
                 postImage.setDescription(x.getDescription());
                 postImage.setImage(x.getImage());
                 postImage.setCreateDate(new Date());
@@ -257,12 +253,7 @@ public class PostServiceImpl implements PostService {
         Date mileStoneDate = new Date();
         if (entity != null) mileStoneDate = entity.getCreateDate();
 
-        Set<UUID> userIds = new HashSet<>();
-        userIds.add(userId);
-
-        //List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize(), Sort.by("createDate")));
-//        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, searchObject.getPageSize(), (searchObject.getPageIndex() - 1)*searchObject.getPageSize());
-        List<PostDto> newsFeed = postRepository.findNext5PostFromMileStone(new ArrayList<>(userIds), mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        List<PostDto> newsFeed = postRepository.findPostOfUser(userId, mileStoneDate, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
 
         Set<PostDto> res = new TreeSet<>((post1, post2) -> post2.getCreateDate().compareTo(post1.getCreateDate()));
         res.addAll(newsFeed);
@@ -292,7 +283,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto updateBackgroundImage(String image) {
         User currentUser = userService.getCurrentLoginUserEntity();
-        if(currentUser == null) return  null;
+        if (currentUser == null) return null;
         Post entity = new Post();
         entity.setCreateDate(new Date());
         entity.setOwner(currentUser);
@@ -301,6 +292,8 @@ public class PostServiceImpl implements PostService {
         PostImage postImage = new PostImage();
         postImage.setPost(entity);
         postImage.setImage(image);
+        postImage.setDescription("backgroundImage");
+        postImage.setCreateDate(new Date());
         postImageRepository.save(postImage);
         Post savedEntity = postRepository.save(entity);
 
@@ -325,16 +318,19 @@ public class PostServiceImpl implements PostService {
             //send this noti via socket
             simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
         }
-
+        UserDto userDto = new UserDto(entity.getOwner());
+        userDto.setBackground(image);
+        PostDto responseDto = new PostDto(savedEntity);
+        responseDto.setCreator(userDto);
 //        PostDto responseDto = new PostDto(savedEntity);
 //        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
-        return new PostDto(savedEntity);
+        return responseDto;
     }
 
     @Override
     public PostDto updateProfileImage(String image) {
         User currentUser = userService.getCurrentLoginUserEntity();
-        if(currentUser == null) return  null;
+        if (currentUser == null) return null;
         Post entity = new Post();
         entity.setCreateDate(new Date());
         entity.setOwner(currentUser);
@@ -343,9 +339,10 @@ public class PostServiceImpl implements PostService {
         PostImage postImage = new PostImage();
         postImage.setPost(entity);
         postImage.setImage(image);
+        postImage.setDescription("profileImage");
+        postImage.setCreateDate(new Date());
         postImageRepository.save(postImage);
         Post savedEntity = postRepository.save(entity);
-
 
         //alert all friends that this user has created new post
         SearchObject so = new SearchObject();
@@ -368,8 +365,67 @@ public class PostServiceImpl implements PostService {
             simpMessagingTemplate.convertAndSendToUser(friend.getId().toString(), "/notification", new NotificationDto(savedNoti));
         }
 
-//        PostDto responseDto = new PostDto(savedEntity);
 //        responseDto.setImages(savedEntity.getPostImages().stream().map(PostImageDTO::new).collect(Collectors.toSet()));
-        return new PostDto(savedEntity);
+        UserDto userDto = new UserDto(entity.getOwner());
+        userDto.setAvatar(image);
+        PostDto responseDto = new PostDto(savedEntity);
+        responseDto.setCreator(userDto);
+        return responseDto;
+    }
+
+    public String insertPercent(String word) {
+        if (word == null || word.length() == 0) return "";
+        StringBuilder result = new StringBuilder();
+
+        result.append('%');
+
+        for (int i = 0; i < word.length(); i++) {
+            result.append(word.charAt(i));
+            result.append('%');
+        }
+
+        return result.toString();
+    }
+
+    @Override
+    public List<PostDto> pagingByKeyword(SearchObject searchObject) {
+        if (searchObject == null) return null;
+        String keyword = insertPercent(searchObject.getKeyWord());
+
+        User currentUser = userService.getCurrentLoginUserEntity();
+
+        if (currentUser == null || searchObject == null) return null;
+
+        Post entity = null;
+        if (searchObject.getMileStoneId() != null)
+            entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
+
+        Date mileStoneDate = new Date();
+        if (entity != null) mileStoneDate = entity.getCreateDate();
+
+        Set<UUID> userIds = new HashSet<>();
+        userIds.add(currentUser.getId());
+        List<Relationship> acceptedRelationships = relationshipRepository.findAllAcceptedRelationship(currentUser.getId());
+        for (Relationship relationship : acceptedRelationships) {
+            userIds.add(relationship.getReceiver().getId());
+            userIds.add(relationship.getRequestSender().getId());
+        }
+
+        List<UUID> joinedGroupIds = new ArrayList<>();
+        List<Member> joinedGroups = memberRepository.getAllJoinedGroup(currentUser.getId());
+        for (Member member : joinedGroups) {
+            joinedGroupIds.add((member.getId()));
+        }
+
+        List<PostDto> res = postRepository.findNextPostFromMileStoneWithKeyWord(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, keyword, PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+
+        for (PostDto postDto : res) {
+            postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
+            postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+            postDto.setImages(postImageService.sortImage(postDto.getId()));
+        }
+
+        return res;
+
     }
 }
