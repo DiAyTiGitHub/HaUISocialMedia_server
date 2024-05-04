@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.service.impl;
 
 import com.group4.HaUISocialMedia_server.dto.CourseDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
+import com.group4.HaUISocialMedia_server.dto.UserCourseDto;
 import com.group4.HaUISocialMedia_server.entity.Course;
 import com.group4.HaUISocialMedia_server.repository.CourseRepository;
 import com.group4.HaUISocialMedia_server.service.CourseService;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -23,7 +25,13 @@ public class CourseServiceImpl implements CourseService {
     public Set<CourseDto> findAll() {
         List<Course> li = courseRepository.findAll();
         Set<CourseDto> se = new HashSet<>();
-        li.stream().map(CourseDto::new).forEach(se::add);
+        li.stream().map(x -> {
+            CourseDto newCourse = new CourseDto(x);
+            if(x.getUserCourses() != null)
+                newCourse.setUserCourses(x.getUserCourses().stream().map(UserCourseDto::new).collect(Collectors.toSet()));
+            return newCourse;
+        }).forEach(se::add);
+
         return se;
     }
 
@@ -52,7 +60,6 @@ public class CourseServiceImpl implements CourseService {
 
         course.setCode(courseDto.getCode());
         course.setName(courseDto.getName());
-        //course.setUserCourses(courseDto.getUserCourses());
         course.setDescription(courseDto.getDescription());
 
         return new CourseDto(courseRepository.saveAndFlush(course));
