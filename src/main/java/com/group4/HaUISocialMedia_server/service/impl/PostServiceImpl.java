@@ -284,6 +284,8 @@ public class PostServiceImpl implements PostService {
     public PostDto updateBackgroundImage(String image) {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
+        currentUser.setBackground(image);
+
         Post entity = new Post();
         entity.setCreateDate(new Date());
         entity.setOwner(currentUser);
@@ -331,6 +333,8 @@ public class PostServiceImpl implements PostService {
     public PostDto updateProfileImage(String image) {
         User currentUser = userService.getCurrentLoginUserEntity();
         if (currentUser == null) return null;
+        currentUser.setAvatar(image);
+
         Post entity = new Post();
         entity.setCreateDate(new Date());
         entity.setOwner(currentUser);
