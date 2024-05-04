@@ -28,4 +28,8 @@ public interface UserService {
     public UserDto getCurrentLoginUser();
 
     public User getUserEntityById(UUID userId);
+
+    public UserDto isDisable(UUID userId);
+
+    public UserDto updateStatus(UUID userId);
 }

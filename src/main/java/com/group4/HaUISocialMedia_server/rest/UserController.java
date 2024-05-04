@@ -75,5 +75,19 @@ public class UserController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/disable/{userId}")
+    public ResponseEntity<UserDto> isDisable(@PathVariable("userId") UUID userId){
+        UserDto res = userService.isDisable(userId);
+        if (res == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/status/{userId}")
+    public ResponseEntity<UserDto> updateStatus(@PathVariable("userId") UUID userId){
+        UserDto res = userService.updateStatus(userId);
+        if (res == null) new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
 
 }

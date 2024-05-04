@@ -19,6 +19,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class SetupData implements ApplicationRunner {
 
@@ -55,6 +57,11 @@ public class SetupData implements ApplicationRunner {
 
             userRepository.save(admin);
         }
+//        List<User> users = userRepository.findAllByRole("USER");
+//        for(User user:users){
+//            user.setDisable(false);
+//            userRepository.save(user);
+//        }
     }
 
     @Autowired

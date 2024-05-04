@@ -58,6 +58,10 @@ public class User implements Serializable {
 
     private String avatar;
 
+    private String background;
+
+    private boolean disable;
+
     @ManyToOne
     @JoinColumn(name = "class_id")
     @JsonIgnore

@@ -46,5 +46,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "SELECT u.id FROM User u WHERE u.role NOT LIKE 'ADMIN'")
     List<UUID> getAllStudentIds();
 
+    List<User> findAllByRole(String role);
+
 
 }

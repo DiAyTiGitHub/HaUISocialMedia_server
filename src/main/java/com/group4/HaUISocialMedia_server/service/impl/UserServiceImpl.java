@@ -141,6 +141,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
+
     @Override
     public UserDto getCurrentLoginUser() {
         User currentUser = this.getCurrentLoginUserEntity();
@@ -148,4 +149,28 @@ public class UserServiceImpl implements UserService {
 
         return new UserDto(currentUser);
     }
+
+    @Override
+    public UserDto isDisable(UUID userId) {
+        User currentUser = this.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+        if(!currentUser.getRole().equals("ADMIN")) return  null;
+        User entity = userRepository.findById(userId).orElse(null);
+        entity.setDisable(true);
+        userRepository.save(entity);
+        return new UserDto(entity);
+    }
+
+    @Override
+    public UserDto updateStatus(UUID userId) {
+        User currentUser = this.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+        if(!currentUser.getRole().equals("ADMIN")) return  null;
+        User entity = userRepository.findById(userId).orElse(null);
+        entity.setDisable(false);
+        userRepository.save(entity);
+        return new UserDto(entity);
+    }
+
+
 }

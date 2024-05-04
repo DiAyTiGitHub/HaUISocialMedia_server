@@ -29,6 +29,7 @@ public class UserDto {
     private String background;
     private String role;
     private String phoneNumber;
+    private Boolean disable;
     private ClassroomDto classroomDto;
     private RelationshipDto relationshipDto;
     private Set<MemberDto> groups;
@@ -55,7 +56,8 @@ public class UserDto {
         this.birthDate = entity.getBirthDate();
         this.gender = entity.isGender();
         this.avatar = entity.getAvatar();
-
+        this.background = entity.getBackground();
+        this.disable = entity.isDisable();
         if (entity.getClassroom() != null)
             this.classroomDto = new ClassroomDto(entity.getClassroom());
     }
