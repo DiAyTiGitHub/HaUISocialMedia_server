@@ -1,8 +1,10 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
+import com.group4.HaUISocialMedia_server.dto.PostDto;
 import com.group4.HaUISocialMedia_server.dto.RelationshipDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.entity.Post;
 import com.group4.HaUISocialMedia_server.entity.Relationship;
 import com.group4.HaUISocialMedia_server.entity.User;
 import com.group4.HaUISocialMedia_server.repository.ClassroomRepository;
@@ -128,7 +130,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<UserDto> searchByUsername(SearchObject searchObject) {
         Set<UserDto> se = new HashSet<>();
-        List<User> li = userRepository.getByUserName(searchObject.getKeyWord(), searchObject.getPageSize(), searchObject.getPageIndex());
+        List<User> li = userRepository.getByUserName(searchObject.getKeyWord(), searchObject.getPageSize(), searchObject.getPageIndex() - 1);
         li.stream().map(UserDto::new).forEach(se::add);
         return se;
     }
@@ -190,5 +192,33 @@ public class UserServiceImpl implements UserService {
         return new UserDto(entity);
     }
 
+    @Override
+    public List<UserDto> pagingByKeyword(SearchObject searchObject) {
+        if (searchObject == null) return null;
+        String keyword = insertPercent(searchObject.getKeyWord());
 
+        User currentUser = userService.getCurrentLoginUserEntity();
+
+        if (currentUser == null || searchObject == null) return null;
+
+        List<User> validUsers = userRepository.pagingUsers(keyword,
+                PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+
+//        return res;
+        return null;
+    }
+
+    public String insertPercent(String word) {
+        if (word == null || word.length() == 0) return "";
+        StringBuilder result = new StringBuilder();
+
+        result.append('%');
+
+        for (int i = 0; i < word.length(); i++) {
+            result.append(word.charAt(i));
+            result.append('%');
+        }
+
+        return result.toString();
+    }
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     public User findByUsername(String username);
 
-    @Query(value = "SELECT * FROM tbl_user u WHERE u.last_name LIKE %?1% OR u.first_name LIKE %?1% OR u.username LIKE %?1% LIMIT ?2 OFFSET ?3", nativeQuery = true)
+    @Query(value = "SELECT * FROM tbl_user u WHERE u.role not like 'ADMIN' and u.last_name LIKE %?1% OR u.first_name LIKE %?1% OR u.username LIKE %?1% LIMIT ?2 OFFSET ?3", nativeQuery = true)
     List<User> getByUserName(String keyword, int limit, int offset);
 
     @Query("select u from User u where u.id in (select r.receiver.id from Relationship r where r.requestSender.id = :currentUserId and r.state = true ) or u.id in (select r.requestSender.id from Relationship r where r.receiver.id = :currentUserId and r.state = true )")
@@ -46,8 +46,17 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "SELECT u.id FROM User u WHERE u.role NOT LIKE 'ADMIN'")
     List<UUID> getAllStudentIds();
 
-
     @Query("select u from User u where u.id in (select r.receiver.id from Relationship r where r.requestSender.id = :userId and r.state = true ) or u.id in (select r.requestSender.id from Relationship r where r.receiver.id = :userId and r.state = true )")
     List<User> getAllFriends(@Param("userId") UUID userId);
 
+    @Query("select u from User u where u.role not like 'ADMIN' " +
+            "and (" +
+            "u.username like %:keyword%" +
+            " or u.firstName like %:keyword%" +
+            " or u.lastName like %:keyword%" +
+            " or u.code like %:keyword%" +
+            " or u.address like %:keyword%" +
+            " or u.email like %:keyword%" +
+            ")")
+    List<User> pagingUsers(@Param("keyword") String keyword, Pageable pageable);
 }

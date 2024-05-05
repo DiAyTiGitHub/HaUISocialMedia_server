@@ -32,4 +32,6 @@ public interface UserService {
     public UserDto isDisable(UUID userId);
 
     public UserDto updateStatus(UUID userId);
+
+    public List<UserDto> pagingByKeyword(SearchObject searchObject);
 }

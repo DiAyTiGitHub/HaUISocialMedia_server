@@ -7,8 +7,10 @@ import com.group4.HaUISocialMedia_server.dto.UserDto;
 import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -180,7 +182,6 @@ public class RelationshipServiceImpl implements RelationshipService {
 //        messageRepository.save(recieverJoinMessage);
 
 
-
         return new RelationshipDto(savedRelationship);
     }
 
@@ -271,7 +272,8 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         return res;
     }
-
+    @Modifying
+    @Transactional
     @Override
     public RelationshipDto unFriend(UUID relationshipId) {
         Relationship entity = relationshipRepository.findById(relationshipId).orElse(null);
@@ -292,14 +294,15 @@ public class RelationshipServiceImpl implements RelationshipService {
 //        relationshipRepository.save(entity);
         return null;
     }
-
+    @Modifying
+    @Transactional
     @Override
     public RelationshipDto unAcceptFriendRequest(UUID relationshipId) {
         Relationship entity = relationshipRepository.findById(relationshipId).orElse(null);
         if (entity == null) return null;
         if (entity.getRequestSender() == null) return null;
         //delete notification
-        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getReceiver().getId(), entity.getRequestSender().getId() );
+        notificationRepository.deleteNotificationAddFriendByIdUser(entity.getReceiver().getId(), entity.getRequestSender().getId());
         //delete relationship
         relationshipRepository.deleteById(relationshipId);
 //        Relationship relationship = relationshipRepository.findById(relationshipId).orElse(null);
@@ -320,7 +323,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         List<User> allFriends = userRepository.getAllFriends(currentUser.getId());
         List<UserDto> friendList = new ArrayList<>();
-        for( User friend: allFriends){
+        for (User friend : allFriends) {
             friendList.add(new UserDto(friend));
         }
 
