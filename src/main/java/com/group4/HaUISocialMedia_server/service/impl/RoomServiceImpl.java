@@ -217,7 +217,7 @@ public class RoomServiceImpl implements RoomService {
             userMessage.setContent(user.getUsername() + " đã tham gia cuộc trò chuyện");
             userMessage.setSendDate(new Date());
 
-            Message savedUserMessage = messageRepository.save(creatorMessage);
+            Message savedUserMessage = messageRepository.save(userMessage);
 
             spreadMessages.add(new MessageDto(savedUserMessage));
         }
