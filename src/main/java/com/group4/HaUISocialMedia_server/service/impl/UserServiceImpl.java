@@ -71,8 +71,6 @@ public class UserServiceImpl implements UserService {
                 res.setRelationshipDto(relationshipDto);
             }
         }
-        res.setAvatar(postImageRepository.profileImage());
-        res.setBackground(postImageRepository.backgroundImage());
 
         return res;
     }
