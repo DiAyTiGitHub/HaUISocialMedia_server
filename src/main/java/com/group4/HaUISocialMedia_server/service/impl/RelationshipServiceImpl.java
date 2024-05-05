@@ -318,23 +318,9 @@ public class RelationshipServiceImpl implements RelationshipService {
     public List<UserDto> getAllFiends() {
         User currentUser = userService.getCurrentLoginUserEntity();
 
-        Set<User> friends = new HashSet<User>();
-
-//        for (Relationship relationship : currentUser.getFriendFromRequest()) {
-//            if (relationship.getState()) {
-//                User requestReceiver = relationship.getReceiver();
-//                friends.add(requestReceiver);
-//            }
-//        }
-//        for (Relationship relationship : currentUser.getFriendFromReceive()) {
-//            if (relationship.getState()) {
-//                User requestSender = relationship.getRequestSender();
-//                friends.add(requestSender);
-//            }
-//        }
-
+        List<User> allFriends = userRepository.getAllFriends(currentUser.getId());
         List<UserDto> friendList = new ArrayList<>();
-        for (User friend : friends) {
+        for( User friend: allFriends){
             friendList.add(new UserDto(friend));
         }
 

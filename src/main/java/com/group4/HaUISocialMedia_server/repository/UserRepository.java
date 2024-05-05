@@ -46,7 +46,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "SELECT u.id FROM User u WHERE u.role NOT LIKE 'ADMIN'")
     List<UUID> getAllStudentIds();
 
-    List<User> findAllByRole(String role);
 
+    @Query("select u from User u where u.id in (select r.receiver.id from Relationship r where r.requestSender.id = :userId and r.state = true ) or u.id in (select r.requestSender.id from Relationship r where r.receiver.id = :userId and r.state = true )")
+    List<User> getAllFriends(@Param("userId") UUID userId);
 
 }

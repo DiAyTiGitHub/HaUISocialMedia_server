@@ -88,8 +88,13 @@ public class MessageServiceImpl implements MessageService {
         Message entity = new Message();
         entity.setContent(dto.getContent());
 
-        MessageType messageType = messageTypeService.getMessageTypeEntityByName("chat");
-        entity.setMessageType(messageType);
+        if (dto.getMessageType() == null) {
+            MessageType messageType = messageTypeService.getMessageTypeEntityByName("chat");
+            entity.setMessageType(messageType);
+        } else {
+            MessageType messageType = messageTypeService.getMessageTypeEntityByName(dto.getMessageType().getName());
+            entity.setMessageType(messageType);
+        }
 
         Room room = roomRepository.findById(dto.getRoom().getId()).orElse(null);
         if (room == null) return null;
