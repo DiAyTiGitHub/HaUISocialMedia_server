@@ -19,7 +19,7 @@ public interface RoomService {
 
     public RoomDto getRoomById(UUID roomId);
 
-    public List<RoomDto> searchRoom(SearchObject seachObject);
+    public List<RoomDto> searchRoom(SearchObject searchObject);
 
     public RoomDto createGroupChat(NewGroupChat newGroupChat);
 

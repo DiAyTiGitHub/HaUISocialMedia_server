@@ -22,7 +22,7 @@ public interface UserRoomRepository extends JpaRepository<UserRoom, UUID> {
 
     //  Pageable bắt buộc phải viết ở tham số cuối nếu muốn phân trang
     @Query("SELECT ur FROM UserRoom ur where ur.user.id = :userId and ur.room.name LIKE %:nameRoom%")
-    List<UserRoom> findAllRoomByUser(@Param("userId") UUID userId, @Param("nameRoom") String nameRoom, Pageable pageable);
+    List<UserRoom> findAllRoomByUser(@Param("userId") UUID userId, @Param("nameRoom") String nameRoom);
 
     @Query("select userRoom from UserRoom userRoom where userRoom.user.id = ?1 and userRoom.room.id = ?2")
     public UserRoom findByUserIdAndRoomId(UUID userId, UUID roomId);

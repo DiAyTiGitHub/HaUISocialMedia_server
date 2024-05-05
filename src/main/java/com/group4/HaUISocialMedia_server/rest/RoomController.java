@@ -47,10 +47,10 @@ public class RoomController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<RoomDto>> searchJoinedRooms(@RequestBody SearchObject seachObject) {
-        if (seachObject == null)
+    public ResponseEntity<List<RoomDto>> searchJoinedRooms(@RequestBody SearchObject searchObject) {
+        if (searchObject == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        List<RoomDto> res = roomService.searchRoom(seachObject);
+        List<RoomDto> res = roomService.searchRoom(searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<List<RoomDto>>(res, HttpStatus.OK);

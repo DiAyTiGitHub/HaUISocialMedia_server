@@ -133,12 +133,31 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDto> searchRoom(SearchObject seachObject) {
-        User user = userService.getCurrentLoginUserEntity();
-        List<UserRoom> userRooms = userRoomRepository.findAllRoomByUser(user.getId(), seachObject.getKeyWord(), PageRequest.of(seachObject.getPageIndex() - 1, seachObject.getPageSize()));
-        List<RoomDto> res = new ArrayList<>();
-        userRooms.forEach(x -> res.add(new RoomDto(x.getRoom())));
-        return res;
+    public List<RoomDto> searchRoom(SearchObject searchObject) {
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null)
+            return null;
+        List<UserRoom> userRooms = userRoomRepository.findAllRoomByUser(currentUser.getId(), searchObject.getKeyWord());
+        if (userRooms == null) return null;
+        List<RoomDto> rooms = new ArrayList<>();
+        Set<UUID> roomIdSet = new HashSet<>();
+
+        for (UserRoom userRoom : userRooms) {
+            Room room = userRoom.getRoom();
+
+            if (roomIdSet.contains(room.getId())) continue;
+            roomIdSet.add(room.getId());
+
+            RoomDto roomDto = handleAddJoinedUserIntoRoomDTO(room);
+            List<MessageDto> messages = messageService.get20LatestMessagesByRoomId(roomDto.getId());
+
+            roomDto.setMessages(messages);
+            rooms.add(roomDto);
+        }
+
+        sortRoomDTOInLastestMessagesOrder(rooms);
+
+        return rooms;
     }
 
     @Override
