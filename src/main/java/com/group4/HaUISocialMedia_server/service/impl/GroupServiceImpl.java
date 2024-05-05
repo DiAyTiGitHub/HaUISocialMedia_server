@@ -376,44 +376,28 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupDto> pagingByKeyword(SearchObject searchObject) {
-//        if (searchObject == null) return null;
-//        String keyword = insertPercent(searchObject.getKeyWord());
-//
-//        User currentUser = userService.getCurrentLoginUserEntity();
-//
-//        if (currentUser == null || searchObject == null) return null;
-//
-//        Post entity = null;
-//        if (searchObject.getMileStoneId() != null)
-//            entity = postRepository.findById(searchObject.getMileStoneId()).orElse(null);
-//
-//        Date mileStoneDate = new Date();
-//        if (entity != null) mileStoneDate = entity.getCreateDate();
-//
-//        Set<UUID> userIds = new HashSet<>();
-//        userIds.add(currentUser.getId());
-//        List<Relationship> acceptedRelationships = relationshipRepository.findAllAcceptedRelationship(currentUser.getId());
-//        for (Relationship relationship : acceptedRelationships) {
-//            userIds.add(relationship.getReceiver().getId());
-//            userIds.add(relationship.getRequestSender().getId());
-//        }
-//
-//        List<UUID> joinedGroupIds = new ArrayList<>();
-//        List<Member> joinedGroups = memberRepository.getAllJoinedGroup(currentUser.getId());
-//        for (Member member : joinedGroups) {
-//            joinedGroupIds.add((member.getId()));
-//        }
-//
-//        List<PostDto> res = postRepository.findNextPostFromMileStoneWithKeyWord(new ArrayList<>(userIds), joinedGroupIds, mileStoneDate, keyword, PageRequest.of(0, searchObject.getPageSize()));
-//
-//        for (PostDto postDto : res) {
-//            postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
-//            postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
-//            postDto.setImages(postImageService.sortImage(postDto.getId()));
-//        }
+        if (searchObject == null) return null;
+        String keyword = insertPercent(searchObject.getKeyWord());
 
-//        return res;
-        return null;
+        User currentUser = userService.getCurrentLoginUserEntity();
+
+        if (currentUser == null || searchObject == null) return null;
+
+        List<Group> validGroups = groupRepository.pagingGroups(keyword, PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+        List<GroupDto> res = new ArrayList<>();
+        for (Group group : validGroups) {
+            GroupDto item = new GroupDto(group);
+            Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), group.getId());
+
+            if (relationship != null) {
+                MemberDto rela = new MemberDto(relationship);
+                item.setRelationship(rela);
+            }
+
+            res.add(item);
+        }
+
+        return res;
     }
 }
 

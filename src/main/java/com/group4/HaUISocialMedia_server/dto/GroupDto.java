@@ -28,7 +28,10 @@ public class GroupDto {
     private Set<MemberDto> userJoins;
     private Set<PostDto> posts;
 
-    public GroupDto(Group entity){
+    //this field only for display relationship between current using user and the group they're viewing
+    private MemberDto relationship;
+
+    public GroupDto(Group entity) {
         this.id = entity.getId();
         this.code = entity.getCode();
         this.name = entity.getName();
@@ -36,7 +39,7 @@ public class GroupDto {
         this.avatar = entity.getAvatar();
         this.backGroundImage = entity.getBackGroundImage();
         this.createDate = entity.getCreateDate();
-        if(entity.getUser() != null)
+        if (entity.getUser() != null)
             this.user = new UserDto(entity.getUser());
     }
 

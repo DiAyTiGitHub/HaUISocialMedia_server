@@ -22,6 +22,8 @@ public interface RelationshipRepository extends JpaRepository<Relationship, UUID
     @Query( "select r from Relationship r where (r.requestSender.id = :currentUserId) and r.state = false order by r.lastModifyDate desc")
     List<Relationship> findAllSentFriendRequestRelationship(@Param("currentUserId") UUID currentUserId, Pageable pageable);
 
-    @Query("select r from Relationship r where (r.requestSender.id = :currentUserId and r.receiver.id = :viewingUserId) or (r.requestSender.id = :viewingUserId and r.receiver.id = :currentUserId)")
+    @Query("select r from Relationship r " +
+            "where (r.requestSender.id = :currentUserId and r.receiver.id = :viewingUserId) " +
+            "or (r.requestSender.id = :viewingUserId and r.receiver.id = :currentUserId)")
     Relationship getRelationshipBetweenCurrentUserAndViewingUser(@Param("currentUserId") UUID currentUserId, @Param("viewingUserId") UUID viewingUserId);
 }

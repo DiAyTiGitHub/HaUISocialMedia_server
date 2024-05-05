@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.repository;
 
 import com.group4.HaUISocialMedia_server.entity.Group;
 import com.group4.HaUISocialMedia_server.entity.Member;
+import com.group4.HaUISocialMedia_server.entity.Relationship;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -60,6 +61,8 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     @Query("SELECT m FROM Member m WHERE m.role = com.group4.HaUISocialMedia_server.entity.Role.ADMIN and m.user.id = :userId")
     public List<Member> getAllGroupUserIsAdmin(@PathVariable("userId") UUID userId);
 
-    // @Query("SELECT ")
+    @Query("select m from Member m " +
+            "where (m.user.id = :currentUserId and m.group.id = :groupId)")
+    public Member getRelationshipBetweenCurrentUserAndGroup(@Param("currentUserId") UUID currentUserId, @Param("groupId") UUID groupId);
 
 }

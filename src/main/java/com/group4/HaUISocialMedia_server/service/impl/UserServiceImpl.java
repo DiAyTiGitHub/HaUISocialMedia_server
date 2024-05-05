@@ -136,13 +136,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<UserDto> pagingUser(SearchObject searchObject) {
-        Set<UserDto> se = new HashSet<>();
-
-        Page<User> li = userRepository.findAll(PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
-
-        li.stream().map(UserDto::new).forEach(se::add);
-        return se;
+    public List<UserDto> pagingUser(SearchObject searchObject) {
+        return pagingByKeyword(searchObject);
     }
 
     @Override
@@ -204,8 +199,23 @@ public class UserServiceImpl implements UserService {
         List<User> validUsers = userRepository.pagingUsers(keyword,
                 PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
 
-//        return res;
-        return null;
+        List<UserDto> res = new ArrayList<>();
+        for (User user : validUsers) {
+            UserDto person = new UserDto(user);
+
+            if (!currentUser.getId().equals(person.getId())) {
+                Relationship relationship = relationshipRepository.getRelationshipBetweenCurrentUserAndViewingUser(currentUser.getId(), person.getId());
+
+                if (relationship != null) {
+                    RelationshipDto relationshipDto = new RelationshipDto(relationship);
+                    person.setRelationshipDto(relationshipDto);
+                }
+            }
+
+            res.add(person);
+        }
+
+        return res;
     }
 
     public String insertPercent(String word) {
