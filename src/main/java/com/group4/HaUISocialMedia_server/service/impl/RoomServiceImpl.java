@@ -159,6 +159,8 @@ public class RoomServiceImpl implements RoomService {
 
         Room roomChat = new Room();
         Set<UserRoom> userRooms = new HashSet<>();
+        //chatRoom firstly declared in database
+        roomChat = roomRepository.save(roomChat);
 
         UserRoom creator = new UserRoom();
         creator.setRoom(roomChat);
@@ -197,6 +199,7 @@ public class RoomServiceImpl implements RoomService {
         creatorMessage.setMessageType(messageType);
         creatorMessage.setRoom(response);
         creatorMessage.setUser(currentUser);
+        creatorMessage.setSendDate(new Date());
         creatorMessage.setContent(currentUser.getUsername() + " đã tạo cuộc trò chuyện");
 
         Message savedCreatorMessage = messageRepository.save(creatorMessage);
@@ -212,6 +215,7 @@ public class RoomServiceImpl implements RoomService {
             userMessage.setRoom(response);
             userMessage.setUser(user);
             userMessage.setContent(user.getUsername() + " đã tham gia cuộc trò chuyện");
+            userMessage.setSendDate(new Date());
 
             Message savedUserMessage = messageRepository.save(creatorMessage);
 
@@ -453,14 +457,21 @@ public class RoomServiceImpl implements RoomService {
         Collections.sort(rooms, new Comparator<RoomDto>() {
             @Override
             public int compare(RoomDto o1, RoomDto o2) {
-                if (o1.getMessages().size() == 0) return 1;
-                if (o2.getMessages().size() == 0) return -1;
-                Date lastMessageRoom1 = o1.getMessages().get(o1.getMessages().size() - 1).getSendDate();
-                Date lastMessageRoom2 = o2.getMessages().get(o2.getMessages().size() - 1).getSendDate();
-                int compareRes = lastMessageRoom1.compareTo(lastMessageRoom2);
-                if (compareRes == -1) return 1;
-                if (compareRes == 1) return -1;
-                return 0;
+                try {
+                    if (o1.getMessages().size() == 0) return 1;
+                    if (o2.getMessages().size() == 0) return -1;
+                    Date lastMessageRoom1 = o1.getMessages().get(o1.getMessages().size() - 1).getSendDate();
+                    Date lastMessageRoom2 = o2.getMessages().get(o2.getMessages().size() - 1).getSendDate();
+                    int compareRes = lastMessageRoom1.compareTo(lastMessageRoom2);
+                    if (compareRes == -1) return 1;
+                    if (compareRes == 1) return -1;
+                    return 0;
+
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
+                    return 0;
+                }
             }
         });
     }
