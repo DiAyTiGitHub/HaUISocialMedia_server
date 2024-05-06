@@ -24,6 +24,6 @@ public interface RelationshipRepository extends JpaRepository<Relationship, UUID
 
     @Query("select r from Relationship r " +
             "where (r.requestSender.id = :currentUserId and r.receiver.id = :viewingUserId) " +
-            "or (r.requestSender.id = :viewingUserId and r.receiver.id = :currentUserId)")
+            "or (r.requestSender.id = :viewingUserId and r.receiver.id = :currentUserId) order by r.lastModifyDate")
     List<Relationship> getRelationshipBetweenCurrentUserAndViewingUser(@Param("currentUserId") UUID currentUserId, @Param("viewingUserId") UUID viewingUserId);
 }
