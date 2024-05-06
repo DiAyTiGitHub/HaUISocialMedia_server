@@ -66,7 +66,15 @@ public class UserServiceImpl implements UserService {
         UserDto res = new UserDto(user);
 
         if (!currentUser.getId().equals(userId)) {
-            Relationship relationship = relationshipRepository.getRelationshipBetweenCurrentUserAndViewingUser(currentUser.getId(), userId);
+            List<Relationship> relationships = relationshipRepository.getRelationshipBetweenCurrentUserAndViewingUser(currentUser.getId(), userId);
+
+            Relationship relationship = null;
+            if (relationships != null && relationships.size() > 0) {
+                relationship = relationships.get(0);
+
+                if (relationships.size() >= 2)
+                    System.out.println("There's duplicate record which is must be have 1 in database, error but handled");
+            }
 
             if (relationship != null) {
                 RelationshipDto relationshipDto = new RelationshipDto(relationship);
@@ -204,7 +212,16 @@ public class UserServiceImpl implements UserService {
             UserDto person = new UserDto(user);
 
             if (!currentUser.getId().equals(person.getId())) {
-                Relationship relationship = relationshipRepository.getRelationshipBetweenCurrentUserAndViewingUser(currentUser.getId(), person.getId());
+                List<Relationship> relationships = relationshipRepository.getRelationshipBetweenCurrentUserAndViewingUser(currentUser.getId(), person.getId());
+
+                Relationship relationship = null;
+                if (relationships != null && relationships.size() > 0) {
+                    relationship = relationships.get(0);
+
+                    if (relationships.size() >= 2)
+                        System.out.println("There's duplicate record which is must be have 1 in database, error but handled");
+                }
+
 
                 if (relationship != null) {
                     RelationshipDto relationshipDto = new RelationshipDto(relationship);
