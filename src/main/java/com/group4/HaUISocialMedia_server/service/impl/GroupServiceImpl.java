@@ -261,6 +261,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDto findById(UUID groupId) {
+        User currentUser = userService.getCurrentLoginUserEntity();
+
         Group group = groupRepository.findById(groupId).orElse(null);
         if (group == null)
             return null;
@@ -275,6 +277,10 @@ public class GroupServiceImpl implements GroupService {
                 postDto.setImages(postImageService.sortImage(postDto.getId()));
                 return postDto;
             }).collect(Collectors.toSet()));
+
+        Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), groupDto.getId());
+        groupDto.setRelationship(new MemberDto(relationship));
+
         return groupDto;
     }
 
@@ -294,6 +300,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Set<GroupDto> getAllGroupUserIsAdmin() {
+        User currentUser = userService.getCurrentLoginUserEntity();
+
         List<Member> li = memberRepository.getAllGroupUserIsAdmin(userService.getCurrentLoginUserEntity().getId());
         Set<GroupDto> res = new HashSet<>();
         li.stream().map(x -> {
@@ -310,6 +318,10 @@ public class GroupServiceImpl implements GroupService {
                     postDto.setImages(postImageService.sortImage(postDto.getId()));
                     return postDto;
                 }).collect(Collectors.toSet()));
+
+            Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), groupDto.getId());
+            groupDto.setRelationship(new MemberDto(relationship));
+
             return groupDto;
         }).forEach(res::add);
         return res;
@@ -330,6 +342,8 @@ public class GroupServiceImpl implements GroupService {
 //           //  return allGroup.removeAll(getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId())) ? allGroup : null;
 //             allGroup.removeAll(resGroupSmall);
 //        return allGroup;
+        User currentUser = userService.getCurrentLoginUserEntity();
+
         List<UUID> groupIds = getAllJoinedGroupOfUser(userService.getCurrentLoginUserEntity().getId()).stream().map(GroupDto::getId).toList();
 
         List<Group> li = memberRepository.getAllGroupUserNotYetJoin(groupIds);
@@ -340,6 +354,10 @@ public class GroupServiceImpl implements GroupService {
                 groupDto.setUserJoins(x.getUserJoins().stream().filter(Member::isApproved).map(MemberDto::new).collect(Collectors.toSet()));
             if (x.getPosts() != null)
                 groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
+
+            Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), groupDto.getId());
+            groupDto.setRelationship(new MemberDto(relationship));
+
             return groupDto;
         }).forEach(groupDtos::add);
 
