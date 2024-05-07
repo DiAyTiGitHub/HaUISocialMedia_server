@@ -88,5 +88,10 @@ public class PostController {
 //        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
 //    }
 
+    @PostMapping("/get-all-post")
+    public ResponseEntity<Set<PostDto>> getAllPost(@RequestBody SearchObject searchObject){
+        Set<PostDto> res = postService.getAllPost(searchObject);
+        return res == null ? new ResponseEntity<>(res, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
 }

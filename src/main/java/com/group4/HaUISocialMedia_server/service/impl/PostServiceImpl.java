@@ -5,6 +5,7 @@ import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -50,9 +51,6 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private GroupRepository groupRepository;
-
-    @Autowired
-    private GroupService groupService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -437,6 +435,19 @@ public class PostServiceImpl implements PostService {
         }
 
         return res;
+    }
 
+    @Override
+    public Set<PostDto> getAllPost(SearchObject searchObject) {
+        Page<Post> li = postRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Set<PostDto> res = new TreeSet<>((p1, p2) -> p2.getCreateDate().compareTo(p1.getCreateDate()));
+        li.stream().map(PostDto::new).forEach(res::add);
+
+        for (PostDto postDto : res) {
+            postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
+            postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
+            postDto.setImages(postImageService.sortImage(postDto.getId()));
+        }
+        return res;
     }
 }

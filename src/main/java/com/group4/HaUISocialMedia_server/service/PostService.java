@@ -30,4 +30,6 @@ public interface PostService {
     public PostDto updateProfileImage(String image);
 
     public List<PostDto> pagingByKeyword(SearchObject searchObject);
+
+    public Set<PostDto> getAllPost(SearchObject searchObject);
 }
