@@ -25,7 +25,7 @@ public class ClassroomController {
     @GetMapping("/all")
     public ResponseEntity<Set<ClassroomDto>> getAllClassroom(){
         Set<ClassroomDto> li = classroomService.getAllClassroom();
-        if(li.isEmpty()) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
@@ -65,7 +65,7 @@ public class ClassroomController {
     @PostMapping("/paging")
     public ResponseEntity<Set<ClassroomDto>> pagingClass(@RequestBody SearchObject searchObject){
         Set<ClassroomDto> li = classroomService.pagingClassroom(searchObject);
-        if(li.isEmpty()) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
+//        if(li == null) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }
 
