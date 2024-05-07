@@ -98,6 +98,8 @@ public class PostController {
 
     @PostMapping("/get-all-post")
     public ResponseEntity<Set<PostDto>> getAllPost(@RequestBody SearchObject searchObject){
+        if(!postService.isAdmin())
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         Set<PostDto> res = postService.getAllPost(searchObject);
         return res == null ? new ResponseEntity<>(res, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(res, HttpStatus.OK);
     }
