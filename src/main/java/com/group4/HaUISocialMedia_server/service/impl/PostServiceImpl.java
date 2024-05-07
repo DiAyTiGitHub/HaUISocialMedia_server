@@ -450,4 +450,9 @@ public class PostServiceImpl implements PostService {
         }
         return res;
     }
+
+    @Override
+    public boolean isAdmin() {
+        return userService.getCurrentLoginUserEntity().getUsername().equals("admin");
+    }
 }

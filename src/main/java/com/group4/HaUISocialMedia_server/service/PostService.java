@@ -32,4 +32,6 @@ public interface PostService {
     public List<PostDto> pagingByKeyword(SearchObject searchObject);
 
     public Set<PostDto> getAllPost(SearchObject searchObject);
+
+    public boolean isAdmin();
 }

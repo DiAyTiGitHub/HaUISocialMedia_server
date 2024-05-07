@@ -5,6 +5,7 @@ import com.group4.HaUISocialMedia_server.dto.PostDto;
 import com.group4.HaUISocialMedia_server.dto.SearchObject;
 import com.group4.HaUISocialMedia_server.entity.Post;
 import com.group4.HaUISocialMedia_server.service.PostService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -63,7 +64,14 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
+    @Transactional
     public ResponseEntity<Boolean> deletePost(@PathVariable("postId") UUID postId) {
+        if(postService.isAdmin())
+        {
+            boolean res = postService.deletePost(postId);
+                 if (!res) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+             return new ResponseEntity<Boolean>(res, HttpStatus.OK);
+        }
         if (!postService.hasAuthorityToChange(postId)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         boolean res = postService.deletePost(postId);
