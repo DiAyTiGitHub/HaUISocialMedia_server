@@ -363,7 +363,8 @@ public class GroupServiceImpl implements GroupService {
                 groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
 
             Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), groupDto.getId());
-            groupDto.setRelationship(new MemberDto(relationship));
+            if(relationship != null)
+                groupDto.setRelationship(new MemberDto(relationship));
 
             return groupDto;
         }).forEach(groupDtos::add);

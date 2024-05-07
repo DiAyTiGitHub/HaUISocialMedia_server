@@ -27,7 +27,7 @@ public class PostController {
     @PostMapping("/newsfeed")
     public ResponseEntity<List<PostDto>> pagingNewsFeed(@RequestBody SearchObject searchObject) {
         List<PostDto> res = postService.getNewsFeed(searchObject);
-        if (res == null) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        if (res == null) return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
