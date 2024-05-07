@@ -71,24 +71,30 @@ public class GroupServiceImpl implements GroupService {
         userAdmin.setUser(userService.getCurrentLoginUserEntity());
         userAdmin.setGroup(group);
         memberService.createUserGroup(new MemberDto(userAdmin));
+        userList.add(userAdmin);
 
-        if (groupDto.getUserJoins().isEmpty())
-            return null;
-        groupDto.getUserJoins().stream().map(x -> {
-            User user = userRepository.findById(x.getUser().getId()).orElse(null);
-            Member member = new Member();
-            member.setGroup(group);
-            member.setApproved(true);
-            member.setRole(Role.USER);
-            member.setUser(user);
-            member.setJoinDate(new Date());
-            MemberDto memberDto = memberService.createUserGroup(new MemberDto(member));
-            member.setId(memberDto.getId());
-            return member;
-        }).forEach(userList::add);
+        if(groupDto.getUserJoins() == null){
+            GroupDto newGroupDto = new GroupDto(group);
+                newGroupDto.setUserJoins(userList.stream().map(MemberDto::new).collect(Collectors.toSet()));
+            return newGroupDto;
+        }
+
+            groupDto.getUserJoins().stream().map(x -> {
+                User user = userRepository.findById(x.getUser().getId()).orElse(null);
+                Member member = new Member();
+                member.setGroup(group);
+                member.setApproved(true);
+                member.setRole(Role.USER);
+                member.setUser(user);
+                member.setJoinDate(new Date());
+                MemberDto memberDto = memberService.createUserGroup(new MemberDto(member));
+                member.setId(memberDto.getId());
+                return member;
+            }).forEach(userList::add);
+
 
         GroupDto newGroupDto = new GroupDto(group);
-        newGroupDto.setUserJoins(userList.stream().map(MemberDto::new).collect(Collectors.toSet()));
+            newGroupDto.setUserJoins(userList.stream().map(MemberDto::new).collect(Collectors.toSet()));
         return newGroupDto;
     }
 
@@ -279,7 +285,8 @@ public class GroupServiceImpl implements GroupService {
             }).collect(Collectors.toSet()));
 
         Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), groupDto.getId());
-        groupDto.setRelationship(new MemberDto(relationship));
+        if(relationship != null)
+            groupDto.setRelationship(new MemberDto(relationship));
 
         return groupDto;
     }

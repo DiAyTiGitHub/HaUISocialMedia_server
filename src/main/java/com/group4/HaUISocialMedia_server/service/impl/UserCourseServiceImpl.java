@@ -12,6 +12,7 @@ import com.group4.HaUISocialMedia_server.service.UserCourseService;
 import com.group4.HaUISocialMedia_server.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -229,5 +230,11 @@ public class UserCourseServiceImpl implements UserCourseService {
         return res;
     }
 
-
+    @Override
+    public Set<UserCourseDto> getAllUserCourseNotYetAllow(SearchObject searchObject) {
+        List<UserCourse> li = userCourseRepository.getAllUserCourseNotYetAllow(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
+        Set<UserCourseDto> res = new TreeSet<>((uc1, uc2) -> uc1.getModifyDate().compareTo(uc2.getModifyDate()));
+        li.stream().map(UserCourseDto::new).forEach(res::add);
+        return res;
+    }
 }

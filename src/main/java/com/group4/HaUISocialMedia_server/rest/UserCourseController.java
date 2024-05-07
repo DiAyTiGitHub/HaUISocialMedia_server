@@ -90,4 +90,10 @@ public class UserCourseController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userCourseDto, HttpStatus.OK);
     }
+
+    @PostMapping("/get-all-user-course-not-yet-allow")
+    private ResponseEntity<Set<UserCourseDto>> getAllUserCourseNotYetAllow(@RequestBody SearchObject searchObject){
+        Set<UserCourseDto> userCourseDtos = userCourseService.getAllUserCourseNotYetAllow(searchObject);
+        return userCourseDtos == null ? new ResponseEntity<>(userCourseDtos, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(userCourseDtos, HttpStatus.OK);
+    }
 }

@@ -27,4 +27,6 @@ public interface UserCourseService {
 
     public Set<UserCourseDto> getAllCourseWaitAdminAllow(UUID userId);
 
+    public Set<UserCourseDto> getAllUserCourseNotYetAllow(SearchObject searchObject);
+
 }

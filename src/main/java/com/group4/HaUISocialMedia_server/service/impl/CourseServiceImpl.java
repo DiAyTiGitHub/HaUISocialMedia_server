@@ -44,7 +44,6 @@ public class CourseServiceImpl implements CourseService {
 
         course.setCode(courseDto.getCode());
         course.setName(courseDto.getName());
-        //course.setUserCourses(courseDto.getUserCourses());
         course.setDescription(courseDto.getDescription());
 
         Course course1 = courseRepository.save(course);
