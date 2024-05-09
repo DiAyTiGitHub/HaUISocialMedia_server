@@ -196,17 +196,18 @@ public class UserCourseServiceImpl implements UserCourseService {
         if (user == null)
             return null;
         BoardRecord boardRecord = boardRecordRepository.getRecordOfStudent(user.getId());
-
+        if(boardRecord == null)
+            return null;
         String scoreChar = entity.getCourseResult().getCode();
 
         switch (scoreChar) {
             case "A" -> boardRecord.setNumsOfA(boardRecord.getNumsOfA() + 1);
             case "B+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfBPlus() + 1);
-            case "B" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfB() + 1);
-            case "C+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfCPlus() + 1);
-            case "C" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfC() + 1);
-            case "D+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfDPlus() + 1);
-            default -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfD() + 1);
+            case "B" -> boardRecord.setNumsOfB(boardRecord.getNumsOfB() + 1);
+            case "C+" -> boardRecord.setNumsOfCPlus(boardRecord.getNumsOfCPlus() + 1);
+            case "C" -> boardRecord.setNumsOfC(boardRecord.getNumsOfC() + 1);
+            case "D+" -> boardRecord.setNumsOfDPlus(boardRecord.getNumsOfDPlus() + 1);
+            default -> boardRecord.setNumsOfD(boardRecord.getNumsOfD() + 1);
         }
 
         boardRecord.setLastModifyDate(new Date());
