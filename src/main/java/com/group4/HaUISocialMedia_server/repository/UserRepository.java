@@ -64,4 +64,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             "where u.code like %:keyword% or u.username like %:keyword% " +
             "or u.firstName like %:keyword% or u.lastName like %:keyword%")
     Long countValidStudents(@Param("keyword") String keyword);
+
+    @Query("select u.disable from User u where u.username = :userName")
+    boolean getStatusByUserName(@Param("userName") String userName);
 }
