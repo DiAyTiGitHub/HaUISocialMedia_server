@@ -9,6 +9,7 @@ import com.group4.HaUISocialMedia_server.repository.BoardRecordRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRepository;
 import com.group4.HaUISocialMedia_server.service.LeadingDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +31,10 @@ public class LeadingDashboardServiceImpl implements LeadingDashboardService {
     public PageResult pagingLeadingDashboard(SearchDashboardDto searchObject) {
         if (searchObject == null) return null;
 
-        PageResult pageResult = new PageResult();
-        pageResult.setPageSize(searchObject.getPageSize());
-        pageResult.setPageIndex(searchObject.getPageIndex());
-        List<UUID> studentIds = userRepository.getAllStudentIds();
-        pageResult.setTotalElements(studentIds.size());
         String kw = "";
-        if (searchObject.getKeyWord() != null) kw = searchObject.getKeyWord();
-        List<BoardRecord> topDashboard = boardRecordRepository.getLeadingDashboard(kw,
+        if (searchObject.getKeyWord() != null) kw = insertPercent(searchObject.getKeyWord());
+
+        Page<BoardRecord> topDashboard = boardRecordRepository.getLeadingDashboard(kw,
                 PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         List<BoardRecordDto> res = new ArrayList<>();
 
@@ -45,7 +42,13 @@ public class LeadingDashboardServiceImpl implements LeadingDashboardService {
             res.add(new BoardRecordDto(record));
         }
 
+        PageResult pageResult = new PageResult();
+        pageResult.setTotalElements(topDashboard.getTotalElements());
+        pageResult.setPageSize((long) searchObject.getPageSize());
+        pageResult.setPageIndex((long) searchObject.getPageIndex());
         pageResult.setData(res);
+        pageResult.setTotalPages(topDashboard.getTotalPages());
+        pageResult.setKeyword(searchObject.getKeyWord());
 
         return pageResult;
     }
@@ -60,5 +63,19 @@ public class LeadingDashboardServiceImpl implements LeadingDashboardService {
         BoardRecord record = boardRecordRepository.getRecordOfStudent(userId);
 
         return new BoardRecordDto(record);
+    }
+
+    public String insertPercent(String word) {
+        if (word == null || word.length() == 0) return "";
+        StringBuilder result = new StringBuilder();
+
+        result.append('%');
+
+        for (int i = 0; i < word.length(); i++) {
+            result.append(word.charAt(i));
+            result.append('%');
+        }
+
+        return result.toString();
     }
 }

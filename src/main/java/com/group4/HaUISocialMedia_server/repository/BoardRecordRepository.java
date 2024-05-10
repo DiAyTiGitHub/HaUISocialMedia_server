@@ -2,6 +2,7 @@ package com.group4.HaUISocialMedia_server.repository;
 
 import com.group4.HaUISocialMedia_server.entity.BoardRecord;
 import com.group4.HaUISocialMedia_server.entity.Classroom;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,5 +24,5 @@ public interface BoardRecordRepository extends JpaRepository<BoardRecord, UUID> 
             "order by " +
             "r.numsOfA, r.numsOfBPlus, r.numsOfB, r.numsOfCPlus, r.numsOfC, r.numsOfDPlus, r.numsOfD, r.lastModifyDate"
     )
-    public List<BoardRecord> getLeadingDashboard(@Param("keyword") String keyword, Pageable pageable);
+    public Page<BoardRecord> getLeadingDashboard(@Param("keyword") String keyword, Pageable pageable);
 }

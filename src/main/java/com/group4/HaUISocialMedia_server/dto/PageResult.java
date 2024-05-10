@@ -12,10 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PageResult {
-    private Integer totalElements;
+    private Long totalElements;
     private List<? extends Object> data;
-    private Integer pageIndex;
-    private Integer pageSize;
+    private Long pageIndex;
+    private Long pageSize;
+    private Integer totalPages;
+    private String keyword;
 
 }
 

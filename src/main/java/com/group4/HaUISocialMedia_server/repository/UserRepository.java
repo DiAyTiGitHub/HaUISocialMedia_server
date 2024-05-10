@@ -59,4 +59,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             " or u.email like %:keyword%" +
             ")")
     List<User> pagingUsers(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("select count(u.id) from User u " +
+            "where u.code like %:keyword% or u.username like %:keyword% " +
+            "or u.firstName like %:keyword% or u.lastName like %:keyword%")
+    Long countValidStudents(@Param("keyword") String keyword);
 }
