@@ -407,7 +407,7 @@ public class GroupServiceImpl implements GroupService {
 
         User currentUser = userService.getCurrentLoginUserEntity();
 
-        if (currentUser == null || searchObject == null) return null;
+        if (currentUser == null) return null;
 
         List<Group> validGroups = groupRepository.pagingGroups(keyword, PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         List<GroupDto> res = new ArrayList<>();

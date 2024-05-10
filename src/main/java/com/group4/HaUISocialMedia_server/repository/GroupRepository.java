@@ -20,10 +20,8 @@ public interface GroupRepository extends JpaRepository<Group, UUID> {
     public List<Group> findGroupByName(@Param("name") String name);
 
     @Query("select g from Group g " +
-            "where (" +
-            "g.code like %:keyword%)" +
-            " or g.name like %:keyword%" +
-            " or g.description like %:keyword%" +
+            "where " +
+            " g.name like %:keyword%" +
             "")
     public List<Group> pagingGroups(@Param("keyword") String keyword, Pageable pageable);
 }
