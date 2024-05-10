@@ -117,7 +117,7 @@ public class UserCourseServiceImpl implements UserCourseService {
         BoardRecord boardRecord = boardRecordRepository.getRecordOfStudent(currentUser.getId());
         String scoreChar = entity.getCourseResult().getCode();
 
-        if(dto.getIsValidated()){
+        if(entity.getIsValidated()){
             switch (scoreChar) {
                 case "A" -> boardRecord.setNumsOfA(boardRecord.getNumsOfA() - 1);
                 case "B+" -> boardRecord.setNumsOfBPlus(boardRecord.getNumsOfBPlus() - 1);
