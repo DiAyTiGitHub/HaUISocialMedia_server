@@ -316,17 +316,19 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         Set<UUID> user1FriendIds = new HashSet<>();
         List<UserDto> user1Friends = getFriendsOfUser(user1.getId(), allFriendSO);
-        for (UserDto user : user1Friends) {
-            user1FriendIds.add(user.getId());
-        }
+        if (user1Friends != null)
+            for (UserDto user : user1Friends) {
+                user1FriendIds.add(user.getId());
+            }
 
         //get all mutual friend ids
         List<UserDto> user2Friends = getFriendsOfUser(user2.getId(), allFriendSO);
-        for (UserDto user : user2Friends) {
-            if (user1FriendIds.contains(user.getId())) {
-                mutualFriends.add(user);
+        if (user2Friends != null)
+            for (UserDto user : user2Friends) {
+                if (user1FriendIds.contains(user.getId())) {
+                    mutualFriends.add(user);
+                }
             }
-        }
 
         return mutualFriends;
     }
