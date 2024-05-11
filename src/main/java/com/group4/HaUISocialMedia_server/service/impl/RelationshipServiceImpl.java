@@ -281,13 +281,15 @@ public class RelationshipServiceImpl implements RelationshipService {
         User currentUser = userService.getUserEntityById(userId);
         if (currentUser == null) return null;
 
-        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+        List<User> response = userRepository.findAllCurentFriend(currentUser.getId(),
+                PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
+        if (response == null || response.size() == 0) return null;
         List<UserDto> res = new ArrayList<>();
         for (User user : response) {
             UserDto person = new UserDto(user);
 
-            //set mutual friends of current user and viewing user
-            person.setMutualFriends(getMutualFriends(person.getId(), currentUser.getId()));
+//            //set mutual friends of current user and viewing user
+//            person.setMutualFriends(getMutualFriends(person.getId(), currentUser.getId()));
 
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
                 if (containsKeyword(searchObject.getKeyWord(), user)) res.add(person);
