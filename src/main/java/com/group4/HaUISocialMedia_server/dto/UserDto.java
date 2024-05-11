@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ public class UserDto {
     private ClassroomDto classroomDto;
     private RelationshipDto relationshipDto;
     private Set<MemberDto> groups;
+    private List<UserDto> mutualFriends;
 
 //    private Set<UserCourse> userCourses;
 //    private Set<Message> messages;
