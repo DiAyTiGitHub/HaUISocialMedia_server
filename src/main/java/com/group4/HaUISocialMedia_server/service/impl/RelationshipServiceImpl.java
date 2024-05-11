@@ -193,7 +193,12 @@ public class RelationshipServiceImpl implements RelationshipService {
         List<Relationship> response = relationshipRepository.findAllPendingRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
-            res.add(new RelationshipDto(relationship));
+            RelationshipDto rela = new RelationshipDto(relationship);
+
+            //set mutual friends of current user and viewing user
+            rela.getRequestSender().setMutualFriends(getMutualFriends(rela.getRequestSender().getId(), currentUser.getId()));
+
+            res.add(rela);
         }
 
         return res;
@@ -202,12 +207,17 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Override
     public Set<RelationshipDto> getSentAddFriendRequests(SearchObject searchObject) {
         User currentUser = userService.getCurrentLoginUserEntity();
-        if (currentUser == null) return null;
+        if (currentUser == null || searchObject == null) return null;
 
         List<Relationship> response = relationshipRepository.findAllSentFriendRequestRelationship(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         Set<RelationshipDto> res = new HashSet<>();
         for (Relationship relationship : response) {
-            res.add(new RelationshipDto(relationship));
+            RelationshipDto rela = new RelationshipDto(relationship);
+
+            //set mutual friends of current user and viewing user
+            rela.getReceiver().setMutualFriends(getMutualFriends(rela.getReceiver().getId(), currentUser.getId()));
+
+            res.add(rela);
         }
 
         return res;
