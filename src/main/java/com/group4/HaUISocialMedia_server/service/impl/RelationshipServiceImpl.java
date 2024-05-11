@@ -222,10 +222,15 @@ public class RelationshipServiceImpl implements RelationshipService {
         List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         List<UserDto> res = new ArrayList<>();
         for (User user : response) {
+            UserDto person = new UserDto(user);
+
+            //set mutual friends of current user and viewing user
+            person.setMutualFriends(getMutualFriends(person.getId(), currentUser.getId()));
+
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
-                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
+                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(person);
             } else
-                res.add(new UserDto(user));
+                res.add(person);
         }
         return res;
     }
@@ -241,7 +246,12 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         List<UserDto> res = new ArrayList<>();
         for (User user : response) {
-            res.add(new UserDto(user));
+            UserDto person = new UserDto(user);
+
+            //set mutual friends of current user and viewing user
+            person.setMutualFriends(getMutualFriends(person.getId(), currentUser.getId()));
+
+            res.add(person);
         }
 
         return res;
@@ -264,10 +274,15 @@ public class RelationshipServiceImpl implements RelationshipService {
         List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
         List<UserDto> res = new ArrayList<>();
         for (User user : response) {
+            UserDto person = new UserDto(user);
+
+            //set mutual friends of current user and viewing user
+            person.setMutualFriends(getMutualFriends(person.getId(), currentUser.getId()));
+
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
-                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
+                if (containsKeyword(searchObject.getKeyWord(), user)) res.add(person);
             } else
-                res.add(new UserDto(user));
+                res.add(person);
         }
 
         return res;
@@ -353,11 +368,17 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Override
     public List<UserDto> getAllFiends() {
         User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
 
         List<User> allFriends = userRepository.getAllFriends(currentUser.getId());
         List<UserDto> friendList = new ArrayList<>();
         for (User friend : allFriends) {
-            friendList.add(new UserDto(friend));
+            UserDto person = new UserDto(friend);
+
+            //set mutual friends of current user and viewing user
+            person.setMutualFriends(getMutualFriends(person.getId(), currentUser.getId()));
+
+            friendList.add(person);
         }
 
         return friendList;
