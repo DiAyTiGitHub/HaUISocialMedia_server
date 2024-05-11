@@ -182,4 +182,9 @@ public class GroupController {
         Set<PostDto> res = groupService.findPostInGroup(content, groupId);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
+
+    @GetMapping("/get-all-post-in-group/{groupId}")
+    public ResponseEntity<Set<PostDto>> getAllPostInGroup(@PathVariable UUID groupId){
+        return new ResponseEntity<>(groupService.findAllPostByGroup(groupId), HttpStatus.OK);
+    }
 }
