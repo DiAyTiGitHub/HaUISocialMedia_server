@@ -66,11 +66,10 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @Transactional
     public ResponseEntity<Boolean> deletePost(@PathVariable("postId") UUID postId) {
-        if(postService.isAdmin())
-        {
+        if (postService.isAdmin()) {
             boolean res = postService.deletePost(postId);
-                 if (!res) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-             return new ResponseEntity<Boolean>(res, HttpStatus.OK);
+            if (!res) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Boolean>(res, HttpStatus.OK);
         }
         if (!postService.hasAuthorityToChange(postId)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
@@ -96,11 +95,11 @@ public class PostController {
 //        return new ResponseEntity<PostDto>(res, HttpStatus.OK);
 //    }
 
-    @PostMapping("/get-all-post")
-    public ResponseEntity<Set<PostDto>> getAllPost(@RequestBody SearchObject searchObject){
-        if(!postService.isAdmin())
+    @PostMapping("/admin/posts")
+    public ResponseEntity<List<PostDto>> adminPagingPost(@RequestBody SearchObject searchObject) {
+        if (!postService.isAdmin())
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        Set<PostDto> res = postService.getAllPost(searchObject);
+        List<PostDto> res = postService.adminPagingPost(searchObject);
         return res == null ? new ResponseEntity<>(res, HttpStatus.BAD_REQUEST) : new ResponseEntity<>(res, HttpStatus.OK);
     }
 

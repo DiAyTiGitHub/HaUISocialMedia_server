@@ -46,5 +46,15 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
             "and (p.owner.code like %:keyword% or p.owner.username like %:keyword% " +
             "or p.content like %:keyword% or p.owner.firstName like %:keyword% or p.owner.lastName like %:keyword%) " +
             "ORDER BY p.createDate desc")
-    List<PostDto> findNextPostFromMileStoneWithKeyWord(@Param("userIds") List<UUID> userIds, @Param("joinedGroupIds") List<UUID> joinedGroupIds, @Param("mileStone") Date mileStone, @Param("keyword") String keyword, Pageable pageable);
+    List<PostDto> findNextPostFromMileStoneWithKeyWord(@Param("userIds") List<UUID> userIds,
+                                                       @Param("joinedGroupIds") List<UUID> joinedGroupIds,
+                                                       @Param("mileStone") Date mileStone,
+                                                       @Param("keyword") String keyword, Pageable pageable);
+
+    @Query(value = "SELECT new com.group4.HaUISocialMedia_server.dto.PostDto(p) FROM Post p " +
+            "where (p.owner.code like %:keyword% or p.owner.username like %:keyword% " +
+            "or p.content like %:keyword% or p.owner.firstName like %:keyword% or p.owner.lastName like %:keyword%) " +
+            "ORDER BY p.createDate desc")
+    List<PostDto> adminPagingPost(@Param("keyword") String keyword, Pageable pageable);
+
 }

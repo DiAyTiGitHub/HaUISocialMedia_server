@@ -438,16 +438,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Set<PostDto> getAllPost(SearchObject searchObject) {
-        Page<Post> li = postRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize()));
-        Set<PostDto> res = new TreeSet<>((p1, p2) -> p2.getCreateDate().compareTo(p1.getCreateDate()));
-        li.stream().map(PostDto::new).forEach(res::add);
+    public List<PostDto> adminPagingPost(SearchObject searchObject) {
+        if (searchObject == null) return null;
+        String keyword = insertPercent(searchObject.getKeyWord());
+
+        List<PostDto> res = postRepository.adminPagingPost(keyword, PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
 
         for (PostDto postDto : res) {
             postDto.setLikes(likeService.getListLikesOfPost(postDto.getId()));
             postDto.setComments(commentService.getParentCommentsOfPost(postDto.getId()));
             postDto.setImages(postImageService.sortImage(postDto.getId()));
         }
+
         return res;
     }
 
