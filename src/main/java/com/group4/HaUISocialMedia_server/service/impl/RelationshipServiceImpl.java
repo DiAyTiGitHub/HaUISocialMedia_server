@@ -283,7 +283,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         List<User> response = userRepository.findAllCurentFriend(currentUser.getId(),
                 PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
-        if (response == null || response.size() == 0) return null;
+        if (response == null) return null;
         List<UserDto> res = new ArrayList<>();
         for (User user : response) {
             UserDto person = new UserDto(user);

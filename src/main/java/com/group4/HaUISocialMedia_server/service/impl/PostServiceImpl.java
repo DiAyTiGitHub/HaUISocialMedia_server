@@ -362,7 +362,7 @@ public class PostServiceImpl implements PostService {
             Notification noti = new Notification();
             noti.setActor(currentUser);
             noti.setCreateDate(new Date());
-            noti.setContent(currentUser.getUsername() + " đã cập nhật mới ảnh đại diện " + savedEntity.getContent());
+            noti.setContent(currentUser.getUsername() + " đã cập nhật mới ảnh đại diện: " + savedEntity.getContent());
             noti.setOwner(userService.getUserEntityById(friend.getId()));
             noti.setNotificationType(notificationTypeRepository.findByName("Post"));
 
