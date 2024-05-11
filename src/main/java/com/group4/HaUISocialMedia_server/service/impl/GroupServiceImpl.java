@@ -432,6 +432,7 @@ public class GroupServiceImpl implements GroupService {
         res.forEach(x -> {
             x.setLikes(likeService.getListLikesOfPost(x.getId()));
             x.setComments(commentService.getParentCommentsOfPost(x.getId()));
+            x.setImages(postImageService.sortImage(x.getId()));
         });
         return res;
     }
@@ -442,6 +443,7 @@ public class GroupServiceImpl implements GroupService {
         res.forEach(x -> {
             x.setLikes(likeService.getListLikesOfPost(x.getId()));
             x.setComments(commentService.getParentCommentsOfPost(x.getId()));
+            x.setImages(postImageService.sortImage(x.getId()));
         });
         return res;
     }
