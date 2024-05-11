@@ -56,4 +56,6 @@ public interface GroupService {
     public List<GroupDto> pagingByKeyword(SearchObject searchObject);
 
     public Set<PostDto> findAllPostByGroup(UUID groupId);
+
+    public Set<PostDto> getAllPostByAllGroup(SearchObject searchObject);
 }

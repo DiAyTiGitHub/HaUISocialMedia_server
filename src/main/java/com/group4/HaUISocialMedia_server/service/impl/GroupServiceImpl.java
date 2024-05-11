@@ -435,6 +435,16 @@ public class GroupServiceImpl implements GroupService {
         });
         return res;
     }
+
+    @Override
+    public Set<PostDto> getAllPostByAllGroup(SearchObject searchObject) {
+        Set<PostDto> res =  groupRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize())).stream().flatMap(x -> x.getPosts().stream().map(PostDto::new)).collect(Collectors.toSet());
+        res.forEach(x -> {
+            x.setLikes(likeService.getListLikesOfPost(x.getId()));
+            x.setComments(commentService.getParentCommentsOfPost(x.getId()));
+        });
+        return res;
+    }
 }
 
 

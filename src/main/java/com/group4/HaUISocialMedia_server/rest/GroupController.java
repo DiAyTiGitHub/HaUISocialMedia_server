@@ -1,9 +1,6 @@
 package com.group4.HaUISocialMedia_server.rest;
 
-import com.group4.HaUISocialMedia_server.dto.GetAllUserOfGroupDto;
-import com.group4.HaUISocialMedia_server.dto.GroupDto;
-import com.group4.HaUISocialMedia_server.dto.MemberDto;
-import com.group4.HaUISocialMedia_server.dto.PostDto;
+import com.group4.HaUISocialMedia_server.dto.*;
 import com.group4.HaUISocialMedia_server.entity.Group;
 import com.group4.HaUISocialMedia_server.entity.Member;
 import com.group4.HaUISocialMedia_server.service.GroupService;
@@ -186,5 +183,10 @@ public class GroupController {
     @GetMapping("/get-all-post-in-group/{groupId}")
     public ResponseEntity<Set<PostDto>> getAllPostInGroup(@PathVariable UUID groupId){
         return new ResponseEntity<>(groupService.findAllPostByGroup(groupId), HttpStatus.OK);
+    }
+
+    @PostMapping("/get-all-post-of-all-group")
+    public ResponseEntity<Set<PostDto>> getAllPostOfAllGroup(@RequestBody SearchObject searchObject){
+        return new ResponseEntity<>(groupService.getAllPostByAllGroup(searchObject), HttpStatus.OK);
     }
 }
