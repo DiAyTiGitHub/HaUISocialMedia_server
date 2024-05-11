@@ -257,12 +257,12 @@ public class RelationshipServiceImpl implements RelationshipService {
     }
 
     @Override
-    public Set<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject) {
+    public List<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject) {
         User currentUser = userService.getUserEntityById(userId);
         if (currentUser == null) return null;
 
         List<User> response = userRepository.findAllCurentFriend(currentUser.getId(), PageRequest.of(searchObject.getPageIndex() - 1, searchObject.getPageSize()));
-        Set<UserDto> res = new HashSet<>();
+        List<UserDto> res = new ArrayList<>();
         for (User user : response) {
             if (searchObject.getKeyWord() != null && searchObject.getKeyWord().length() > 0) {
                 if (containsKeyword(searchObject.getKeyWord(), user)) res.add(new UserDto(user));
@@ -272,6 +272,38 @@ public class RelationshipServiceImpl implements RelationshipService {
 
         return res;
     }
+
+    @Override
+    public List<UserDto> getMutualFriends(UUID userId1, UUID userId2) {
+        User user1 = userRepository.findById(userId1).orElse(null);
+        if (user1 == null) return null;
+        User user2 = userRepository.findById(userId2).orElse(null);
+        if (user2 == null) return null;
+        if (user1.getId().equals(user2.getId())) return new ArrayList<>();
+
+        SearchObject allFriendSO = new SearchObject();
+        allFriendSO.setPageSize(10000);
+        allFriendSO.setPageIndex(1);
+
+        List<UserDto> mutualFriends = new ArrayList<>();
+
+        Set<UUID> user1FriendIds = new HashSet<>();
+        List<UserDto> user1Friends = getFriendsOfUser(user1.getId(), allFriendSO);
+        for (UserDto user : user1Friends) {
+            user1FriendIds.add(user.getId());
+        }
+
+        //get all mutual friend ids
+        List<UserDto> user2Friends = getFriendsOfUser(user2.getId(), allFriendSO);
+        for (UserDto user : user2Friends) {
+            if (user1FriendIds.contains(user.getId())) {
+                mutualFriends.add(user);
+            }
+        }
+
+        return mutualFriends;
+    }
+
     @Modifying
     @Transactional
     @Override
@@ -294,6 +326,7 @@ public class RelationshipServiceImpl implements RelationshipService {
 //        relationshipRepository.save(entity);
         return null;
     }
+
     @Modifying
     @Transactional
     @Override

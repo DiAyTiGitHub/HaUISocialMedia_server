@@ -64,16 +64,16 @@ public class RelationshipController {
     }
 
     @PostMapping("/suggesting-users")
-    public ResponseEntity<List<UserDto>> pagingNewUser(@RequestBody SearchObject searchObject){
+    public ResponseEntity<List<UserDto>> pagingNewUser(@RequestBody SearchObject searchObject) {
         List<UserDto> res = relationshipService.pagingNewUser(searchObject);
-        if(res == null)
+        if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @PostMapping("/friends/{userId}")
-    public ResponseEntity<Set<UserDto>> pagingFriendsOfUser(@PathVariable("userId") UUID userId, @RequestBody SearchObject searchObject) {
-            Set<UserDto> res = relationshipService.getFriendsOfUser(userId, searchObject);
+    public ResponseEntity<List<UserDto>> pagingFriendsOfUser(@PathVariable("userId") UUID userId, @RequestBody SearchObject searchObject) {
+        List<UserDto> res = relationshipService.getFriendsOfUser(userId, searchObject);
         if (res == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -87,11 +87,19 @@ public class RelationshipController {
         return new ResponseEntity<>(false, HttpStatus.OK);
     }
 
-    @DeleteMapping  ("/unAcceptFriend/{relationshipId}")
-    public ResponseEntity<Boolean> unAcceptFriendRequest(@PathVariable UUID relationshipId){
+    @DeleteMapping("/unAcceptFriend/{relationshipId}")
+    public ResponseEntity<Boolean> unAcceptFriendRequest(@PathVariable("relationshipId") UUID relationshipId) {
         RelationshipDto res = relationshipService.unAcceptFriendRequest(relationshipId);
-        if(res == null)
+        if (res == null)
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.OK);
+    }
+
+    @GetMapping("/mutualFriends/{userId1}/{userId2}")
+    public ResponseEntity<List<UserDto>> getMutualFriends(@PathVariable("userId1") UUID userId1, @PathVariable("userId2") UUID userId2) {
+        List<UserDto> res = relationshipService.getMutualFriends(userId1, userId2);
+        if (res == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

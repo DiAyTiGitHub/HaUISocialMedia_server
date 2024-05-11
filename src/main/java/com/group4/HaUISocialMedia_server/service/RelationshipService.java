@@ -21,10 +21,13 @@ public interface RelationshipService {
 
     public List<UserDto> pagingNewUser(SearchObject searchObject);
 
-    public Set<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject);
+    public List<UserDto> getFriendsOfUser(UUID userId, SearchObject searchObject);
 
     public RelationshipDto unFriend(UUID relationshipId);
+
     public RelationshipDto unAcceptFriendRequest(UUID relationshipId);
 
     public List<UserDto> getAllFiends();
+
+    public List<UserDto> getMutualFriends(UUID userId1, UUID userId2);
 }

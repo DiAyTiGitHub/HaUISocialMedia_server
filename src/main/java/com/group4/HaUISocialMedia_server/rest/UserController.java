@@ -26,8 +26,8 @@ public class UserController {
 
     @GetMapping("/all")
     @CrossOrigin(origins = "http://localhost:5173")
-    public ResponseEntity<Set<UserDto>> getAll() {
-        Set<UserDto> students = userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> getAll() {
+        List<UserDto> students = userService.getAllUsers();
         if (students == null) return new ResponseEntity<>(students, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
@@ -60,8 +60,8 @@ public class UserController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Set<UserDto>> getByUsername(@RequestBody SearchObject searchObject) {
-        Set<UserDto> li = userService.searchByUsername(searchObject);
+    public ResponseEntity<List<UserDto>> getByUsername(@RequestBody SearchObject searchObject) {
+        List<UserDto> li = userService.searchByUsername(searchObject);
         if (li == null) return new ResponseEntity<>(li, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(li, HttpStatus.OK);
     }

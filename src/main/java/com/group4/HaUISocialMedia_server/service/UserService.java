@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface UserService {
-    public Set<UserDto> getAllUsers();
+    public List<UserDto> getAllUsers();
 
     public UserDto getById(UUID userId);
 
@@ -19,7 +19,7 @@ public interface UserService {
 
     public UserDto updateUser(UserDto dto);
 
-    public Set<UserDto> searchByUsername(SearchObject searchObject);
+    public List<UserDto> searchByUsername(SearchObject searchObject);
 
     public List<UserDto> pagingUser(SearchObject searchObject);
 

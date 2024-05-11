@@ -47,10 +47,21 @@ public class UserServiceImpl implements UserService {
     private PostService postService;
 
     @Override
-    public Set<UserDto> getAllUsers() {
-        Set<UserDto> res = new HashSet<>();
-        List<User> ds = userRepository.findAll();
-        ds.stream().map(UserDto::new).forEach(res::add);
+    public List<UserDto> getAllUsers() {
+        User currentUser = this.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        List<UserDto> res = new ArrayList<>();
+        List<User> allUsers = userRepository.findAll();
+        for (User user : allUsers) {
+            UserDto person = new UserDto(user);
+
+            //set mutual friends of current user and viewing user
+            person.setMutualFriends(relationshipService.getMutualFriends(person.getId(), currentUser.getId()));
+
+            res.add(person);
+        }
+
         return res;
     }
 
@@ -82,12 +93,25 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        //set mutual friends of current user and viewing user
+        res.setMutualFriends(relationshipService.getMutualFriends(res.getId(), currentUser.getId()));
+
         return res;
     }
 
     @Override
     public UserDto getByUserName(String name) {
-        return new UserDto(userRepository.findByUsername(name));
+        if (name == null) return null;
+        UserDto res = new UserDto(userRepository.findByUsername(name));
+        if (res == null) return null;
+
+        User currentUser = this.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        //set mutual friends of current user and viewing user
+        res.setMutualFriends(relationshipService.getMutualFriends(currentUser.getId(), res.getId()));
+
+        return res;
     }
 
     @Override
@@ -136,11 +160,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<UserDto> searchByUsername(SearchObject searchObject) {
-        Set<UserDto> se = new HashSet<>();
-        List<User> li = userRepository.getByUserName(searchObject.getKeyWord(), searchObject.getPageSize(), searchObject.getPageIndex() - 1);
-        li.stream().map(UserDto::new).forEach(se::add);
-        return se;
+    public List<UserDto> searchByUsername(SearchObject searchObject) {
+        if (searchObject == null) return null;
+
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
+        List<UserDto> res = new ArrayList<>();
+        List<User> validUsers = userRepository.getByUserName(searchObject.getKeyWord(), searchObject.getPageSize(), searchObject.getPageIndex() - 1);
+        for (User user : validUsers) {
+            UserDto person = new UserDto(user);
+            //set mutual friends of current user and viewing user
+            person.setMutualFriends(relationshipService.getMutualFriends(person.getId(), currentUser.getId()));
+        }
+        return res;
     }
 
     @Override
@@ -211,6 +244,7 @@ public class UserServiceImpl implements UserService {
         for (User user : validUsers) {
             UserDto person = new UserDto(user);
 
+            //set relationship between current user and viewing user
             if (!currentUser.getId().equals(person.getId())) {
                 List<Relationship> relationships = relationshipRepository.getRelationshipBetweenCurrentUserAndViewingUser(currentUser.getId(), person.getId());
 
@@ -228,6 +262,9 @@ public class UserServiceImpl implements UserService {
                     person.setRelationshipDto(relationshipDto);
                 }
             }
+
+            //set mutual friends of current user and viewing user
+            person.setMutualFriends(relationshipService.getMutualFriends(person.getId(), currentUser.getId()));
 
             res.add(person);
         }
