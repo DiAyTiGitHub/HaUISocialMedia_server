@@ -8,8 +8,10 @@ import com.group4.HaUISocialMedia_server.repository.RoomRepository;
 import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
 import com.group4.HaUISocialMedia_server.repository.UserRoomRepository;
 import com.group4.HaUISocialMedia_server.service.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -88,16 +90,69 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDto updateRoom(RoomDto dto) {
+        if(dto == null) return null;
+
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if(currentUser == null) return null;
+
         Room room = roomRepository.findById(dto.getId()).orElse(null);
         if (room == null)
             return null;
 
-        room.setName(dto.getName());
-        room.setAvatar(dto.getAvatar());
+        if(dto.getName() != null && !dto.getName().equals(room.getName())){
+            room.setName(dto.getName());
+
+            //notify other users that props of room has been changed
+            MessageDto messageDto = new MessageDto();
+            messageDto.setRoom(dto);
+            messageDto.setContent(currentUser.getUsername() + " đã cập nhật tên cuộc trò chuyện");
+            messageDto.setUser(new UserDto(currentUser));
+            messageDto.setMessageType(messageTypeService.getMessageTypeByName("notification"));
+
+            messageService.sendMessage(messageDto);
+        }
+
+        if(dto.getAvatar() != null && !dto.getAvatar().equals(room.getAvatar())){
+            room.setAvatar(dto.getAvatar());
+
+            //notify other users that props of room has been changed
+            MessageDto messageDto = new MessageDto();
+            messageDto.setRoom(dto);
+            messageDto.setContent(currentUser.getUsername() + " đã cập nhật ảnh cuộc trò chuyện");
+            messageDto.setUser(new UserDto(currentUser));
+            messageDto.setMessageType(messageTypeService.getMessageTypeByName("notification"));
+
+            messageService.sendMessage(messageDto);
+        }
+
         room.setCode(dto.getCode());
-        room.setCreateDate(new Date());
-        room.setDescription(dto.getDescription());
-        room.setColor(dto.getColor());
+
+        if(dto.getDescription() != null && !dto.getDescription().equals(room.getDescription())){
+            room.setDescription(dto.getDescription());
+
+            //notify other users that props of room has been changed
+            MessageDto messageDto = new MessageDto();
+            messageDto.setRoom(dto);
+            messageDto.setContent(currentUser.getUsername() + " đã cập nhật ghi chú cuộc trò chuyện");
+            messageDto.setUser(new UserDto(currentUser));
+            messageDto.setMessageType(messageTypeService.getMessageTypeByName("notification"));
+
+            messageService.sendMessage(messageDto);
+        }
+
+        if (dto.getColor() != null && !dto.getColor().equals(room.getColor())) {
+            room.setColor(dto.getColor());
+
+            //notify other users that props of room has been changed
+            MessageDto messageDto = new MessageDto();
+            messageDto.setRoom(dto);
+            messageDto.setContent(currentUser.getUsername() + " đã cập nhật màu sắc cuộc trò chuyện");
+            messageDto.setUser(new UserDto(currentUser));
+            messageDto.setMessageType(messageTypeService.getMessageTypeByName("notification"));
+
+            messageService.sendMessage(messageDto);
+        }
+
         if (room.getUserRooms().size() >= 3) {
             RoomType roomType = roomTypeRepository.findByName("group");
             room.setRoomType(roomType);
@@ -105,10 +160,13 @@ public class RoomServiceImpl implements RoomService {
             RoomType roomType = roomTypeRepository.findByName("private");
             room.setRoomType(roomType);
         }
+
         return new RoomDto(roomRepository.saveAndFlush(room));
     }
 
     @Override
+    @Modifying
+    @Transactional
     public boolean deleteRoom(UUID roomId) {
         if (roomRepository.findById(roomId).orElse(null) == null)
             return false;
