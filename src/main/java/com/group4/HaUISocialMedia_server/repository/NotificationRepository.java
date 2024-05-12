@@ -22,7 +22,7 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     public List<Notification> pagingNotificationByUserId(@Param("idOwner") UUID id, Pageable pageable);
 
     @Query("select n from Notification n where n.owner.id = :currentUserId and n.notificationType.name like 'Post' and n.post.id = :postId")
-    public Notification getOldLikeNotification(@Param("currentUserId") UUID currentUserId, @Param("postId") UUID postId);
+    public List<Notification> getOldLikeNotification(@Param("currentUserId") UUID currentUserId, @Param("postId") UUID postId);
 
     @Modifying
     @Transactional

@@ -59,7 +59,10 @@ public class LikeServiceImpl implements LikeService {
         //first check whether that notification for this post is existed or not
         User receiverUser = post.getOwner();
         if (!receiverUser.getId().equals(user.getId())) {
-            Notification oldNotification = notificationRepository.getOldLikeNotification(receiverUser.getId(), postId);
+            List<Notification> oldNotifications = notificationRepository.getOldLikeNotification(receiverUser.getId(), postId);
+            Notification oldNotification = null;
+            if (oldNotifications != null && oldNotifications.size() > 0) oldNotification = oldNotifications.get(0);
+
             if (oldNotification == null) {
                 //handle if this is the first person liking this post
                 NotificationType notificationType = notificationTypeService.getNotificationTypeEntityByName("Post");
@@ -114,8 +117,9 @@ public class LikeServiceImpl implements LikeService {
             return false;
         likeRepository.deleteByIdPost(postId, user.getId());
 
-        Notification oldNotification = notificationRepository.getOldLikeNotification(post.getOwner().getId(), postId);
-
+        List<Notification> oldNotifications = notificationRepository.getOldLikeNotification(post.getOwner().getId(), postId);
+        Notification oldNotification = null;
+        if (oldNotifications != null && oldNotifications.size() > 0) oldNotification = oldNotifications.get(0);
 
         if (oldNotification != null) {
             //handling for notification
@@ -130,7 +134,7 @@ public class LikeServiceImpl implements LikeService {
                 oldNotification.setCreateDate(new Date());
                 List<Like> likesOfPost = likeRepository.findByPost(postId);
                 // but we have to find who is the latest user like the post for updating the noti content
-                if(likesOfPost.size() > 0){
+                if (likesOfPost.size() > 0) {
                     oldNotification.setContent(likesOfPost.get(0).getUserLike() + " và " + (likesOfPost.size() - 1) + " người khác đã thích bài viết của bạn: " + post.getContent());
                     oldNotification.setActor(likesOfPost.get(0).getUserLike());
 
