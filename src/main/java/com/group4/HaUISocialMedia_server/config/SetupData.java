@@ -410,6 +410,15 @@ public class SetupData implements ApplicationRunner {
             dto.setDescription("a message which is recalled by creator");
             messageTypeService.createMessageType(dto);
         }
+
+        MessageType sticker = messageTypeService.getMessageTypeEntityByName("sticker");
+        if (sticker == null) {
+            MessageTypeDto dto = new MessageTypeDto();
+            dto.setCode("007");
+            dto.setName("sticker");
+            dto.setDescription("sticker in conversation");
+            messageTypeService.createMessageType(dto);
+        }
     }
 
     @Autowired
