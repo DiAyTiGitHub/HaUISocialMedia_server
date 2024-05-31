@@ -25,10 +25,12 @@ public class NotificationTypeDto {
     private String description;
     private Set<NotificationDto> notificationsDto;
 
-    public NotificationTypeDto(NotificationType notificationType){
-        this.id = notificationType.getId();
-        this.code = notificationType.getCode();
-        this.name = notificationType.getName();
-        this.description = notificationType.getDescription();
+    public NotificationTypeDto(NotificationType notificationType) {
+        if (notificationType != null) {
+            this.id = notificationType.getId();
+            this.code = notificationType.getCode();
+            this.name = notificationType.getName();
+            this.description = notificationType.getDescription();
+        }
     }
 }

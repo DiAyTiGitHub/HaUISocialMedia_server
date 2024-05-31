@@ -1,16 +1,10 @@
 package com.group4.HaUISocialMedia_server.service.impl;
 
-import com.group4.HaUISocialMedia_server.dto.MessageDto;
-import com.group4.HaUISocialMedia_server.dto.NotificationDto;
-import com.group4.HaUISocialMedia_server.dto.SearchObject;
-import com.group4.HaUISocialMedia_server.dto.UserDto;
+import com.group4.HaUISocialMedia_server.dto.*;
 import com.group4.HaUISocialMedia_server.entity.*;
 import com.group4.HaUISocialMedia_server.repository.MessageRepository;
 import com.group4.HaUISocialMedia_server.repository.RoomRepository;
-import com.group4.HaUISocialMedia_server.service.MessageService;
-import com.group4.HaUISocialMedia_server.service.MessageTypeService;
-import com.group4.HaUISocialMedia_server.service.RoomService;
-import com.group4.HaUISocialMedia_server.service.UserService;
+import com.group4.HaUISocialMedia_server.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,6 +27,9 @@ public class MessageServiceImpl implements MessageService {
     private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
     private RoomService roomService;
+
+    @Autowired
+    private NotificationTypeService notificationTypeService;
 
     @Override
     public List<MessageDto> findTop20PreviousByMileStone(SearchObject searchObject) {
@@ -121,6 +118,10 @@ public class MessageServiceImpl implements MessageService {
         NotificationDto notification = new NotificationDto();
         notification.setActor(new UserDto(currentUser));
         notification.setCreateDate(new Date());
+        NotificationType messageNotiType = notificationTypeService.getNotificationTypeEntityByName("Chat");
+        if (messageNotiType != null) {
+            notification.setNotificationType(new NotificationTypeDto(messageNotiType));
+        }
 
         for (UserDto userDto : userInRooms) {
 

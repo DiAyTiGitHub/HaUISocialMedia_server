@@ -289,7 +289,7 @@ public class SetupData implements ApplicationRunner {
         }
 
         Course test12 = courseRepository.findByName("Lập trình game");
-        if (test12== null) {
+        if (test12 == null) {
             Course A = new Course();
             A.setCode("013");
             A.setName("Lập trình game");
@@ -463,7 +463,7 @@ public class SetupData implements ApplicationRunner {
 
         NotificationType friend = notificationTypeService.getNotificationTypeEntityByName("Friend");
         if (friend == null) {
-            NotificationTypeDto friendDto =new NotificationTypeDto();
+            NotificationTypeDto friendDto = new NotificationTypeDto();
             friendDto.setCode("002");
             friendDto.setName("Friend");
             friendDto.setDescription("add friend, accept friend");
@@ -472,11 +472,20 @@ public class SetupData implements ApplicationRunner {
 
         NotificationType group = notificationTypeService.getNotificationTypeEntityByName("Group");
         if (group == null) {
-            NotificationTypeDto groupDto =new NotificationTypeDto();
+            NotificationTypeDto groupDto = new NotificationTypeDto();
             groupDto.setCode("003");
             groupDto.setName("Group");
             groupDto.setDescription("approve request, update background group");
             notificationTypeService.save(groupDto);
+        }
+
+        NotificationType chat = notificationTypeService.getNotificationTypeEntityByName("Chat");
+        if (chat == null) {
+            NotificationTypeDto chatDto = new NotificationTypeDto();
+            chatDto.setCode("004");
+            chatDto.setName("Chat");
+            chatDto.setDescription("alert when a message is sent to a conversation that user joined in");
+            notificationTypeService.save(chatDto);
         }
     }
 
