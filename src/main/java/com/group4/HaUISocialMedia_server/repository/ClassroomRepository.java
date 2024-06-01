@@ -36,4 +36,6 @@ public interface ClassroomRepository extends JpaRepository<Classroom, UUID> {
 
     @Query("SELECT c FROM Classroom c order by c.code")
     public List<Classroom> getPagingClassroom(Pageable pageable);
+
+    public Classroom findByName(String name);
 }

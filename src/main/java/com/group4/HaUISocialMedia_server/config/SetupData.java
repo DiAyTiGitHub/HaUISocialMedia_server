@@ -5,10 +5,7 @@ import com.group4.HaUISocialMedia_server.dto.MessageTypeDto;
 import com.group4.HaUISocialMedia_server.dto.NotificationTypeDto;
 import com.group4.HaUISocialMedia_server.dto.RoomTypeDto;
 import com.group4.HaUISocialMedia_server.entity.*;
-import com.group4.HaUISocialMedia_server.repository.CourseRepository;
-import com.group4.HaUISocialMedia_server.repository.CourseResultRepository;
-import com.group4.HaUISocialMedia_server.repository.RoomTypeRepository;
-import com.group4.HaUISocialMedia_server.repository.UserRepository;
+import com.group4.HaUISocialMedia_server.repository.*;
 import com.group4.HaUISocialMedia_server.service.CourseResultService;
 import com.group4.HaUISocialMedia_server.service.MessageTypeService;
 import com.group4.HaUISocialMedia_server.service.NotificationTypeService;
@@ -38,6 +35,7 @@ public class SetupData implements ApplicationRunner {
         initializeNotificationType();
         initializeCourseResult();
         initializeCourse();
+        initializeClassroom();
     }
 
     @Autowired
@@ -171,6 +169,192 @@ public class SetupData implements ApplicationRunner {
             F.setName("Kém");
             F.setDescription("Học sinh đạt thành tích kém");
             courseResultRepository.save(F);
+        }
+
+    }
+
+    @Autowired
+    private ClassroomRepository classroomRepository;
+
+    private void initializeClassroom(){
+        Classroom test = classroomRepository.findByName("KTPM04");
+        if(test == null){
+            Classroom A = new Classroom();
+            A.setCode("001");
+            A.setName("KTPM04");
+            A.setDescription("Ngành kĩ thuật phần mềm");
+            classroomRepository.save(A);
+        }
+
+        Classroom test1 = classroomRepository.findByName("KTPM03");
+        if(test1 == null){
+            Classroom B = new Classroom();
+            B.setCode("002");
+            B.setName("KTPM03");
+            B.setDescription("Ngành kĩ thuật phần mềm");
+            classroomRepository.save(B);
+        }
+
+        Classroom test2 = classroomRepository.findByName("KTPM02");
+        if(test2 == null){
+            Classroom C = new Classroom();
+            C.setCode("003");
+            C.setName("KTPM02");
+            C.setDescription("Ngành kĩ thuật phần mềm");
+            classroomRepository.save(C);
+        }
+
+        Classroom test3 = classroomRepository.findByName("KTPM01");
+        if(test3 == null){
+            Classroom D = new Classroom();
+            D.setCode("004");
+            D.setName("KTPM01");
+            D.setDescription("Ngành kĩ thuật phần mềm");
+            classroomRepository.save(D);
+        }
+
+        Classroom test4 = classroomRepository.findByName("HTTT01");
+        if(test4 == null){
+            Classroom E = new Classroom();
+            E.setCode("005");
+            E.setName("HTTT)1");
+            E.setDescription("Ngành hệ thống thông tin");
+            classroomRepository.save(E);
+        }
+
+        Classroom test5 = classroomRepository.findByName("HTTT02");
+        if(test5 == null){
+            Classroom F = new Classroom();
+            F.setCode("006");
+            F.setName("HTTT02");
+            F.setDescription("Ngành hệ thống thông tin");
+            classroomRepository.save(F);
+        }
+
+        Classroom test6 = classroomRepository.findByName("HTTT03");
+        if(test6 == null){
+            Classroom G = new Classroom();
+            G.setCode("007");
+            G.setName("HTTT03");
+            G.setDescription("Ngành hệ thống thông tin");
+            classroomRepository.save(G);
+        }
+
+        Classroom test7 = classroomRepository.findByName("HTTT04");
+        if(test7 == null){
+            Classroom H = new Classroom();
+            H.setCode("008");
+            H.setName("HTTT04");
+            H.setDescription("Ngành hệ thống thông tin");
+            classroomRepository.save(H);
+        }
+
+        Classroom test8 = classroomRepository.findByName("CNTT01");
+        if(test8 == null){
+            Classroom I = new Classroom();
+            I.setCode("009");
+            I.setName("CNTT01");
+            I.setDescription("Ngành công nghệ thôn tin");
+            classroomRepository.save(I);
+        }
+
+        Classroom test9 = classroomRepository.findByName("CNTT02");
+        if(test9 == null){
+            Classroom J = new Classroom();
+            J.setCode("010");
+            J.setName("CNTT02");
+            J.setDescription("Ngành công nghệ thôn tin");
+            classroomRepository.save(J);
+        }
+
+        Classroom test10 = classroomRepository.findByName("CNTT03");
+        if(test10 == null){
+            Classroom K = new Classroom();
+            K.setCode("011");
+            K.setName("CNTT03");
+            K.setDescription("Ngành công nghệ thôn tin");
+            classroomRepository.save(K);
+        }
+
+        Classroom test11 = classroomRepository.findByName("CNTT04");
+        if(test11 == null){
+            Classroom L = new Classroom();
+            L.setCode("012");
+            L.setName("CNTT04");
+            L.setDescription("Ngành công nghệ thôn tin");
+            classroomRepository.save(L);
+        }
+
+        Classroom test12 = classroomRepository.findByName("KHMT01");
+        if(test12 == null){
+            Classroom N = new Classroom();
+            N.setCode("013");
+            N.setName("KHMT01");
+            N.setDescription("Ngành khoa học máy tính");
+            classroomRepository.save(N);
+        }
+
+        Classroom test13 = classroomRepository.findByName("KHMT02");
+        if(test13 == null){
+            Classroom O = new Classroom();
+            O.setCode("014");
+            O.setName("KHMT02");
+            O.setDescription("Ngành khoa học máy tính");
+            classroomRepository.save(O);
+        }
+
+        Classroom test14 = classroomRepository.findByName("KHMT03");
+        if(test14 == null){
+            Classroom Q = new Classroom();
+            Q.setCode("015");
+            Q.setName("KHMT03");
+            Q.setDescription("Ngành khoa học máy tính");
+            classroomRepository.save(Q);
+        }
+
+        Classroom test15 = classroomRepository.findByName("KHMT04");
+        if(test15 == null){
+            Classroom M = new Classroom();
+            M.setCode("016");
+            M.setName("KHMT04");
+            M.setDescription("Ngành khoa học máy tính");
+            classroomRepository.save(M);
+        }
+
+        Classroom test16 = classroomRepository.findByName("QTKD01");
+        if(test16 == null){
+            Classroom V = new Classroom();
+            V.setCode("017");
+            V.setName("QTKD01");
+            V.setDescription("Ngành quản trị kinh doanh");
+            classroomRepository.save(V);
+        }
+
+        Classroom test17 = classroomRepository.findByName("QTKD02");
+        if(test17 == null){
+            Classroom X = new Classroom();
+            X.setCode("018");
+            X.setName("QTKD02");
+            X.setDescription("Ngành quản trị kinh doanh");
+            classroomRepository.save(X);
+        }
+
+        Classroom test18 = classroomRepository.findByName("QTKD03");
+        if(test18 == null){
+            Classroom W = new Classroom();
+            W.setCode("019");
+            W.setName("QTKD03");
+            W.setDescription("Ngành quản trị kinh doanh");
+            classroomRepository.save(W);
+        }
+
+        Classroom test19 = classroomRepository.findByName("QTKD04");
+        if(test19 == null){
+            Classroom Y = new Classroom();
+            Y.setCode("020");
+            Y.setName("QTKD04");
+            Y.setDescription("Ngành quản trị kinh doanh");
+            classroomRepository.save(Y);
         }
 
     }
