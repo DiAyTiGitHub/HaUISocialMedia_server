@@ -22,7 +22,7 @@ public interface BoardRecordRepository extends JpaRepository<BoardRecord, UUID> 
             +
             "where r.user.code like %:keyword% or r.user.username like %:keyword% or r.user.firstName like %:keyword% " +
             "order by " +
-            "r.numsOfA, r.numsOfBPlus, r.numsOfB, r.numsOfCPlus, r.numsOfC, r.numsOfDPlus, r.numsOfD, r.lastModifyDate"
+            "r.numsOfA desc, r.numsOfBPlus desc, r.numsOfB desc, r.numsOfCPlus desc, r.numsOfC desc, r.numsOfDPlus desc, r.numsOfD desc, r.lastModifyDate desc"
     )
     public Page<BoardRecord> getLeadingDashboard(@Param("keyword") String keyword, Pageable pageable);
 }
