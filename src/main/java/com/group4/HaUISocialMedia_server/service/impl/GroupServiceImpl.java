@@ -73,28 +73,28 @@ public class GroupServiceImpl implements GroupService {
         memberService.createUserGroup(new MemberDto(userAdmin));
         userList.add(userAdmin);
 
-        if(groupDto.getUserJoins() == null){
+        if (groupDto.getUserJoins() == null) {
             GroupDto newGroupDto = new GroupDto(group);
-                newGroupDto.setUserJoins(userList.stream().map(MemberDto::new).collect(Collectors.toSet()));
+            newGroupDto.setUserJoins(userList.stream().map(MemberDto::new).collect(Collectors.toSet()));
             return newGroupDto;
         }
 
-            groupDto.getUserJoins().stream().map(x -> {
-                User user = userRepository.findById(x.getUser().getId()).orElse(null);
-                Member member = new Member();
-                member.setGroup(group);
-                member.setApproved(true);
-                member.setRole(Role.USER);
-                member.setUser(user);
-                member.setJoinDate(new Date());
-                MemberDto memberDto = memberService.createUserGroup(new MemberDto(member));
-                member.setId(memberDto.getId());
-                return member;
-            }).forEach(userList::add);
+        groupDto.getUserJoins().stream().map(x -> {
+            User user = userRepository.findById(x.getUser().getId()).orElse(null);
+            Member member = new Member();
+            member.setGroup(group);
+            member.setApproved(true);
+            member.setRole(Role.USER);
+            member.setUser(user);
+            member.setJoinDate(new Date());
+            MemberDto memberDto = memberService.createUserGroup(new MemberDto(member));
+            member.setId(memberDto.getId());
+            return member;
+        }).forEach(userList::add);
 
 
         GroupDto newGroupDto = new GroupDto(group);
-            newGroupDto.setUserJoins(userList.stream().map(MemberDto::new).collect(Collectors.toSet()));
+        newGroupDto.setUserJoins(userList.stream().map(MemberDto::new).collect(Collectors.toSet()));
         return newGroupDto;
     }
 
@@ -195,6 +195,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Set<GroupDto> getAllJoinedGroupOfUser(UUID userId) {
+        if (userId == null) return null;
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
         List<Member> li = memberRepository.getAllJoinedGroup(userId);
         Set<GroupDto> res = new HashSet<>();
         li.stream().map(x -> {
@@ -207,11 +211,21 @@ public class GroupServiceImpl implements GroupService {
                 groupDto.setPosts(x.getGroup().getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
             return groupDto;
         }).forEach(res::add);
+
+        for (GroupDto group : res) {
+            Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), group.getId());
+            if (relationship != null)
+                group.setRelationship(new MemberDto(relationship));
+        }
+
         return res;
     }
 
     @Override
     public Set<GroupDto> searchGroupByName(String name) {
+        User currentUser = userService.getCurrentLoginUserEntity();
+        if (currentUser == null) return null;
+
         List<Group> li = groupRepository.findGroupByName(name);
         Set<GroupDto> res = new HashSet<>();
         li.stream().map(x -> {
@@ -222,6 +236,13 @@ public class GroupServiceImpl implements GroupService {
                 groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
             return groupDto;
         }).forEach(res::add);
+
+        for (GroupDto group : res) {
+            Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), group.getId());
+            if (relationship != null)
+                group.setRelationship(new MemberDto(relationship));
+        }
+
         return res;
     }
 
@@ -285,7 +306,7 @@ public class GroupServiceImpl implements GroupService {
             }).collect(Collectors.toSet()));
 
         Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), groupDto.getId());
-        if(relationship != null)
+        if (relationship != null)
             groupDto.setRelationship(new MemberDto(relationship));
 
         return groupDto;
@@ -331,6 +352,7 @@ public class GroupServiceImpl implements GroupService {
 
             return groupDto;
         }).forEach(res::add);
+
         return res;
     }
 
@@ -363,7 +385,7 @@ public class GroupServiceImpl implements GroupService {
                 groupDto.setPosts(x.getPosts().stream().map(PostDto::new).collect(Collectors.toSet()));
 
             Member relationship = memberRepository.getRelationshipBetweenCurrentUserAndGroup(currentUser.getId(), groupDto.getId());
-            if(relationship != null)
+            if (relationship != null)
                 groupDto.setRelationship(new MemberDto(relationship));
 
             return groupDto;
@@ -439,7 +461,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Set<PostDto> getAllPostByAllGroup(SearchObject searchObject) {
-        Set<PostDto> res =  groupRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize())).stream().flatMap(x -> x.getPosts().stream().map(PostDto::new)).collect(Collectors.toSet());
+        Set<PostDto> res = groupRepository.findAll(PageRequest.of(searchObject.getPageIndex(), searchObject.getPageSize())).stream().flatMap(x -> x.getPosts().stream().map(PostDto::new)).collect(Collectors.toSet());
         res.forEach(x -> {
             x.setLikes(likeService.getListLikesOfPost(x.getId()));
             x.setComments(commentService.getParentCommentsOfPost(x.getId()));
