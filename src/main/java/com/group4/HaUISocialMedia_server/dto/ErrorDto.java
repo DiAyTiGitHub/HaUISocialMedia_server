@@ -14,4 +14,5 @@ public class ErrorDto {
     private String message;
     private Boolean data;
     private String code;
+    //Đề mô cho môn công cụ phát triển phần mềm liên quan đến gitHub
 }
